@@ -1,0 +1,67 @@
+{
+    "name": "Red Tetris Dev Container",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "workspaceFolder": "/workspace",
+    "mounts": [
+        "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+        "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind,consistency=cached",
+        "source=${localEnv:HOME}/.gitconfig,target=/root/.gitconfig,type=bind,consistency=cached"
+    ],
+    "postStartCommand": "/usr/local/bin/start-dev.sh",
+    "postAttachCommand": "pnpm install -r",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "cSpell.userWords": [
+                    "express",
+                    "nextjs"
+                ],
+                "eslint.options": {
+                    "overrideConfigFile": "../eslint.config.mts"
+                },
+                "eslint.format.enable": true,
+                "editor.formatOnSave": true,
+                "editor.codeActionsOnSave": {
+                    "source.fixAll.eslint": "explicit",
+                    "source.addMissingImports.ts": "always",
+                    "source.sortImports": "always",
+                    "source.removeUnusedImports": "always"
+                },
+                "eslint.workingDirectories": [
+                    {
+                        "directory": "client",
+                        "mode": "auto"
+                    },
+                    {
+                        "directory": "server",
+                        "mode": "auto"
+                    }
+                ],
+                "terminal.integrated.defaultProfile.linux": "zsh",
+                "tailwindCSS.experimental.classRegex": [
+                    ["className\\s*=\\s*\"([^\"]*)", 1],
+                    ["className\\s*=\\s*'([^']*)'", 1],
+                    ["cn\\([\"'`]([^\"'`]*)[\"'`]", 1]
+                ],
+                "tailwindCSS.experimental.configFile": "client/tailwind.config.ts",
+                "tailwindCSS.validate": true,
+                "tailwindCSS.lint.cssConflict": "warning",
+                "tailwindCSS.lint.invalidApply": "error",
+                "tailwindCSS.lint.invalidScreen": "error",
+                "tailwindCSS.lint.invalidTailwindDirective": "error",
+                "tailwindCSS.lint.invalidVariant": "error",
+                "tailwindCSS.lint.recommendedVariantOrder": "warning"
+            },
+            "extensions": [
+                "esbenp.prettier-vscode",
+                "dbaeumer.vscode-eslint",
+                "bradlc.vscode-tailwindcss",
+                "yoavbls.pretty-ts-errors",
+                "streetsidesoftware.code-spell-checker",
+                "diemasmichiels.emulate"
+            ]
+        }
+    }
+}
