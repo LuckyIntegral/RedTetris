@@ -1,0 +1,11 @@
+**/node_modules
+**/.next
+**/build
+/coverage
+
+*.json
+*.md
+*.css
+*.scss
+
+client/next.config.ts

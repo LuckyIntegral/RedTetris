@@ -1,0 +1,49 @@
+{
+  "name": "red-tetris",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "prettier": "pnpm run prettier:server && pnpm run prettier:client",
+    "prettier:server": "prettier server",
+    "prettier:client": "prettier \"client/**/*.{ts,tsx}\"  --write",
+
+    "lint": "pnpm run lint:server && pnpm run lint:client",
+    "lint:server": "eslint server --ext js,jsx,ts,tsx",
+    "lint:client": "eslint client --ext js,jsx,ts,tsx --ignore-pattern client/.next --ignore-pattern client/next-env.d.ts --fix",
+
+    "build": "pnpm run build:server && pnpm run build:client",
+    "build:server": "pnpm --filter=server build",
+    "build:client": "pnpm --filter=client build",
+
+    "dev": "concurrently -k -p \"[{name}]\" -n \"Server,Client,Database\" -c \"red.bold,blue.bold\" \"pnpm run dev:server\" \"pnpm run dev:client\"",
+    "dev:server": "pnpm --filter=server dev",
+    "dev:client": "pnpm --filter=client dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.14.0",
+  "devDependencies": {
+    "@eslint/js": "^9.37.0",
+    "@next/eslint-plugin-next": "^15.5.5",
+    "@stylistic/eslint-plugin": "^5.4.0",
+    "concurrently": "^9.2.1",
+    "eslint": "^9.37.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-compiler": "19.1.0-rc.2",
+    "eslint-plugin-react-hooks": "^7.0.0",
+    "eslint-plugin-unused-imports": "^4.2.0",
+    "globals": "^16.4.0",
+    "jiti": "^2.6.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.1"
+  },
+  "dependencies": {
+    "eslint-plugin-next": "^0.0.0"
+  }
+}
