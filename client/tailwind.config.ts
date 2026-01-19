@@ -1,3 +1,1 @@
-export default {
-  content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
-};
+export default { content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'] };
