@@ -53,7 +53,12 @@ app.get('/api/test-db', async (req: Request, res: Response) => {
 // Start server
 const startServer = async () => {
   // Test database connection on startup
-  await testConnection();
+  const dbConnected = await testConnection();
+  
+  if (!dbConnected) {
+    console.error('❌ Failed to connect to database. Server will not start.');
+    process.exit(1);
+  }
 
   app.listen(PORT, () => {
     console.log(`🚀 Server is running on port ${PORT}`);
