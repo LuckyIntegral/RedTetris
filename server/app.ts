@@ -23,14 +23,9 @@ app.get('/health', async (req: Request, res: Response) => {
 
 const logDbError = (context: string, error: unknown): void => {
   const safeErrorInfo =
-    error instanceof Error
-      ? { name: error.name, message: error.message }
-      : { message: 'Unknown error type' };
+    error instanceof Error ? { name: error.name, message: error.message } : { message: 'Unknown error type' };
 
-  console.error('Database error', {
-    context,
-    error: safeErrorInfo,
-  });
+  console.error('Database error', { context, error: safeErrorInfo });
 };
 
 // Example database query endpoint
@@ -40,13 +35,12 @@ app.get('/api/test-db', async (req: Request, res: Response) => {
     res.json({ success: true, data: rows });
   } catch (error) {
     logDbError('GET /api/test-db', error);
-    res.status(500).json({
-      success: false,
-      error: {
-        code: 'DB_TEST_QUERY_FAILED',
-        message: 'Database query failed while executing test query.',
-      },
-    });
+    res
+      .status(500)
+      .json({
+        success: false,
+        error: { code: 'DB_TEST_QUERY_FAILED', message: 'Database query failed while executing test query.' },
+      });
   }
 });
 
@@ -54,7 +48,7 @@ app.get('/api/test-db', async (req: Request, res: Response) => {
 const startServer = async () => {
   // Test database connection on startup
   const dbConnected = await testConnection();
-  
+
   if (!dbConnected) {
     console.error('❌ Failed to connect to database. Server will not start.');
     process.exit(1);
