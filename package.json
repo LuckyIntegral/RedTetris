@@ -11,9 +11,8 @@
     "prettier": "pnpm --filter=server prettier && pnpm --filter=client prettier",
     "prettier:check": "pnpm --filter=server prettier:check && pnpm --filter=client prettier:check",
 
-    "lint": "pnpm run lint:server && pnpm run lint:client",
-    "lint:server": "eslint server --ext js,jsx,ts,tsx",
-    "lint:client": "pnpm --filter=client lint",
+    "lint": "pnpm --filter=server lint && pnpm --filter=client lint",
+    "lint:check": "pnpm --filter=server lint:check && pnpm --filter=client lint:check",
 
     "build": "pnpm run build:server && pnpm run build:client",
     "build:server": "pnpm --filter=server build",
