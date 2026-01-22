@@ -8,6 +8,7 @@
     "server"
   ],
   "scripts": {
+    "setup": "test -f .env || (echo 'Creating .env from .env.example...' && cp .env.example .env)",
     "prettier": "pnpm --filter=server prettier && pnpm --filter=client prettier",
     "prettier:check": "pnpm --filter=server prettier:check && pnpm --filter=client prettier:check",
     "lint": "pnpm --filter=server lint && pnpm --filter=client lint",
