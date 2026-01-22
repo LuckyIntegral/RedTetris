@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
+import path from 'path';
 
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 import cors from 'cors';
 import express, { Request, Response } from 'express';
@@ -36,7 +37,7 @@ app.get('/api/test-db', async (req: Request, res: Response) => {
   try {
     const [rows] = await db.query('SELECT 1 + 1 AS result');
     res.json({ success: true, data: rows });
-  } catch (error) {
+  } catch (error: unknown) {
     logDbError('GET /api/test-db', error);
     res
       .status(500)
@@ -62,6 +63,9 @@ const startServer = async () => {
   });
 };
 
-void startServer();
+startServer().catch((error: unknown) => {
+  console.error('Failed to start server:', error);
+  process.exit(1);
+});
 
 export default app;
