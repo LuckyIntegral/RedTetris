@@ -21,14 +21,32 @@ app.get('/health', async (req: Request, res: Response) => {
   res.json({ status: 'ok', database: dbConnected ? 'connected' : 'disconnected' });
 });
 
+const logDbError = (context: string, error: unknown): void => {
+  const safeErrorInfo =
+    error instanceof Error
+      ? { name: error.name, message: error.message }
+      : { message: 'Unknown error type' };
+
+  console.error('Database error', {
+    context,
+    error: safeErrorInfo,
+  });
+};
+
 // Example database query endpoint
 app.get('/api/test-db', async (req: Request, res: Response) => {
   try {
     const [rows] = await db.query('SELECT 1 + 1 AS result');
     res.json({ success: true, data: rows });
   } catch (error) {
-    console.error('Database query error:', error);
-    res.status(500).json({ success: false, error: 'Database query failed' });
+    logDbError('GET /api/test-db', error);
+    res.status(500).json({
+      success: false,
+      error: {
+        code: 'DB_TEST_QUERY_FAILED',
+        message: 'Database query failed while executing test query.',
+      },
+    });
   }
 });
 
