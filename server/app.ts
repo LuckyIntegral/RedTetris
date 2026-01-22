@@ -6,9 +6,22 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 import cors from 'cors';
 import express, { Request, Response } from 'express';
 import db, { testConnection } from './db';
+import { logDbError } from './utils/logger';
 
 const app = express();
-const PORT = process.env.PORT ?? 3001;
+
+const rawPort = process.env.PORT;
+const PORT = (() => {
+  if (rawPort === undefined) {
+    return 3001;
+  }
+  const parsedPort = parseInt(rawPort, 10);
+  if (Number.isNaN(parsedPort) || !Number.isInteger(parsedPort) || parsedPort <= 0 || parsedPort > 65535) {
+    console.error(`Invalid PORT environment variable "${rawPort}". Expected an integer between 1 and 65535.`);
+    process.exit(1);
+  }
+  return parsedPort;
+})();
 
 // Middleware
 app.use(cors({ origin: process.env.CLIENT_URL ?? 'http://localhost:3000', credentials: true }));
@@ -24,13 +37,6 @@ app.get('/health', async (req: Request, res: Response) => {
   const dbConnected = await testConnection();
   res.json({ status: 'ok', database: dbConnected ? 'connected' : 'disconnected' });
 });
-
-const logDbError = (context: string, error: unknown): void => {
-  const safeErrorInfo =
-    error instanceof Error ? { name: error.name, message: error.message } : { message: 'Unknown error type' };
-
-  console.error('Database error', { context, error: safeErrorInfo });
-};
 
 // Example database query endpoint
 app.get('/api/test-db', async (req: Request, res: Response) => {
