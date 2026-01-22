@@ -138,6 +138,31 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
+  server:
+    dependencies:
+      dotenv:
+        specifier: ^17.2.3
+        version: 17.2.3
+      express:
+        specifier: ^4.21.2
+        version: 4.22.1
+      mysql2:
+        specifier: ^3.16.1
+        version: 3.16.1
+    devDependencies:
+      '@types/express':
+        specifier: ^5.0.6
+        version: 5.0.6
+      '@types/node':
+        specifier: ^25.0.10
+        version: 25.0.10
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@25.0.10)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
 packages:
 
   '@babel/code-frame@7.28.6':
@@ -277,15 +302,19 @@ packages:
     engines: {node: '>=6.9.0'}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
 
+<<<<<<< HEAD
   '@esbuild/aix-ppc64@0.27.2':
     resolution: {integrity: sha512-GZMB+a0mOMZs4MpDbj8RJp4cw+w1WV5NYD6xzgvzUJ5Ek2jerwfO2eADyI6ExDSUED+1X8aMbegahsJi+8mgpw==}
     engines: {node: '>=18'}
@@ -305,6 +334,8 @@ packages:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   '@emnapi/core@1.8.1':
     resolution: {integrity: sha512-AvT9QFpxK0Zd8J0jopedNm+w/2fIzvtPKPjqyw9jwvBaReTTqPBk9Hixaz7KbjimP+QNz605/XnjFcDAL2pqBg==}
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
@@ -547,6 +578,7 @@ packages:
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -568,6 +600,11 @@ packages:
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
 
 <<<<<<< HEAD
+=======
+  '@jridgewell/trace-mapping@0.3.9':
+    resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
+
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   '@napi-rs/wasm-runtime@0.2.12':
     resolution: {integrity: sha512-ZVWUcfwY4E/yPitQJl481FjFo3K22D6qF0DuFH6Y/nbnE11GY5uguDxZMGXPQ8WQ0128MXQD7TnfHyK4oWoIJQ==}
 
@@ -913,7 +950,10 @@ packages:
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   '@tybys/wasm-util@0.10.1':
     resolution: {integrity: sha512-9tTaPJLSiejZKx+Bmog4uSubteqTvFrVrURwkmHixBo0G4seD0zUxp98E1DzUBJxLQ3NPwXrGKDiVjwx/DpPsg==}
 =======
@@ -959,6 +999,12 @@ packages:
   '@types/cors@2.8.19':
     resolution: {integrity: sha512-mFNylyeyqN93lfe/9CSxOGREz8cpzAhH+E93xJ4xWQf62V8sQ/24reV2nyzUWM6H6Xji+GGHpkbLe7pVoUEskg==}
 
+  '@types/body-parser@1.19.6':
+    resolution: {integrity: sha512-HLFeCYgz89uk22N5Qg3dvGvsv46B8GLvKKo1zKG4NybA8U2DiEO3w9lqGg29t/tfLRJpJ6iQxnVw4OnB7MoM9g==}
+
+  '@types/connect@3.4.38':
+    resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
+
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
 
@@ -976,6 +1022,15 @@ packages:
 
   '@types/node@22.19.7':
     resolution: {integrity: sha512-MciR4AKGHWl7xwxkBa6xUGxQJ4VBOmPTF7sL+iGzuahOFaO0jHCsuEfS80pan1ef4gWId1oWOweIhrDEYLuaOw==}
+
+  '@types/node@25.0.10':
+    resolution: {integrity: sha512-zWW5KPngR/yvakJgGOmZ5vTBemDoSqF3AcV/LrO5u5wTWyEAVVh+IT39G4gtyAkh3CtTZs8aX/yRM82OfzHJRg==}
+
+  '@types/qs@6.14.0':
+    resolution: {integrity: sha512-eOunJqu0K1923aExK6y8p6fsihYEn/BYuQ4g0CxAAgFc4b/ZLN4CrsRZ55srTdqoiLzU2B2evC+apEIxprEzkQ==}
+
+  '@types/range-parser@1.2.7':
+    resolution: {integrity: sha512-hKormJbkJqzQGhziax5PItDUTMAM9uE2XXQmM37dyd4hVM+5aVl7oVxMVUiVQn2oCQFN/LKCZdvSM0pFRqbSmQ==}
 
   '@types/node@25.0.10':
     resolution: {integrity: sha512-zWW5KPngR/yvakJgGOmZ5vTBemDoSqF3AcV/LrO5u5wTWyEAVVh+IT39G4gtyAkh3CtTZs8aX/yRM82OfzHJRg==}
@@ -1063,6 +1118,10 @@ packages:
     resolution: {integrity: sha512-PYAthTa2m2VKxuvSD3DPC/Gy+U+sOA1LAuT8mkmRuvw+NACSaeXEQ+NHcVF7rONl6qcaxV3Uuemwawk+7+SJLw==}
     engines: {node: '>= 0.6'}
 
+  accepts@1.3.8:
+    resolution: {integrity: sha512-PYAthTa2m2VKxuvSD3DPC/Gy+U+sOA1LAuT8mkmRuvw+NACSaeXEQ+NHcVF7rONl6qcaxV3Uuemwawk+7+SJLw==}
+    engines: {node: '>= 0.6'}
+
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
     peerDependencies:
@@ -1088,6 +1147,7 @@ packages:
     resolution: {integrity: sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg==}
     engines: {node: '>=8'}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   arg@4.1.3:
     resolution: {integrity: sha512-58S9QDqG0Xx27YwPSt9fJxivjYl432YCwfDMfZ+71RAqUrZef7LrKQZ3LHLOwCS4FLNBplP533Zx895SeOCHvA==}
@@ -1117,6 +1177,10 @@ packages:
 
   arg@5.0.2:
     resolution: {integrity: sha512-PYjyFOLKQ9y57JvQ6QLo8dAgNqswh8M1RMJYdQduT6xbWSgK36P/Z/v+p888pM69jMMfS8Xd8F6I1kQ/I9HUGg==}
+=======
+  arg@4.1.3:
+    resolution: {integrity: sha512-58S9QDqG0Xx27YwPSt9fJxivjYl432YCwfDMfZ+71RAqUrZef7LrKQZ3LHLOwCS4FLNBplP533Zx895SeOCHvA==}
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
 
   argparse@2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
@@ -1161,15 +1225,19 @@ packages:
     engines: {node: '>= 0.4'}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   aws-ssl-profiles@1.1.2:
     resolution: {integrity: sha512-NZKeq9AfyQvEeNlN0zSYAaWrmBffJh3IELMZfRpJVWgrpEbtEpnjvzqBPf+mxoI287JohRDoa+/nsfqqiZmF6g==}
     engines: {node: '>= 6.0.0'}
 
+<<<<<<< HEAD
   babel-dead-code-elimination@1.0.12:
     resolution: {integrity: sha512-GERT7L2TiYcYDtYk1IpD+ASAYXjKbLTDPhBtYj7X1NuRMDTMtAx9kyBenub1Ev41lo91OHCKdmP+egTDmfQ7Ig==}
 <<<<<<< HEAD
@@ -1187,6 +1255,8 @@ packages:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   axe-core@4.11.1:
     resolution: {integrity: sha512-BASOg+YwO2C+346x3LZOeoovTIoTrRqEsqMa6fmfAV0P+U9mFr9NsyOEpiYvFjbc64NMrSswhV50WdXzdb/Z5A==}
     engines: {node: '>=4'}
@@ -1216,6 +1286,7 @@ packages:
     resolution: {integrity: sha512-kX8h7K2srmDyYnXRIppo4AH/wYgzWVCs+eKr3RusRSQ5PvRYoEFmR/I0PbdTjKFAoKqp5+kbxnNTFO9jOfSVJg==}
     hasBin: true
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 <<<<<<< HEAD
@@ -1254,6 +1325,8 @@ packages:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   body-parser@1.20.4:
     resolution: {integrity: sha512-ZTgYYLMOXY9qKU/57FAo8F+HA2dGX7bqGc71txDRC1rS4frdFI5R7NhluHxH6M0YItAP0sHB4uqAOcYKxO6uGA==}
     engines: {node: '>= 0.8', npm: 1.2.8000 || >= 1.4.16}
@@ -1273,6 +1346,7 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
@@ -1310,10 +1384,13 @@ packages:
 
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   bytes@3.1.2:
     resolution: {integrity: sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==}
     engines: {node: '>= 0.8'}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 <<<<<<< HEAD
@@ -1352,6 +1429,8 @@ packages:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   call-bind-apply-helpers@1.0.2:
     resolution: {integrity: sha512-Sp1ablJ0ivDkSzjcaJdxEunN5/XvksFJ2sMBFfq6x0ryhQV/2b/KwFe21cMpmHtPOSij8K99/wSfoEuTObmuMQ==}
     engines: {node: '>= 0.4'}
@@ -1407,6 +1486,7 @@ packages:
     hasBin: true
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   confbox@0.2.2:
     resolution: {integrity: sha512-1NB+BKqhtNipMsov4xI/NnhCKp9XG9NamYp5PVm9klAT0fsrNPjaFICsCFhNhwZJKNh7zB/3q8qXz0E9oaMNtQ==}
 
@@ -1443,6 +1523,8 @@ packages:
 
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   content-disposition@0.5.4:
     resolution: {integrity: sha512-FveZTNuGw04cxlAiWbzi6zTAL/lhehaWbTtgluJh4/E95DqMwTmha3KZN1aAWA8cFIhHzMZUvLevkw5Rqk+tSQ==}
     engines: {node: '>= 0.6'}
@@ -1461,6 +1543,7 @@ packages:
     resolution: {integrity: sha512-yki5XnKuf750l50uGTllt6kKILY4nQ1eNIQatoXEByZ5dWgnKqbnqmTrBE5B4N7lrMJKQ2ytWMiTO2o0v6Ew/w==}
     engines: {node: '>= 0.6'}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   cookie@1.1.1:
     resolution: {integrity: sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ==}
@@ -1515,6 +1598,10 @@ packages:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+  create-require@1.1.1:
+    resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
 
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
@@ -1538,6 +1625,7 @@ packages:
   debug@2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -1548,6 +1636,16 @@ packages:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
+
+  debug@3.2.7:
+    resolution: {integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==}
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
     peerDependencies:
       supports-color: '*'
     peerDependenciesMeta:
@@ -1606,6 +1704,7 @@ packages:
     engines: {node: '>= 0.4'}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -1616,10 +1715,13 @@ packages:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   denque@2.1.0:
     resolution: {integrity: sha512-HVQE3AAb/pxF8fQAoiqpvg9i3evqug3hoiwakOyZAwJm+6vZehbkYXZ0l4JxS+I3QxM97v5aaRNhj8v5oBhekw==}
     engines: {node: '>=0.10'}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 <<<<<<< HEAD
@@ -1632,6 +1734,8 @@ packages:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   depd@2.0.0:
     resolution: {integrity: sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==}
     engines: {node: '>= 0.8'}
@@ -1655,15 +1759,19 @@ packages:
   detect-node-es@1.1.0:
     resolution: {integrity: sha512-ypdmJU/TbBby2Dxibuv7ZLW3Bs1QEmM7nHjEANfohJLvE0XVujisn1qPJcZxg+qDucsr+bP6fLD1rPS3AhJ7EQ==}
 
+<<<<<<< HEAD
 =======
 >>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   diff@4.0.4:
     resolution: {integrity: sha512-X07nttJQkwkfKfvTPG/KSnE2OMdcUCao6+eXF3wmnIQRn2aPAHH3VxDbDOdegkd6JbPsXqShpvEOHfAT+nCNwQ==}
     engines: {node: '>=0.3.1'}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 <<<<<<< HEAD
@@ -1676,6 +1784,8 @@ packages:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   doctrine@2.1.0:
     resolution: {integrity: sha512-35mSku4ZXK0vfCuHEDAwt55dg2jNajHZ1odvF+8SSr82EsZY4QmXfuWso8oEd8zRhVObSN18aM0CjSdoBX7zIw==}
     engines: {node: '>=0.10.0'}
@@ -1696,6 +1806,10 @@ packages:
 
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
+
+  encodeurl@2.0.0:
+    resolution: {integrity: sha512-Q0n9HRi4m6JuGIV1eFlmvJB7ZEVxu93IrMyiMsGC0lrMJMWzRgx6WGquyfQgZVb31vhGgXnfmPNNXmxnOkRBrg==}
+    engines: {node: '>= 0.8'}
 
   encodeurl@2.0.0:
     resolution: {integrity: sha512-Q0n9HRi4m6JuGIV1eFlmvJB7ZEVxu93IrMyiMsGC0lrMJMWzRgx6WGquyfQgZVb31vhGgXnfmPNNXmxnOkRBrg==}
@@ -1841,6 +1955,7 @@ packages:
     engines: {node: '>= 0.6'}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -1878,10 +1993,13 @@ packages:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   express@4.22.1:
     resolution: {integrity: sha512-F2X8g9P1X7uCPZMA3MVf9wcTqlyNp7IhH5qPCI0izhaOIYXaW9L535tGA3qmjRzpH+bZczqq7hVKxTR4NWnu+g==}
     engines: {node: '>= 0.10.0'}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   exsolve@1.0.8:
     resolution: {integrity: sha512-LmDxfWXwcTArk8fUEnOfSZpHOJ6zOMUJKOtFLFqJLoKJetuQG874Uc7/Kki7zFLzYybmZhp1M7+98pfMqeX8yA==}
@@ -1919,6 +2037,8 @@ packages:
 
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
 
@@ -1980,6 +2100,7 @@ packages:
     engines: {node: '>= 0.6'}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -2018,6 +2139,8 @@ packages:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
 
@@ -2131,6 +2254,7 @@ packages:
     engines: {node: '>=0.10.0'}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -2141,10 +2265,13 @@ packages:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   iconv-lite@0.7.2:
     resolution: {integrity: sha512-im9DjEDQ55s9fL4EYzOAv0yMqmMBSZp6G0VvFyTMPKWxiSBHUj9NW/qqLmXUwXrrM7AvqSlTCfvqRb0cM8yYqw==}
     engines: {node: '>=0.10.0'}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 <<<<<<< HEAD
@@ -2157,6 +2284,8 @@ packages:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   ignore@5.3.2:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
     engines: {node: '>= 4'}
@@ -2429,6 +2558,7 @@ packages:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -2463,6 +2593,10 @@ packages:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+  long@5.3.2:
+    resolution: {integrity: sha512-mNAgZ1GmyNhD7AuqnTG3/VQ26o760+ZYBPKjPvugO8+nLbYfX6TVpJPseBvopbdY+qpZ/lKUnmEc1LeZYS3QAA==}
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
 
   loose-envify@1.4.0:
     resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
@@ -2471,6 +2605,7 @@ packages:
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 <<<<<<< HEAD
@@ -2482,14 +2617,19 @@ packages:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   lru.min@1.1.3:
     resolution: {integrity: sha512-Lkk/vx6ak3rYkRR0Nhu4lFUT2VDnQSxBe8Hbl7f36358p6ow8Bnvr8lrLt98H8J1aGxfhbX4Fs5tYg2+FTwr5Q==}
     engines: {bun: '>=1.0.0', deno: '>=1.30.0', node: '>=8.0.0'}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   lucide-react@0.545.0:
     resolution: {integrity: sha512-7r1/yUuflQDSt4f1bpn5ZAocyIxcTyVyBBChSVtBKn5M+392cPmI5YJMWOJKk/HUWGm5wg83chlAZtCcGbEZtw==}
     peerDependencies:
@@ -2543,6 +2683,7 @@ packages:
     engines: {node: '>= 0.6'}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -2580,6 +2721,8 @@ packages:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   mime-types@2.1.35:
     resolution: {integrity: sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==}
     engines: {node: '>= 0.6'}
@@ -2599,6 +2742,9 @@ packages:
   morgan@1.10.1:
     resolution: {integrity: sha512-223dMRJtI/l25dJKWpgij2cMtywuG/WiUKXdvwfbhGKBhy1puASqXwFzmWZ7+K73vUPoR7SS2Qz2cI/g9MKw0A==}
     engines: {node: '>= 0.8.0'}
+
+  ms@2.0.0:
+    resolution: {integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==}
 
   ms@2.0.0:
     resolution: {integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==}
@@ -2626,6 +2772,7 @@ packages:
     resolution: {integrity: sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg==}
     engines: {node: '>= 0.6'}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 <<<<<<< HEAD
@@ -2636,6 +2783,9 @@ packages:
 >>>>>>> 79d0d43 (feat: initialize server with Express and MySQL connection)
 
 <<<<<<< HEAD
+=======
+
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   next-themes@0.4.6:
     resolution: {integrity: sha512-pZvgD5L0IEvX5/9GWyHMf3m8BKiVQwsCMHfoFosXtXBMnaS0ZnIJ9ST4b4NqLVKDEm8QBxoNNGNaBv2JNF6XNA==}
     peerDependencies:
@@ -2690,6 +2840,7 @@ packages:
     engines: {node: '>= 0.4'}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -2727,10 +2878,13 @@ packages:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   on-finished@2.4.1:
     resolution: {integrity: sha512-oVlzkg3ENAhCk2zdv7IJwd/QUD4z2RxRwpkcGY8psCVcCYZNq4wYnVWALHM+brtuJjePWiYF/ClmuDr8Ch5+kg==}
     engines: {node: '>= 0.8'}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 <<<<<<< HEAD
@@ -2769,6 +2923,8 @@ packages:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   optionator@0.9.4:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
     engines: {node: '>= 0.8.0'}
@@ -2812,6 +2968,7 @@ packages:
     resolution: {integrity: sha512-RA1GjUVMnvYFxuqovrEqZoxxW5NUZqbwKtYz/Tt7nXerk0LbLblQmrsgdeOxV5SFHf0UDggjS/bSeOZwt1pmEQ==}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -2851,6 +3008,8 @@ packages:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
 
@@ -2904,6 +3063,7 @@ packages:
     resolution: {integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==}
     engines: {node: '>= 0.6'}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -2914,6 +3074,17 @@ packages:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+
+  raw-body@2.5.3:
+    resolution: {integrity: sha512-s4VSOf6yN0rvbRZGxs8Om5CWj6seneMwK3oDb4lWDH0UPhWcxwOWw5+qk24bxq87szX1ydrwylIOp2uG1ojUpA==}
+    engines: {node: '>= 0.8'}
+
+  react-dom@19.1.0:
+    resolution: {integrity: sha512-Xs1hdnE+DyKgeHJeJznQmYMIBG3TKIHJJT95Q58nHLSrElKlGQqDTR2HQ9fx5CN/Gk6Vh/kupBTDLU11/nDk/g==}
+    peerDependencies:
+      react: ^19.1.0
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
 
   raw-body@2.5.3:
     resolution: {integrity: sha512-s4VSOf6yN0rvbRZGxs8Om5CWj6seneMwK3oDb4lWDH0UPhWcxwOWw5+qk24bxq87szX1ydrwylIOp2uG1ojUpA==}
@@ -3013,6 +3184,7 @@ packages:
     engines: {node: '>=0.4'}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   safe-buffer@5.1.2:
     resolution: {integrity: sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==}
 
@@ -3049,6 +3221,8 @@ packages:
 
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   safe-buffer@5.2.1:
     resolution: {integrity: sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==}
 
@@ -3064,6 +3238,7 @@ packages:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   scheduler@0.27.0:
     resolution: {integrity: sha512-eNv+WrVbKu1f3vbYJT/xtiF5syA5HPIMtf9IgY/nKg0sWqzAUEvqY/xm7OcZc/qafLx/iO9FgOmeSAp4v5ti/Q==}
 =======
@@ -3071,6 +3246,8 @@ packages:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   scheduler@0.26.0:
     resolution: {integrity: sha512-NlHwttCI/l5gCPR3D1nNXtWABUmBwvZpEQiD4IXSbIDq8BzLIK/7Ir5gTFSGZDUu37K5cMNp0hFtzO38sC7gWA==}
 =======
@@ -3114,6 +3291,7 @@ packages:
     engines: {node: '>= 0.8.0'}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   seq-queue@0.0.5:
     resolution: {integrity: sha512-hr3Wtp/GZIc/6DAGPDcV4/9WoZhjrkXsi5B/07QgX8tsdc6ilr7BFM6PM6rbdAX1kFSDYeZGLipIZZKyQP0O5Q==}
 
@@ -3139,10 +3317,16 @@ packages:
 
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+  seq-queue@0.0.5:
+    resolution: {integrity: sha512-hr3Wtp/GZIc/6DAGPDcV4/9WoZhjrkXsi5B/07QgX8tsdc6ilr7BFM6PM6rbdAX1kFSDYeZGLipIZZKyQP0O5Q==}
+
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   serve-static@1.16.3:
     resolution: {integrity: sha512-x0RTqQel6g5SY7Lg6ZreMmsOzncHFU7nhnRWkKgWuMTu5NN0DR5oruckMqRvacAN9d5w6ARnRBXl9xhDCgfMeA==}
     engines: {node: '>= 0.8.0'}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   set-cookie-parser@2.7.2:
     resolution: {integrity: sha512-oeM1lpU/UvhTxw+g3cIfxXHyJRc/uidd3yK1P242gzHds0udQBYzs3y8j4gCCW+ZJ7ad0yctld8RYO+bdurlvw==}
@@ -3180,6 +3364,8 @@ packages:
 
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   set-function-length@1.2.2:
     resolution: {integrity: sha512-pgRc4hJ4/sNjWCSS9AmnS40x3bNMDTknHgL5UaMBTMyJnU90EgWh1Rz+MC9eFu4BuN/UwZjKQuY/1v3rM7HMfg==}
     engines: {node: '>= 0.4'}
@@ -3195,6 +3381,7 @@ packages:
   setprototypeof@1.2.0:
     resolution: {integrity: sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 <<<<<<< HEAD
@@ -3205,6 +3392,9 @@ packages:
 >>>>>>> 79d0d43 (feat: initialize server with Express and MySQL connection)
 
 <<<<<<< HEAD
+=======
+
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   sharp@0.34.5:
     resolution: {integrity: sha512-Ou9I5Ft9WNcCbXrU9cMgPBcCK8LiwLqcbywW3t4oDV37n1pzpuNLsYiAV8eODnjbtQlSDwZ2cUEeQz4E54Hltg==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
@@ -3254,11 +3444,14 @@ packages:
     engines: {node: '>=0.10.0'}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   sqlstring@2.3.3:
     resolution: {integrity: sha512-qC9iz2FlN7DQl3+wjwn3802RTyjCx7sDvfQEXchwa6CWOx07/WVfh91gBmQ9fahw8snwGEWU3xGzOt4tFyHLxg==}
     engines: {node: '>= 0.6'}
@@ -3316,6 +3509,10 @@ packages:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+  statuses@2.0.2:
+    resolution: {integrity: sha512-DvEy55V3DB7uknRo+4iOGT5fP1slR8wQohVdknigZPMpMstaKJQWhwiYBACJE3Ul2pTnATihhBYnRhZQHGBiRw==}
+    engines: {node: '>= 0.8'}
+
   statuses@2.0.2:
     resolution: {integrity: sha512-DvEy55V3DB7uknRo+4iOGT5fP1slR8wQohVdknigZPMpMstaKJQWhwiYBACJE3Ul2pTnATihhBYnRhZQHGBiRw==}
     engines: {node: '>= 0.8'}
@@ -3397,11 +3594,14 @@ packages:
       typescript: '>=4.8.4'
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   ts-node@10.9.2:
     resolution: {integrity: sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==}
     hasBin: true
@@ -3416,6 +3616,7 @@ packages:
       '@swc/wasm':
         optional: true
 
+<<<<<<< HEAD
   tsconfck@3.1.6:
     resolution: {integrity: sha512-ks6Vjr/jEw0P1gmOVwutM3B7fWxoWBL2KRDb1JfqGVawBmO5UsvmWOQFGHBPl5yxYz4eERr19E6L7NMv+Fej4w==}
     engines: {node: ^18 || >=20}
@@ -3449,6 +3650,8 @@ packages:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   tsconfig-paths@3.15.0:
     resolution: {integrity: sha512-2Ac2RgzDe/cn48GvOe3M+o82pEFewD3UPbyoUHHdKasHwJKjds4fLXWf/Ux5kATBKN20oaFGu+jbElp1pos0mg==}
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
@@ -3521,6 +3724,7 @@ packages:
     resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -3537,6 +3741,8 @@ packages:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   undici-types@7.16.0:
     resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
 
@@ -3545,9 +3751,12 @@ packages:
     engines: {node: '>= 0.8'}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   unrs-resolver@1.11.1:
     resolution: {integrity: sha512-bSjt9pjaEBnNiGgc9rUiHGKv5l4/TGzDmYw3RhnkJGtLhbnnA/5qJj7x3dNDCRx/PJxu774LlH8lCOlB4hEfKg==}
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
@@ -3648,6 +3857,17 @@ packages:
         optional: true
       yaml:
         optional: true
+
+  utils-merge@1.0.1:
+    resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
+    engines: {node: '>= 0.4.0'}
+
+  v8-compile-cache-lib@3.0.1:
+    resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}
+
+  vary@1.1.2:
+    resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
+    engines: {node: '>= 0.8'}
 
   which-boxed-primitive@1.1.1:
     resolution: {integrity: sha512-TbX3mj8n0odCBFVlY8AxkqcHASw3L60jIuF8jFP78az3C2YhmGvqbHBpAjTRH2/xqYunrJ9g1jSyjCjpoWzIAA==}
@@ -3916,15 +4136,19 @@ snapshots:
       '@babel/helper-validator-identifier': 7.28.5
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
+<<<<<<< HEAD
   '@esbuild/aix-ppc64@0.27.2':
 <<<<<<< HEAD
 =======
@@ -3940,6 +4164,8 @@ snapshots:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   '@emnapi/core@1.8.1':
     dependencies:
       '@emnapi/wasi-threads': 1.1.0
@@ -4110,16 +4336,20 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.5.5
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   '@jridgewell/trace-mapping@0.3.9':
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
+<<<<<<< HEAD
   '@mjackson/node-fetch-server@0.2.0': {}
 <<<<<<< HEAD
 =======
@@ -4136,6 +4366,8 @@ snapshots:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   '@napi-rs/wasm-runtime@0.2.12':
     dependencies:
       '@emnapi/core': 1.8.1
@@ -4438,7 +4670,10 @@ snapshots:
   '@tsconfig/node16@1.0.4': {}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   '@tybys/wasm-util@0.10.1':
     dependencies:
       tslib: 2.8.1
@@ -4485,6 +4720,15 @@ snapshots:
       '@types/node': 25.0.10
 
   '@types/cors@2.8.19':
+    dependencies:
+      '@types/node': 25.0.10
+
+  '@types/body-parser@1.19.6':
+    dependencies:
+      '@types/connect': 3.4.38
+      '@types/node': 25.0.10
+
+  '@types/connect@3.4.38':
     dependencies:
       '@types/node': 25.0.10
 
@@ -4632,6 +4876,11 @@ snapshots:
       mime-types: 2.1.35
       negotiator: 0.6.3
 
+  accepts@1.3.8:
+    dependencies:
+      mime-types: 2.1.35
+      negotiator: 0.6.3
+
   acorn-jsx@5.3.2(acorn@8.15.0):
     dependencies:
       acorn: 8.15.0
@@ -4656,6 +4905,7 @@ snapshots:
       color-convert: 2.0.1
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   arg@4.1.3: {}
 =======
 <<<<<<< HEAD
@@ -4677,6 +4927,9 @@ snapshots:
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
 
   arg@5.0.2: {}
+=======
+  arg@4.1.3: {}
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
 
   argparse@2.0.1: {}
 
@@ -4746,6 +4999,7 @@ snapshots:
       possible-typed-array-names: 1.1.0
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -4770,6 +5024,10 @@ snapshots:
   aws-ssl-profiles@1.1.2: {}
 
 <<<<<<< HEAD
+=======
+  aws-ssl-profiles@1.1.2: {}
+
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   axe-core@4.11.1: {}
 
   axobject-query@4.1.0: {}
@@ -4801,6 +5059,7 @@ snapshots:
 
   baseline-browser-mapping@2.9.15: {}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 <<<<<<< HEAD
@@ -4839,6 +5098,8 @@ snapshots:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   body-parser@1.20.4:
     dependencies:
       bytes: 3.1.2
@@ -4877,6 +5138,7 @@ snapshots:
       node-releases: 2.0.27
       update-browserslist-db: 1.2.3(browserslist@4.28.1)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 <<<<<<< HEAD
@@ -4923,6 +5185,10 @@ snapshots:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+  bytes@3.1.2: {}
+
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   call-bind-apply-helpers@1.0.2:
     dependencies:
       es-errors: 1.3.0
@@ -4993,6 +5259,7 @@ snapshots:
       yargs: 17.7.2
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   confbox@0.2.2: {}
 
 =======
@@ -5024,6 +5291,8 @@ snapshots:
 
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   content-disposition@0.5.4:
     dependencies:
       safe-buffer: 5.2.1
@@ -5036,6 +5305,7 @@ snapshots:
 
   cookie@0.7.2: {}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   cookie@1.1.1: {}
 
@@ -5082,6 +5352,9 @@ snapshots:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+  create-require@1.1.1: {}
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
 
   cross-spawn@7.0.6:
     dependencies:
@@ -5111,6 +5384,13 @@ snapshots:
 
   debug@2.6.9:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+    dependencies:
+      ms: 2.0.0
+
+  debug@3.2.7:
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
     dependencies:
       ms: 2.0.0
 
@@ -5164,6 +5444,7 @@ snapshots:
       object-keys: 1.1.1
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -5176,6 +5457,15 @@ snapshots:
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
   denque@2.1.0: {}
+=======
+  denque@2.1.0: {}
+
+  depd@2.0.0: {}
+
+  destroy@1.2.0: {}
+
+  detect-libc@2.1.2: {}
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
 
   depd@2.0.0: {}
 
@@ -5198,6 +5488,8 @@ snapshots:
 
   diff@4.0.4: {}
 
+  diff@4.0.4: {}
+
   doctrine@2.1.0:
     dependencies:
       esutils: 2.0.3
@@ -5215,6 +5507,8 @@ snapshots:
   electron-to-chromium@1.5.267: {}
 
   emoji-regex@8.0.0: {}
+
+  encodeurl@2.0.0: {}
 
   encodeurl@2.0.0: {}
 
@@ -5361,6 +5655,111 @@ snapshots:
 
   escape-string-regexp@4.0.0: {}
 
+<<<<<<< HEAD
+=======
+  eslint-config-next@15.5.5(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3):
+    dependencies:
+      '@next/eslint-plugin-next': 15.5.5
+      '@rushstack/eslint-patch': 1.15.0
+      '@typescript-eslint/eslint-plugin': 8.53.1(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
+      '@typescript-eslint/parser': 8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
+      eslint: 9.39.2(jiti@2.6.1)
+      eslint-import-resolver-node: 0.3.9
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1))
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1))
+      eslint-plugin-jsx-a11y: 6.10.2(eslint@9.39.2(jiti@2.6.1))
+      eslint-plugin-react: 7.37.5(eslint@9.39.2(jiti@2.6.1))
+      eslint-plugin-react-hooks: 5.2.0(eslint@9.39.2(jiti@2.6.1))
+    optionalDependencies:
+      typescript: 5.9.3
+    transitivePeerDependencies:
+      - eslint-import-resolver-webpack
+      - eslint-plugin-import-x
+      - supports-color
+
+  eslint-import-resolver-node@0.3.9:
+    dependencies:
+      debug: 3.2.7
+      is-core-module: 2.16.1
+      resolve: 1.22.11
+    transitivePeerDependencies:
+      - supports-color
+
+  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1)):
+    dependencies:
+      '@nolyfill/is-core-module': 1.0.39
+      debug: 4.4.3
+      eslint: 9.39.2(jiti@2.6.1)
+      get-tsconfig: 4.13.0
+      is-bun-module: 2.0.0
+      stable-hash: 0.0.5
+      tinyglobby: 0.2.15
+      unrs-resolver: 1.11.1
+    optionalDependencies:
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1))
+    transitivePeerDependencies:
+      - supports-color
+
+  eslint-module-utils@2.12.1(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1)):
+    dependencies:
+      debug: 3.2.7
+    optionalDependencies:
+      '@typescript-eslint/parser': 8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
+      eslint: 9.39.2(jiti@2.6.1)
+      eslint-import-resolver-node: 0.3.9
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1))
+    transitivePeerDependencies:
+      - supports-color
+
+  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1)):
+    dependencies:
+      '@rtsao/scc': 1.1.0
+      array-includes: 3.1.9
+      array.prototype.findlastindex: 1.2.6
+      array.prototype.flat: 1.3.3
+      array.prototype.flatmap: 1.3.3
+      debug: 3.2.7
+      doctrine: 2.1.0
+      eslint: 9.39.2(jiti@2.6.1)
+      eslint-import-resolver-node: 0.3.9
+      eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1))
+      hasown: 2.0.2
+      is-core-module: 2.16.1
+      is-glob: 4.0.3
+      minimatch: 3.1.2
+      object.fromentries: 2.0.8
+      object.groupby: 1.0.3
+      object.values: 1.2.1
+      semver: 6.3.1
+      string.prototype.trimend: 1.0.9
+      tsconfig-paths: 3.15.0
+    optionalDependencies:
+      '@typescript-eslint/parser': 8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
+    transitivePeerDependencies:
+      - eslint-import-resolver-typescript
+      - eslint-import-resolver-webpack
+      - supports-color
+
+  eslint-plugin-jsx-a11y@6.10.2(eslint@9.39.2(jiti@2.6.1)):
+    dependencies:
+      aria-query: 5.3.2
+      array-includes: 3.1.9
+      array.prototype.flatmap: 1.3.3
+      ast-types-flow: 0.0.8
+      axe-core: 4.11.1
+      axobject-query: 4.1.0
+      damerau-levenshtein: 1.0.8
+      emoji-regex: 9.2.2
+      eslint: 9.39.2(jiti@2.6.1)
+      hasown: 2.0.2
+      jsx-ast-utils: 3.3.5
+      language-tags: 1.0.9
+      minimatch: 3.1.2
+      object.fromentries: 2.0.8
+      safe-regex-test: 1.1.0
+      string.prototype.includes: 2.0.1
+
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   eslint-plugin-next@0.0.0: {}
 
   eslint-plugin-react-compiler@19.1.0-rc.2(eslint@9.39.2(jiti@2.6.1)):
@@ -5493,6 +5892,7 @@ snapshots:
   etag@1.8.1: {}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   exit-hook@2.2.1: {}
 
 =======
@@ -5524,6 +5924,8 @@ snapshots:
 
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   express@4.22.1:
     dependencies:
       accepts: 1.3.8
@@ -5561,6 +5963,7 @@ snapshots:
       - supports-color
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   exsolve@1.0.8: {}
 
 =======
@@ -5592,6 +5995,8 @@ snapshots:
 
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   fast-deep-equal@3.1.3: {}
 
   fast-glob@3.3.1:
@@ -5655,6 +6060,7 @@ snapshots:
   fresh@0.5.2: {}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   fsevents@2.3.3:
     optional: true
 
@@ -5691,6 +6097,8 @@ snapshots:
 
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   function-bind@1.1.2: {}
 
   function.prototype.name@1.1.8:
@@ -5804,6 +6212,7 @@ snapshots:
       safer-buffer: 2.1.2
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -5814,10 +6223,13 @@ snapshots:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   iconv-lite@0.7.2:
     dependencies:
       safer-buffer: 2.1.2
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 <<<<<<< HEAD
@@ -5830,6 +6242,8 @@ snapshots:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   ignore@5.3.2: {}
 
   ignore@7.0.5: {}
@@ -6070,6 +6484,7 @@ snapshots:
   lodash.merge@4.6.2: {}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   lodash@4.17.23: {}
 
   long@5.3.2: {}
@@ -6099,6 +6514,9 @@ snapshots:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+  long@5.3.2: {}
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
 
   loose-envify@1.4.0:
     dependencies:
@@ -6108,6 +6526,7 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   lru.min@1.1.3: {}
 
@@ -6121,6 +6540,10 @@ snapshots:
   lru.min@1.1.3: {}
 
 <<<<<<< HEAD
+=======
+  lru.min@1.1.3: {}
+
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   lucide-react@0.545.0(react@19.1.0):
     dependencies:
       react: 19.1.0
@@ -6165,6 +6588,7 @@ snapshots:
   mime-db@1.52.0: {}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   mime-db@1.54.0: {}
 
 =======
@@ -6196,6 +6620,8 @@ snapshots:
 
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   mime-types@2.1.35:
     dependencies:
       mime-db: 1.52.0
@@ -6222,6 +6648,8 @@ snapshots:
 
   ms@2.0.0: {}
 
+  ms@2.0.0: {}
+
   ms@2.1.3: {}
 
   mysql2@3.16.1:
@@ -6235,6 +6663,15 @@ snapshots:
       named-placeholders: 1.1.6
       seq-queue: 0.0.5
       sqlstring: 2.3.3
+<<<<<<< HEAD
+=======
+
+  named-placeholders@1.1.6:
+    dependencies:
+      lru.min: 1.1.3
+
+  nanoid@3.3.11: {}
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
 
   named-placeholders@1.1.6:
     dependencies:
@@ -6246,6 +6683,7 @@ snapshots:
 
   negotiator@0.6.3: {}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 <<<<<<< HEAD
@@ -6256,6 +6694,9 @@ snapshots:
 >>>>>>> 79d0d43 (feat: initialize server with Express and MySQL connection)
 
 <<<<<<< HEAD
+=======
+
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   next-themes@0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
       react: 19.1.0
@@ -6314,6 +6755,7 @@ snapshots:
       es-object-atoms: 1.1.1
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -6351,10 +6793,13 @@ snapshots:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   on-finished@2.4.1:
     dependencies:
       ee-first: 1.1.1
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   on-headers@1.1.0: {}
 
@@ -6387,6 +6832,8 @@ snapshots:
 
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   optionator@0.9.4:
     dependencies:
       deep-is: 0.1.4
@@ -6427,6 +6874,7 @@ snapshots:
   path-to-regexp@0.1.12: {}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -6464,6 +6912,8 @@ snapshots:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   picocolors@1.1.1: {}
 
   picomatch@2.3.1: {}
@@ -6509,6 +6959,7 @@ snapshots:
 
   range-parser@1.2.1: {}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -6521,6 +6972,17 @@ snapshots:
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
 
   raw-body@2.5.3:
+=======
+
+  raw-body@2.5.3:
+    dependencies:
+      bytes: 3.1.2
+      http-errors: 2.0.1
+      iconv-lite: 0.4.24
+      unpipe: 1.0.0
+
+  react-dom@19.1.0(react@19.1.0):
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
     dependencies:
       bytes: 3.1.2
       http-errors: 2.0.1
@@ -6655,6 +7117,7 @@ snapshots:
       isarray: 2.0.5
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   safe-buffer@5.1.2: {}
 
 =======
@@ -6686,6 +7149,8 @@ snapshots:
 
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   safe-buffer@5.2.1: {}
 
   safe-push-apply@1.0.0:
@@ -6702,12 +7167,15 @@ snapshots:
   safer-buffer@2.1.2: {}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   scheduler@0.27.0: {}
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   scheduler@0.26.0: {}
 =======
   scheduler@0.27.0: {}
@@ -6754,6 +7222,7 @@ snapshots:
       - supports-color
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   seq-queue@0.0.5: {}
 
 =======
@@ -6775,6 +7244,10 @@ snapshots:
 
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+  seq-queue@0.0.5: {}
+
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   serve-static@1.16.3:
     dependencies:
       encodeurl: 2.0.0
@@ -6784,6 +7257,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   set-cookie-parser@2.7.2: {}
 
@@ -6816,6 +7290,8 @@ snapshots:
 
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   set-function-length@1.2.2:
     dependencies:
       define-data-property: 1.1.4
@@ -6840,6 +7316,7 @@ snapshots:
 
   setprototypeof@1.2.0: {}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 <<<<<<< HEAD
@@ -6850,6 +7327,9 @@ snapshots:
 >>>>>>> 79d0d43 (feat: initialize server with Express and MySQL connection)
 
 <<<<<<< HEAD
+=======
+
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   sharp@0.34.5:
     dependencies:
       '@img/colour': 1.0.0
@@ -6933,11 +7413,14 @@ snapshots:
   source-map-js@1.2.1: {}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   sqlstring@2.3.3: {}
 
   stable-hash@0.0.5: {}
@@ -6990,6 +7473,8 @@ snapshots:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+
+  statuses@2.0.2: {}
 
   statuses@2.0.2: {}
 
@@ -7086,11 +7571,14 @@ snapshots:
       typescript: 5.9.3
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   ts-node@10.9.2(@types/node@25.0.10)(typescript@5.9.3):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
@@ -7109,6 +7597,7 @@ snapshots:
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
 
+<<<<<<< HEAD
   tsconfck@3.1.6(typescript@5.9.3):
     optionalDependencies:
       typescript: 5.9.3
@@ -7142,6 +7631,8 @@ snapshots:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   tsconfig-paths@3.15.0:
     dependencies:
       '@types/json5': 0.0.29
@@ -7232,6 +7723,7 @@ snapshots:
   undici-types@6.21.0: {}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -7245,14 +7737,19 @@ snapshots:
 =======
 >>>>>>> eaf3807 (build: recreate root pnpm-lock file)
 >>>>>>> 15b9cde (build: recreate root pnpm-lock file)
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   undici-types@7.16.0: {}
 
   unpipe@1.0.0: {}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
+=======
+>>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
   unrs-resolver@1.11.1:
     dependencies:
       napi-postinstall: 0.3.4
@@ -7378,6 +7875,12 @@ snapshots:
       fsevents: 2.3.3
       jiti: 2.6.1
       lightningcss: 1.30.2
+
+  utils-merge@1.0.1: {}
+
+  v8-compile-cache-lib@3.0.1: {}
+
+  vary@1.1.2: {}
 
   which-boxed-primitive@1.1.1:
     dependencies:
