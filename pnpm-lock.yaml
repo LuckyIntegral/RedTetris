@@ -66,9 +66,12 @@ importers:
       isbot:
         specifier: ^5.1.31
         version: 5.1.33
+<<<<<<< HEAD
       prettier:
         specifier: ^3.8.1
         version: 3.8.1
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
       react:
         specifier: ^19.2.3
         version: 19.2.3
@@ -287,9 +290,17 @@ packages:
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
 
+<<<<<<< HEAD
   '@emnapi/core@1.8.1':
     resolution: {integrity: sha512-AvT9QFpxK0Zd8J0jopedNm+w/2fIzvtPKPjqyw9jwvBaReTTqPBk9Hixaz7KbjimP+QNz605/XnjFcDAL2pqBg==}
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+  '@esbuild/aix-ppc64@0.27.2':
+    resolution: {integrity: sha512-GZMB+a0mOMZs4MpDbj8RJp4cw+w1WV5NYD6xzgvzUJ5Ek2jerwfO2eADyI6ExDSUED+1X8aMbegahsJi+8mgpw==}
+    engines: {node: '>=18'}
+    cpu: [ppc64]
+    os: [aix]
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
 
   '@esbuild/android-arm64@0.27.2':
     resolution: {integrity: sha512-pvz8ZZ7ot/RBphf8fv60ljmaoydPU12VuXHImtAs0XhLLw+EXBi2BLe3OYSBslR4rryHvweW5gmkKFwTiFy6KA==}
@@ -518,6 +529,7 @@ packages:
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
 
+<<<<<<< HEAD
   '@napi-rs/wasm-runtime@0.2.12':
     resolution: {integrity: sha512-ZVWUcfwY4E/yPitQJl481FjFo3K22D6qF0DuFH6Y/nbnE11GY5uguDxZMGXPQ8WQ0128MXQD7TnfHyK4oWoIJQ==}
 
@@ -527,6 +539,10 @@ packages:
   '@next/eslint-plugin-next@15.5.5':
     resolution: {integrity: sha512-FMzm412l9oFB8zdRD+K6HQ1VzlS+sNNsdg0MfvTg0i8lfCyTgP/RFxiu/pGJqZ/IQnzn9xSiLkjOVI7Iv4nbdQ==}
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+  '@mjackson/node-fetch-server@0.2.0':
+    resolution: {integrity: sha512-EMlH1e30yzmTpGLQjlFmaDAjyOeZhng1/XCd7DExR8PNAnG/G1tyruZxEoUe11ClnwGhGrtsdnyyUx1frSzjng==}
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
 
   '@next/eslint-plugin-next@15.5.9':
     resolution: {integrity: sha512-kUzXx0iFiXw27cQAViE1yKWnz/nF8JzRmwgMRTMh8qMY90crNsdXJRh2e+R0vBpFR3kk1yvAR7wev7+fCCb79Q==}
@@ -818,6 +834,7 @@ packages:
     resolution: {integrity: sha512-jVA+/UpKL1vRLg6Hkao5jldawNmRo7mQYrZtNHMIVpLfLhDml5nMRUo/8MwoX2vNXvnaXNNMedrMfMugAVX1nA==}
     peerDependencies:
 <<<<<<< HEAD
+<<<<<<< HEAD
       vite: ^5.2.0 || ^6 || ^7
 =======
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -828,6 +845,9 @@ packages:
         optional: true
       react-native:
         optional: true
+=======
+      vite: ^5.2.0 || ^6 || ^7
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
 
   '@tsconfig/node10@1.0.12':
     resolution: {integrity: sha512-UCYBaeFvM11aU2y3YPZ//O5Rhj+xKyzy7mvcIoAjASbigy8mHMryP5cK7dgjlz2hWxh1g5pLw084E0a/wlUSFQ==}
@@ -841,10 +861,13 @@ packages:
   '@tsconfig/node16@1.0.4':
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
 
+<<<<<<< HEAD
   '@tybys/wasm-util@0.10.1':
     resolution: {integrity: sha512-9tTaPJLSiejZKx+Bmog4uSubteqTvFrVrURwkmHixBo0G4seD0zUxp98E1DzUBJxLQ3NPwXrGKDiVjwx/DpPsg==}
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
 
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   '@types/body-parser@1.19.6':
     resolution: {integrity: sha512-HLFeCYgz89uk22N5Qg3dvGvsv46B8GLvKKo1zKG4NybA8U2DiEO3w9lqGg29t/tfLRJpJ6iQxnVw4OnB7MoM9g==}
 
@@ -954,10 +977,13 @@ packages:
     resolution: {integrity: sha512-oy+wV7xDKFPRyNggmXuZQSBzvoLnpmJs+GhzRhPjrxl2b/jIlyjVokzm47CZCDUdXKr2zd7ZLodPfOBpOPyPlg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
+<<<<<<< HEAD
   accepts@1.3.8:
     resolution: {integrity: sha512-PYAthTa2m2VKxuvSD3DPC/Gy+U+sOA1LAuT8mkmRuvw+NACSaeXEQ+NHcVF7rONl6qcaxV3Uuemwawk+7+SJLw==}
     engines: {node: '>= 0.6'}
 
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   accepts@1.3.8:
     resolution: {integrity: sha512-PYAthTa2m2VKxuvSD3DPC/Gy+U+sOA1LAuT8mkmRuvw+NACSaeXEQ+NHcVF7rONl6qcaxV3Uuemwawk+7+SJLw==}
     engines: {node: '>= 0.6'}
@@ -994,6 +1020,9 @@ packages:
   arg@4.1.3:
     resolution: {integrity: sha512-58S9QDqG0Xx27YwPSt9fJxivjYl432YCwfDMfZ+71RAqUrZef7LrKQZ3LHLOwCS4FLNBplP533Zx895SeOCHvA==}
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+
+  arg@5.0.2:
+    resolution: {integrity: sha512-PYjyFOLKQ9y57JvQ6QLo8dAgNqswh8M1RMJYdQduT6xbWSgK36P/Z/v+p888pM69jMMfS8Xd8F6I1kQ/I9HUGg==}
 
   argparse@2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
@@ -1045,6 +1074,7 @@ packages:
     resolution: {integrity: sha512-NZKeq9AfyQvEeNlN0zSYAaWrmBffJh3IELMZfRpJVWgrpEbtEpnjvzqBPf+mxoI287JohRDoa+/nsfqqiZmF6g==}
     engines: {node: '>= 6.0.0'}
 
+<<<<<<< HEAD
   axe-core@4.11.1:
     resolution: {integrity: sha512-BASOg+YwO2C+346x3LZOeoovTIoTrRqEsqMa6fmfAV0P+U9mFr9NsyOEpiYvFjbc64NMrSswhV50WdXzdb/Z5A==}
     engines: {node: '>=4'}
@@ -1053,6 +1083,10 @@ packages:
     resolution: {integrity: sha512-qIj0G9wZbMGNLjLmg1PT6v2mE9AH2zlnADJD/2tC6E00hgmhUOfEB6greHPAfLRSufHqROIUTkw6E+M3lH0PTQ==}
     engines: {node: '>= 0.4'}
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+  babel-dead-code-elimination@1.0.12:
+    resolution: {integrity: sha512-GERT7L2TiYcYDtYk1IpD+ASAYXjKbLTDPhBtYj7X1NuRMDTMtAx9kyBenub1Ev41lo91OHCKdmP+egTDmfQ7Ig==}
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
 
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
@@ -1062,12 +1096,18 @@ packages:
     hasBin: true
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   basic-auth@2.0.1:
     resolution: {integrity: sha512-NF+epuEdnUYVlGuhaxbbq+dvJttwLnGY+YixlXlME5KpQ5W3CnXA5cVTneY3SPbPDRkcjMbifrwmFYcClgOZeg==}
     engines: {node: '>= 0.8'}
 
+<<<<<<< HEAD
 =======
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   body-parser@1.20.4:
     resolution: {integrity: sha512-ZTgYYLMOXY9qKU/57FAo8F+HA2dGX7bqGc71txDRC1rS4frdFI5R7NhluHxH6M0YItAP0sHB4uqAOcYKxO6uGA==}
     engines: {node: '>= 0.8', npm: 1.2.8000 || >= 1.4.16}
@@ -1088,22 +1128,34 @@ packages:
     hasBin: true
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
 
 =======
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+  buffer-from@1.1.2:
+    resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
+
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   bytes@3.1.2:
     resolution: {integrity: sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==}
     engines: {node: '>= 0.8'}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   cac@6.7.14:
     resolution: {integrity: sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==}
     engines: {node: '>=8'}
 
+<<<<<<< HEAD
 =======
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   call-bind-apply-helpers@1.0.2:
     resolution: {integrity: sha512-Sp1ablJ0ivDkSzjcaJdxEunN5/XvksFJ2sMBFfq6x0ryhQV/2b/KwFe21cMpmHtPOSij8K99/wSfoEuTObmuMQ==}
     engines: {node: '>= 0.4'}
@@ -1159,11 +1211,17 @@ packages:
     hasBin: true
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   confbox@0.2.2:
     resolution: {integrity: sha512-1NB+BKqhtNipMsov4xI/NnhCKp9XG9NamYp5PVm9klAT0fsrNPjaFICsCFhNhwZJKNh7zB/3q8qXz0E9oaMNtQ==}
 
 =======
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+  confbox@0.2.2:
+    resolution: {integrity: sha512-1NB+BKqhtNipMsov4xI/NnhCKp9XG9NamYp5PVm9klAT0fsrNPjaFICsCFhNhwZJKNh7zB/3q8qXz0E9oaMNtQ==}
+
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   content-disposition@0.5.4:
     resolution: {integrity: sha512-FveZTNuGw04cxlAiWbzi6zTAL/lhehaWbTtgluJh4/E95DqMwTmha3KZN1aAWA8cFIhHzMZUvLevkw5Rqk+tSQ==}
     engines: {node: '>= 0.6'}
@@ -1184,11 +1242,18 @@ packages:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   cookie@1.1.1:
     resolution: {integrity: sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ==}
     engines: {node: '>=18'}
 =======
 =======
+=======
+  cookie@1.1.1:
+    resolution: {integrity: sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ==}
+    engines: {node: '>=18'}
+
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   cors@2.8.6:
     resolution: {integrity: sha512-tJtZBBHA6vjIAaF6EnIaq6laBBP9aq/Y3ouVJjEfoHbRBcHBAHYcMh/w8LDrk2PvIMMq8gmopa5D4V8RmbrxGw==}
     engines: {node: '>= 0.10'}
@@ -1227,6 +1292,7 @@ packages:
       supports-color:
         optional: true
 
+<<<<<<< HEAD
   debug@3.2.7:
     resolution: {integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==}
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
@@ -1236,6 +1302,8 @@ packages:
       supports-color:
         optional: true
 
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   debug@4.4.3:
     resolution: {integrity: sha512-RGwwWnwQvkVfavKVt22FGLw+xYSdzARwm0ru6DhTVA3umU5hZc28V3kO4stgYryrTlLpuvgI9GiijltAjNbcqA==}
     engines: {node: '>=6.0'}
@@ -1284,10 +1352,13 @@ packages:
     engines: {node: '>=8'}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   detect-node-es@1.1.0:
     resolution: {integrity: sha512-ypdmJU/TbBby2Dxibuv7ZLW3Bs1QEmM7nHjEANfohJLvE0XVujisn1qPJcZxg+qDucsr+bP6fLD1rPS3AhJ7EQ==}
 
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   diff@4.0.4:
     resolution: {integrity: sha512-X07nttJQkwkfKfvTPG/KSnE2OMdcUCao6+eXF3wmnIQRn2aPAHH3VxDbDOdegkd6JbPsXqShpvEOHfAT+nCNwQ==}
     engines: {node: '>=0.3.1'}
@@ -1314,10 +1385,13 @@ packages:
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
 
+<<<<<<< HEAD
   encodeurl@2.0.0:
     resolution: {integrity: sha512-Q0n9HRi4m6JuGIV1eFlmvJB7ZEVxu93IrMyiMsGC0lrMJMWzRgx6WGquyfQgZVb31vhGgXnfmPNNXmxnOkRBrg==}
     engines: {node: '>= 0.8'}
 
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   encodeurl@2.0.0:
     resolution: {integrity: sha512-Q0n9HRi4m6JuGIV1eFlmvJB7ZEVxu93IrMyiMsGC0lrMJMWzRgx6WGquyfQgZVb31vhGgXnfmPNNXmxnOkRBrg==}
     engines: {node: '>= 0.8'}
@@ -1462,22 +1536,34 @@ packages:
     engines: {node: '>= 0.6'}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   exit-hook@2.2.1:
     resolution: {integrity: sha512-eNTPlAD67BmP31LDINZ3U7HSF8l57TxOY2PmBJ1shpCvpnxBF93mWCE8YHBnXs8qiUZJc9WDcWIeC3a2HIAMfw==}
     engines: {node: '>=6'}
 
+<<<<<<< HEAD
 =======
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   express@4.22.1:
     resolution: {integrity: sha512-F2X8g9P1X7uCPZMA3MVf9wcTqlyNp7IhH5qPCI0izhaOIYXaW9L535tGA3qmjRzpH+bZczqq7hVKxTR4NWnu+g==}
     engines: {node: '>= 0.10.0'}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   exsolve@1.0.8:
     resolution: {integrity: sha512-LmDxfWXwcTArk8fUEnOfSZpHOJ6zOMUJKOtFLFqJLoKJetuQG874Uc7/Kki7zFLzYybmZhp1M7+98pfMqeX8yA==}
 
 =======
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+  exsolve@1.0.8:
+    resolution: {integrity: sha512-LmDxfWXwcTArk8fUEnOfSZpHOJ6zOMUJKOtFLFqJLoKJetuQG874Uc7/Kki7zFLzYybmZhp1M7+98pfMqeX8yA==}
+
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
 
@@ -1539,13 +1625,19 @@ packages:
     engines: {node: '>= 0.6'}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   fsevents@2.3.3:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
 
+<<<<<<< HEAD
 =======
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
 
@@ -1937,9 +2029,15 @@ packages:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   lodash@4.17.23:
     resolution: {integrity: sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w==}
 =======
+=======
+  lodash@4.17.23:
+    resolution: {integrity: sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w==}
+
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   long@5.3.2:
     resolution: {integrity: sha512-mNAgZ1GmyNhD7AuqnTG3/VQ26o760+ZYBPKjPvugO8+nLbYfX6TVpJPseBvopbdY+qpZ/lKUnmEc1LeZYS3QAA==}
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
@@ -1957,12 +2055,15 @@ packages:
     resolution: {integrity: sha512-Lkk/vx6ak3rYkRR0Nhu4lFUT2VDnQSxBe8Hbl7f36358p6ow8Bnvr8lrLt98H8J1aGxfhbX4Fs5tYg2+FTwr5Q==}
     engines: {bun: '>=1.0.0', deno: '>=1.30.0', node: '>=8.0.0'}
 
+<<<<<<< HEAD
   lucide-react@0.545.0:
     resolution: {integrity: sha512-7r1/yUuflQDSt4f1bpn5ZAocyIxcTyVyBBChSVtBKn5M+392cPmI5YJMWOJKk/HUWGm5wg83chlAZtCcGbEZtw==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
 
@@ -1997,12 +2098,18 @@ packages:
     engines: {node: '>= 0.6'}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   mime-db@1.54.0:
     resolution: {integrity: sha512-aU5EJuIN2WDemCcAp2vFBfp/m4EAhWJnUNSSw0ixs7/kXbd6Pg64EmwJkNdFhB8aWt1sH2CTXrLxo/iAGV3oPQ==}
     engines: {node: '>= 0.6'}
 
+<<<<<<< HEAD
 =======
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   mime-types@2.1.35:
     resolution: {integrity: sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==}
     engines: {node: '>= 0.6'}
@@ -2022,9 +2129,12 @@ packages:
   morgan@1.10.1:
     resolution: {integrity: sha512-223dMRJtI/l25dJKWpgij2cMtywuG/WiUKXdvwfbhGKBhy1puASqXwFzmWZ7+K73vUPoR7SS2Qz2cI/g9MKw0A==}
     engines: {node: '>= 0.8.0'}
+<<<<<<< HEAD
 
   ms@2.0.0:
     resolution: {integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==}
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
 
   ms@2.0.0:
     resolution: {integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==}
@@ -2054,6 +2164,7 @@ packages:
 <<<<<<< HEAD
 =======
 
+<<<<<<< HEAD
   next-themes@0.4.6:
     resolution: {integrity: sha512-pZvgD5L0IEvX5/9GWyHMf3m8BKiVQwsCMHfoFosXtXBMnaS0ZnIJ9ST4b4NqLVKDEm8QBxoNNGNaBv2JNF6XNA==}
     peerDependencies:
@@ -2061,6 +2172,8 @@ packages:
       react-dom: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
 
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   negotiator@0.6.4:
     resolution: {integrity: sha512-myRT3DiWPHqho5PrJaIRyaMv2kgYf0mUVgBNOYMuCH5Ki1yEiQaf/ZJuQ62nvpc44wL5WDbTX7yGJi1Neevw8w==}
     engines: {node: '>= 0.6'}
@@ -2097,23 +2210,35 @@ packages:
     engines: {node: '>= 0.4'}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   on-finished@2.3.0:
     resolution: {integrity: sha512-ikqdkGAAyf/X/gPhXGvfgAytDZtDbr+bkNUJ0N9h5MI/dmdgCs3l6hoHrcUv41sRKew3jIwrp4qQDXiK99Utww==}
     engines: {node: '>= 0.8'}
 
+<<<<<<< HEAD
 =======
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   on-finished@2.4.1:
     resolution: {integrity: sha512-oVlzkg3ENAhCk2zdv7IJwd/QUD4z2RxRwpkcGY8psCVcCYZNq4wYnVWALHM+brtuJjePWiYF/ClmuDr8Ch5+kg==}
     engines: {node: '>= 0.8'}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   on-headers@1.1.0:
     resolution: {integrity: sha512-737ZY3yNnXy37FHkQxPzt4UZ2UWPWiCZWLvFZ4fu5cueciegX0zGPnrlY6bwRg4FdQOe9YU8MkmJwGhoMybl8A==}
     engines: {node: '>= 0.8'}
 
+<<<<<<< HEAD
 =======
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   optionator@0.9.4:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
     engines: {node: '>= 0.8.0'}
@@ -2157,14 +2282,20 @@ packages:
     resolution: {integrity: sha512-RA1GjUVMnvYFxuqovrEqZoxxW5NUZqbwKtYz/Tt7nXerk0LbLblQmrsgdeOxV5SFHf0UDggjS/bSeOZwt1pmEQ==}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   pathe@1.1.2:
     resolution: {integrity: sha512-whLdWMYL2TwI08hn8/ZqAbrVemu0LNaNNJZX73O6qaIdCTfXutsLhMkjdENX0qhsQ9uIimo4/aQOmXkoon2nDQ==}
 
   pathe@2.0.3:
     resolution: {integrity: sha512-WUjGcAqP1gQacoQe+OBJsFA7Ld4DyXuUIjZ5cc75cLHvJ7dtNsTugphxIADwspS+AraAUePCKrSVtPLFj/F88w==}
 
+<<<<<<< HEAD
 =======
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
 
@@ -2224,9 +2355,10 @@ packages:
     resolution: {integrity: sha512-s4VSOf6yN0rvbRZGxs8Om5CWj6seneMwK3oDb4lWDH0UPhWcxwOWw5+qk24bxq87szX1ydrwylIOp2uG1ojUpA==}
     engines: {node: '>= 0.8'}
 
-  react-dom@19.1.0:
-    resolution: {integrity: sha512-Xs1hdnE+DyKgeHJeJznQmYMIBG3TKIHJJT95Q58nHLSrElKlGQqDTR2HQ9fx5CN/Gk6Vh/kupBTDLU11/nDk/g==}
+  react-dom@19.2.3:
+    resolution: {integrity: sha512-yELu4WmLPw5Mr/lmeEpox5rw3RETacE++JgHqQzd2dg+YbJuat3jH4ingc+WPZhxaoFzdv9y33G+F7Nl5O0GBg==}
     peerDependencies:
+<<<<<<< HEAD
       react: ^19.1.0
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
 
@@ -2237,6 +2369,8 @@ packages:
   react-dom@19.2.3:
     resolution: {integrity: sha512-yELu4WmLPw5Mr/lmeEpox5rw3RETacE++JgHqQzd2dg+YbJuat3jH4ingc+WPZhxaoFzdv9y33G+F7Nl5O0GBg==}
     peerDependencies:
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
       react: ^19.2.3
 
   react-is@16.13.1:
@@ -2304,11 +2438,17 @@ packages:
     engines: {node: '>=0.4'}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   safe-buffer@5.1.2:
     resolution: {integrity: sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==}
 
 =======
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+  safe-buffer@5.1.2:
+    resolution: {integrity: sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==}
+
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   safe-buffer@5.2.1:
     resolution: {integrity: sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==}
 
@@ -2324,12 +2464,17 @@ packages:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   scheduler@0.27.0:
     resolution: {integrity: sha512-eNv+WrVbKu1f3vbYJT/xtiF5syA5HPIMtf9IgY/nKg0sWqzAUEvqY/xm7OcZc/qafLx/iO9FgOmeSAp4v5ti/Q==}
 =======
   scheduler@0.26.0:
     resolution: {integrity: sha512-NlHwttCI/l5gCPR3D1nNXtWABUmBwvZpEQiD4IXSbIDq8BzLIK/7Ir5gTFSGZDUu37K5cMNp0hFtzO38sC7gWA==}
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+  scheduler@0.27.0:
+    resolution: {integrity: sha512-eNv+WrVbKu1f3vbYJT/xtiF5syA5HPIMtf9IgY/nKg0sWqzAUEvqY/xm7OcZc/qafLx/iO9FgOmeSAp4v5ti/Q==}
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
 
   semver@6.3.1:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
@@ -2355,11 +2500,17 @@ packages:
     engines: {node: '>= 0.8.0'}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   set-cookie-parser@2.7.2:
     resolution: {integrity: sha512-oeM1lpU/UvhTxw+g3cIfxXHyJRc/uidd3yK1P242gzHds0udQBYzs3y8j4gCCW+ZJ7ad0yctld8RYO+bdurlvw==}
 
 =======
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+  set-cookie-parser@2.7.2:
+    resolution: {integrity: sha512-oeM1lpU/UvhTxw+g3cIfxXHyJRc/uidd3yK1P242gzHds0udQBYzs3y8j4gCCW+ZJ7ad0yctld8RYO+bdurlvw==}
+
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   set-function-length@1.2.2:
     resolution: {integrity: sha512-pgRc4hJ4/sNjWCSS9AmnS40x3bNMDTknHgL5UaMBTMyJnU90EgWh1Rz+MC9eFu4BuN/UwZjKQuY/1v3rM7HMfg==}
     engines: {node: '>= 0.4'}
@@ -2377,11 +2528,14 @@ packages:
 <<<<<<< HEAD
 =======
 
+<<<<<<< HEAD
   sharp@0.34.5:
     resolution: {integrity: sha512-Ou9I5Ft9WNcCbXrU9cMgPBcCK8LiwLqcbywW3t4oDV37n1pzpuNLsYiAV8eODnjbtQlSDwZ2cUEeQz4E54Hltg==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
 
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   shebang-command@2.0.0:
     resolution: {integrity: sha512-kHxr2zZpYtdmrN1qDjrrX/Z1rR1kG8Dx+gkpK1G4eXmvXswmcE1hTWBWYUzlraYw1/yZp6YuDY77YtvbN0dmDA==}
     engines: {node: '>=8'}
@@ -2415,6 +2569,9 @@ packages:
     engines: {node: '>=0.10.0'}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   source-map-support@0.5.21:
     resolution: {integrity: sha512-uBHU3L3czsIyYXKX88fdrGovxdSCoTGDRZ6SYXtSRxLZUzHg5P/66Ht6uoUlHu9EZod+inXhKo3qQgwXUT/y1w==}
 
@@ -2422,18 +2579,24 @@ packages:
     resolution: {integrity: sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==}
     engines: {node: '>=0.10.0'}
 
+<<<<<<< HEAD
   statuses@2.0.2:
     resolution: {integrity: sha512-DvEy55V3DB7uknRo+4iOGT5fP1slR8wQohVdknigZPMpMstaKJQWhwiYBACJE3Ul2pTnATihhBYnRhZQHGBiRw==}
     engines: {node: '>= 0.8'}
 =======
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   sqlstring@2.3.3:
     resolution: {integrity: sha512-qC9iz2FlN7DQl3+wjwn3802RTyjCx7sDvfQEXchwa6CWOx07/WVfh91gBmQ9fahw8snwGEWU3xGzOt4tFyHLxg==}
     engines: {node: '>= 0.6'}
 
+<<<<<<< HEAD
   stable-hash@0.0.5:
     resolution: {integrity: sha512-+L3ccpzibovGXFK+Ap/f8LOS0ahMrHTf3xu7mMLSpEGU0EO9ucaysSylKo9eRDFNhWve/y275iPmIZ4z39a9iA==}
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
 
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   statuses@2.0.2:
     resolution: {integrity: sha512-DvEy55V3DB7uknRo+4iOGT5fP1slR8wQohVdknigZPMpMstaKJQWhwiYBACJE3Ul2pTnATihhBYnRhZQHGBiRw==}
     engines: {node: '>= 0.8'}
@@ -2539,9 +2702,21 @@ packages:
       '@swc/wasm':
         optional: true
 
+<<<<<<< HEAD
   tsconfig-paths@3.15.0:
     resolution: {integrity: sha512-2Ac2RgzDe/cn48GvOe3M+o82pEFewD3UPbyoUHHdKasHwJKjds4fLXWf/Ux5kATBKN20oaFGu+jbElp1pos0mg==}
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+  tsconfck@3.1.6:
+    resolution: {integrity: sha512-ks6Vjr/jEw0P1gmOVwutM3B7fWxoWBL2KRDb1JfqGVawBmO5UsvmWOQFGHBPl5yxYz4eERr19E6L7NMv+Fej4w==}
+    engines: {node: ^18 || >=20}
+    hasBin: true
+    peerDependencies:
+      typescript: ^5.0.0
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
 
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
@@ -2601,10 +2776,13 @@ packages:
     resolution: {integrity: sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==}
     engines: {node: '>= 0.8'}
 
+<<<<<<< HEAD
   unrs-resolver@1.11.1:
     resolution: {integrity: sha512-bSjt9pjaEBnNiGgc9rUiHGKv5l4/TGzDmYw3RhnkJGtLhbnnA/5qJj7x3dNDCRx/PJxu774LlH8lCOlB4hEfKg==}
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
 
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   update-browserslist-db@1.2.3:
     resolution: {integrity: sha512-Js0m9cx+qOgDxo0eMiFGEueWztz+d4+M3rGlmKPT+T4IS/jP4ylw3Nwpu6cpTTP8R1MAC1kF4VbdLt3ARf209w==}
     hasBin: true
@@ -2614,6 +2792,7 @@ packages:
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
 
+<<<<<<< HEAD
   utils-merge@1.0.1:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
@@ -2683,6 +2862,8 @@ packages:
       yaml:
         optional: true
 
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   utils-merge@1.0.1:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
@@ -2690,9 +2871,70 @@ packages:
   v8-compile-cache-lib@3.0.1:
     resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}
 
+  valibot@1.2.0:
+    resolution: {integrity: sha512-mm1rxUsmOxzrwnX5arGS+U4T25RdvpPjPN4yR0u9pUBov9+zGVtO84tif1eY4r6zWxVxu3KzIyknJy3rxfRZZg==}
+    peerDependencies:
+      typescript: '>=5'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   vary@1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
+
+  vite-node@3.2.4:
+    resolution: {integrity: sha512-EbKSKh+bh1E1IFxeO0pg1n4dvoOTt0UDiXMd/qn++r98+jPO1xtJilvXldeuQ8giIB5IkpjCgMleHMNEsGH6pg==}
+    engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
+    hasBin: true
+
+  vite-tsconfig-paths@5.1.4:
+    resolution: {integrity: sha512-cYj0LRuLV2c2sMqhqhGpaO3LretdtMn/BVX4cPLanIZuwwrkVl+lK84E/miEXkCHWXuq65rhNN4rXsBcOB3S4w==}
+    peerDependencies:
+      vite: '*'
+    peerDependenciesMeta:
+      vite:
+        optional: true
+
+  vite@7.3.1:
+    resolution: {integrity: sha512-w+N7Hifpc3gRjZ63vYBXA56dvvRlNWRczTdmCBBa+CotUzAPf5b7YMdMR/8CQoeYE5LX3W4wj6RYTgonm1b9DA==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': ^20.19.0 || >=22.12.0
+      jiti: '>=1.21.0'
+      less: ^4.0.0
+      lightningcss: ^1.21.0
+      sass: ^1.70.0
+      sass-embedded: ^1.70.0
+      stylus: '>=0.54.8'
+      sugarss: ^5.0.0
+      terser: ^5.16.0
+      tsx: ^4.8.1
+      yaml: ^2.4.2
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      jiti:
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      sass-embedded:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+      tsx:
+        optional: true
+      yaml:
+        optional: true
 
   which-boxed-primitive@1.1.1:
     resolution: {integrity: sha512-TbX3mj8n0odCBFVlY8AxkqcHASw3L60jIuF8jFP78az3C2YhmGvqbHBpAjTRH2/xqYunrJ9g1jSyjCjpoWzIAA==}
@@ -2967,11 +3209,15 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
+<<<<<<< HEAD
   '@emnapi/core@1.8.1':
     dependencies:
       '@emnapi/wasi-threads': 1.1.0
       tslib: 2.8.1
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+  '@esbuild/aix-ppc64@0.27.2':
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
     optional: true
 
   '@esbuild/android-arm64@0.27.2':
@@ -3133,6 +3379,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
+<<<<<<< HEAD
   '@napi-rs/wasm-runtime@0.2.12':
     dependencies:
       '@emnapi/core': 1.8.1
@@ -3146,6 +3393,9 @@ snapshots:
     dependencies:
       fast-glob: 3.3.1
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+  '@mjackson/node-fetch-server@0.2.0': {}
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
 
   '@next/eslint-plugin-next@15.5.9':
     dependencies:
@@ -3397,6 +3647,7 @@ snapshots:
       '@tailwindcss/oxide': 4.1.18
       tailwindcss: 4.1.18
 <<<<<<< HEAD
+<<<<<<< HEAD
       vite: 7.3.1(@types/node@22.19.7)(jiti@2.6.1)(lightningcss@1.30.2)
 =======
 
@@ -3409,6 +3660,9 @@ snapshots:
       use-sync-external-store: 1.6.0(react@19.1.0)
     optionalDependencies:
       react-dom: 19.1.0(react@19.1.0)
+=======
+      vite: 7.3.1(@types/node@22.19.7)(jiti@2.6.1)(lightningcss@1.30.2)
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
 
   '@tsconfig/node10@1.0.12': {}
 
@@ -3418,12 +3672,15 @@ snapshots:
 
   '@tsconfig/node16@1.0.4': {}
 
+<<<<<<< HEAD
   '@tybys/wasm-util@0.10.1':
     dependencies:
       tslib: 2.8.1
     optional: true
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
 
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   '@types/body-parser@1.19.6':
     dependencies:
       '@types/connect': 3.4.38
@@ -3576,11 +3833,14 @@ snapshots:
       '@typescript-eslint/types': 8.53.1
       eslint-visitor-keys: 4.2.1
 
+<<<<<<< HEAD
   accepts@1.3.8:
     dependencies:
       mime-types: 2.1.35
       negotiator: 0.6.3
 
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   accepts@1.3.8:
     dependencies:
       mime-types: 2.1.35
@@ -3614,6 +3874,8 @@ snapshots:
 =======
   arg@4.1.3: {}
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+
+  arg@5.0.2: {}
 
   argparse@2.0.1: {}
 
@@ -3694,22 +3956,39 @@ snapshots:
 =======
   aws-ssl-profiles@1.1.2: {}
 
+<<<<<<< HEAD
   axe-core@4.11.1: {}
 
   axobject-query@4.1.0: {}
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+  babel-dead-code-elimination@1.0.12:
+    dependencies:
+      '@babel/core': 7.28.6
+      '@babel/parser': 7.28.6
+      '@babel/traverse': 7.28.6
+      '@babel/types': 7.28.6
+    transitivePeerDependencies:
+      - supports-color
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
 
   balanced-match@1.0.2: {}
 
   baseline-browser-mapping@2.9.15: {}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   basic-auth@2.0.1:
     dependencies:
       safe-buffer: 5.1.2
 
+<<<<<<< HEAD
 =======
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   body-parser@1.20.4:
     dependencies:
       bytes: 3.1.2
@@ -3749,16 +4028,22 @@ snapshots:
       update-browserslist-db: 1.2.3(browserslist@4.28.1)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   buffer-from@1.1.2: {}
 
   bytes@3.1.2: {}
 
   cac@6.7.14: {}
 
+<<<<<<< HEAD
 =======
   bytes@3.1.2: {}
 
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   call-bind-apply-helpers@1.0.2:
     dependencies:
       es-errors: 1.3.0
@@ -3829,10 +4114,15 @@ snapshots:
       yargs: 17.7.2
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   confbox@0.2.2: {}
 
 =======
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+  confbox@0.2.2: {}
+
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   content-disposition@0.5.4:
     dependencies:
       safe-buffer: 5.2.1
@@ -3847,9 +4137,14 @@ snapshots:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   cookie@1.1.1: {}
 =======
 =======
+=======
+  cookie@1.1.1: {}
+
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   cors@2.8.6:
     dependencies:
       object-assign: 4.1.1
@@ -3891,11 +4186,14 @@ snapshots:
     dependencies:
       ms: 2.0.0
 
+<<<<<<< HEAD
   debug@3.2.7:
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
     dependencies:
       ms: 2.0.0
 
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   debug@4.4.3:
     dependencies:
       ms: 2.1.3
@@ -3928,10 +4226,13 @@ snapshots:
   detect-libc@2.1.2: {}
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
 
+<<<<<<< HEAD
   destroy@1.2.0: {}
 
   detect-libc@2.1.2: {}
 
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   diff@4.0.4: {}
 
   doctrine@2.1.0:
@@ -3952,8 +4253,11 @@ snapshots:
 
   emoji-regex@8.0.0: {}
 
+<<<<<<< HEAD
   encodeurl@2.0.0: {}
 
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   encodeurl@2.0.0: {}
 
   enhanced-resolve@5.18.4:
@@ -4100,6 +4404,7 @@ snapshots:
   escape-string-regexp@4.0.0: {}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   eslint-config-next@15.5.5(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3):
     dependencies:
@@ -4204,6 +4509,8 @@ snapshots:
       string.prototype.includes: 2.0.1
 
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   eslint-plugin-next@0.0.0: {}
 
   eslint-plugin-react-compiler@19.1.0-rc.2(eslint@9.39.2(jiti@2.6.1)):
@@ -4336,10 +4643,15 @@ snapshots:
   etag@1.8.1: {}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   exit-hook@2.2.1: {}
 
 =======
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+  exit-hook@2.2.1: {}
+
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   express@4.22.1:
     dependencies:
       accepts: 1.3.8
@@ -4377,10 +4689,15 @@ snapshots:
       - supports-color
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   exsolve@1.0.8: {}
 
 =======
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+  exsolve@1.0.8: {}
+
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   fast-deep-equal@3.1.3: {}
 
   fast-glob@3.3.1:
@@ -4444,11 +4761,17 @@ snapshots:
   fresh@0.5.2: {}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   fsevents@2.3.3:
     optional: true
 
 =======
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+  fsevents@2.3.3:
+    optional: true
+
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   function-bind@1.1.2: {}
 
   function.prototype.name@1.1.8:
@@ -4808,8 +5131,13 @@ snapshots:
   lodash.merge@4.6.2: {}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   lodash@4.17.23: {}
 =======
+=======
+  lodash@4.17.23: {}
+
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   long@5.3.2: {}
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
 
@@ -4825,11 +5153,14 @@ snapshots:
 =======
   lru.min@1.1.3: {}
 
+<<<<<<< HEAD
   lucide-react@0.545.0(react@19.1.0):
     dependencies:
       react: 19.1.0
 
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   magic-string@0.30.21:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
@@ -4854,10 +5185,15 @@ snapshots:
   mime-db@1.52.0: {}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   mime-db@1.54.0: {}
 
 =======
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+  mime-db@1.54.0: {}
+
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   mime-types@2.1.35:
     dependencies:
       mime-db: 1.52.0
@@ -4881,8 +5217,11 @@ snapshots:
       on-headers: 1.1.0
     transitivePeerDependencies:
       - supports-color
+<<<<<<< HEAD
 
   ms@2.0.0: {}
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
 
   ms@2.0.0: {}
 
@@ -4912,12 +5251,15 @@ snapshots:
 <<<<<<< HEAD
 =======
 
+<<<<<<< HEAD
   next-themes@0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
 
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   negotiator@0.6.4: {}
 
   node-releases@2.0.27: {}
@@ -4959,21 +5301,32 @@ snapshots:
       es-object-atoms: 1.1.1
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   on-finished@2.3.0:
     dependencies:
       ee-first: 1.1.1
 
+<<<<<<< HEAD
 =======
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   on-finished@2.4.1:
     dependencies:
       ee-first: 1.1.1
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   on-headers@1.1.0: {}
 
 =======
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+  on-headers@1.1.0: {}
+
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   optionator@0.9.4:
     dependencies:
       deep-is: 0.1.4
@@ -5014,12 +5367,18 @@ snapshots:
   path-to-regexp@0.1.12: {}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   pathe@1.1.2: {}
 
   pathe@2.0.3: {}
 
+<<<<<<< HEAD
 =======
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   picocolors@1.1.1: {}
 
   picomatch@2.3.1: {}
@@ -5074,8 +5433,9 @@ snapshots:
       iconv-lite: 0.4.24
       unpipe: 1.0.0
 
-  react-dom@19.1.0(react@19.1.0):
+  react-dom@19.2.3(react@19.2.3):
     dependencies:
+<<<<<<< HEAD
       react: 19.1.0
       scheduler: 0.26.0
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
@@ -5089,6 +5449,8 @@ snapshots:
 
   react-dom@19.2.3(react@19.2.3):
     dependencies:
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
       react: 19.2.3
       scheduler: 0.27.0
 
@@ -5188,10 +5550,15 @@ snapshots:
       isarray: 2.0.5
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   safe-buffer@5.1.2: {}
 
 =======
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+  safe-buffer@5.1.2: {}
+
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   safe-buffer@5.2.1: {}
 
   safe-push-apply@1.0.0:
@@ -5208,10 +5575,14 @@ snapshots:
   safer-buffer@2.1.2: {}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   scheduler@0.27.0: {}
 =======
   scheduler@0.26.0: {}
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+  scheduler@0.27.0: {}
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
 
   semver@6.3.1: {}
 
@@ -5250,10 +5621,15 @@ snapshots:
       - supports-color
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   set-cookie-parser@2.7.2: {}
 
 =======
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+  set-cookie-parser@2.7.2: {}
+
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   set-function-length@1.2.2:
     dependencies:
       define-data-property: 1.1.4
@@ -5280,6 +5656,7 @@ snapshots:
 <<<<<<< HEAD
 =======
 
+<<<<<<< HEAD
   sharp@0.34.5:
     dependencies:
       '@img/colour': 1.0.0
@@ -5313,6 +5690,8 @@ snapshots:
     optional: true
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
 
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   shebang-command@2.0.0:
     dependencies:
       shebang-regex: 3.0.0
@@ -5352,10 +5731,14 @@ snapshots:
   source-map-js@1.2.1: {}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   source-map-support@0.5.21:
     dependencies:
       buffer-from: 1.1.2
       source-map: 0.6.1
+<<<<<<< HEAD
 
   source-map@0.6.1: {}
 
@@ -5365,6 +5748,12 @@ snapshots:
 
   stable-hash@0.0.5: {}
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+
+  source-map@0.6.1: {}
+
+  sqlstring@2.3.3: {}
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
 
   statuses@2.0.2: {}
 
@@ -5483,6 +5872,7 @@ snapshots:
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
 
+<<<<<<< HEAD
   tsconfig-paths@3.15.0:
     dependencies:
       '@types/json5': 0.0.29
@@ -5490,6 +5880,11 @@ snapshots:
       minimist: 1.2.8
       strip-bom: 3.0.0
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
+=======
+  tsconfck@3.1.6(typescript@5.9.3):
+    optionalDependencies:
+      typescript: 5.9.3
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
 
   tslib@2.8.1: {}
 
@@ -5564,6 +5959,7 @@ snapshots:
 
   unpipe@1.0.0: {}
 
+<<<<<<< HEAD
   unrs-resolver@1.11.1:
     dependencies:
       napi-postinstall: 0.3.4
@@ -5589,6 +5985,8 @@ snapshots:
       '@unrs/resolver-binding-win32-x64-msvc': 1.11.1
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
 
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   update-browserslist-db@1.2.3(browserslist@4.28.1):
     dependencies:
       browserslist: 4.28.1
@@ -5599,6 +5997,7 @@ snapshots:
     dependencies:
       punycode: 2.3.1
 
+<<<<<<< HEAD
   utils-merge@1.0.1: {}
 
   valibot@1.2.0(typescript@5.9.3):
@@ -5653,11 +6052,63 @@ snapshots:
       jiti: 2.6.1
       lightningcss: 1.30.2
 
+=======
+>>>>>>> f65496f (init: reinit client with react+redux instead of nextjs)
   utils-merge@1.0.1: {}
 
   v8-compile-cache-lib@3.0.1: {}
 
+  valibot@1.2.0(typescript@5.9.3):
+    optionalDependencies:
+      typescript: 5.9.3
+
   vary@1.1.2: {}
+
+  vite-node@3.2.4(@types/node@22.19.7)(jiti@2.6.1)(lightningcss@1.30.2):
+    dependencies:
+      cac: 6.7.14
+      debug: 4.4.3
+      es-module-lexer: 1.7.0
+      pathe: 2.0.3
+      vite: 7.3.1(@types/node@22.19.7)(jiti@2.6.1)(lightningcss@1.30.2)
+    transitivePeerDependencies:
+      - '@types/node'
+      - jiti
+      - less
+      - lightningcss
+      - sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+      - tsx
+      - yaml
+
+  vite-tsconfig-paths@5.1.4(typescript@5.9.3)(vite@7.3.1(@types/node@22.19.7)(jiti@2.6.1)(lightningcss@1.30.2)):
+    dependencies:
+      debug: 4.4.3
+      globrex: 0.1.2
+      tsconfck: 3.1.6(typescript@5.9.3)
+    optionalDependencies:
+      vite: 7.3.1(@types/node@22.19.7)(jiti@2.6.1)(lightningcss@1.30.2)
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
+
+  vite@7.3.1(@types/node@22.19.7)(jiti@2.6.1)(lightningcss@1.30.2):
+    dependencies:
+      esbuild: 0.27.2
+      fdir: 6.5.0(picomatch@4.0.3)
+      picomatch: 4.0.3
+      postcss: 8.5.6
+      rollup: 4.56.0
+      tinyglobby: 0.2.15
+    optionalDependencies:
+      '@types/node': 22.19.7
+      fsevents: 2.3.3
+      jiti: 2.6.1
+      lightningcss: 1.30.2
 
   which-boxed-primitive@1.1.1:
     dependencies:
