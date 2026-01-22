@@ -159,11 +159,17 @@ importers:
   server:
     dependencies:
 <<<<<<< HEAD
+<<<<<<< HEAD
       cors:
         specifier: ^2.8.6
         version: 2.8.6
 =======
 >>>>>>> 79d0d43 (feat: initialize server with Express and MySQL connection)
+=======
+      cors:
+        specifier: ^2.8.6
+        version: 2.8.6
+>>>>>>> 57adb06 (feat: add CORS support and update environment configuration)
       dotenv:
         specifier: ^17.2.3
         version: 17.2.3
@@ -175,11 +181,17 @@ importers:
         version: 3.16.1
     devDependencies:
 <<<<<<< HEAD
+<<<<<<< HEAD
       '@types/cors':
         specifier: ^2.8.19
         version: 2.8.19
 =======
 >>>>>>> 79d0d43 (feat: initialize server with Express and MySQL connection)
+=======
+      '@types/cors':
+        specifier: ^2.8.19
+        version: 2.8.19
+>>>>>>> 57adb06 (feat: add CORS support and update environment configuration)
       '@types/express':
         specifier: ^5.0.6
         version: 5.0.6
@@ -1026,6 +1038,9 @@ packages:
 =======
 >>>>>>> 79d0d43 (feat: initialize server with Express and MySQL connection)
 
+  '@types/cors@2.8.19':
+    resolution: {integrity: sha512-mFNylyeyqN93lfe/9CSxOGREz8cpzAhH+E93xJ4xWQf62V8sQ/24reV2nyzUWM6H6Xji+GGHpkbLe7pVoUEskg==}
+
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
 
@@ -1496,6 +1511,7 @@ packages:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   cookie@1.1.1:
     resolution: {integrity: sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ==}
     engines: {node: '>=18'}
@@ -1506,6 +1522,8 @@ packages:
 >>>>>>> 8e1021d (init: reinit client with react+redux instead of nextjs)
 =======
 >>>>>>> ea37bb9 (feat: initialize server with Express and MySQL connection)
+=======
+>>>>>>> 975f04d (feat: add CORS support and update environment configuration)
   cors@2.8.6:
     resolution: {integrity: sha512-tJtZBBHA6vjIAaF6EnIaq6laBBP9aq/Y3ouVJjEfoHbRBcHBAHYcMh/w8LDrk2PvIMMq8gmopa5D4V8RmbrxGw==}
     engines: {node: '>= 0.10'}
@@ -1523,10 +1541,18 @@ packages:
     engines: {node: '>=18'}
 >>>>>>> 7c5e2ca (init: reinit client with react+redux instead of nextjs)
 =======
+=======
+>>>>>>> 57adb06 (feat: add CORS support and update environment configuration)
   cookie@1.1.1:
     resolution: {integrity: sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ==}
     engines: {node: '>=18'}
 =======
+=======
+  cors@2.8.6:
+    resolution: {integrity: sha512-tJtZBBHA6vjIAaF6EnIaq6laBBP9aq/Y3ouVJjEfoHbRBcHBAHYcMh/w8LDrk2PvIMMq8gmopa5D4V8RmbrxGw==}
+    engines: {node: '>= 0.10'}
+
+>>>>>>> 1913a5d (feat: add CORS support and update environment configuration)
   create-require@1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
@@ -4362,6 +4388,10 @@ snapshots:
 =======
 >>>>>>> 79d0d43 (feat: initialize server with Express and MySQL connection)
 
+  '@types/cors@2.8.19':
+    dependencies:
+      '@types/node': 25.0.10
+
   '@types/estree@1.0.8': {}
 
   '@types/express-serve-static-core@5.1.1':
@@ -4881,6 +4911,7 @@ snapshots:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   cookie@1.1.1: {}
 
 =======
@@ -4889,6 +4920,8 @@ snapshots:
 >>>>>>> 8e1021d (init: reinit client with react+redux instead of nextjs)
 =======
 >>>>>>> ea37bb9 (feat: initialize server with Express and MySQL connection)
+=======
+>>>>>>> 975f04d (feat: add CORS support and update environment configuration)
   cors@2.8.6:
     dependencies:
       object-assign: 4.1.1
@@ -4904,8 +4937,17 @@ snapshots:
   cookie@1.1.1: {}
 >>>>>>> 7c5e2ca (init: reinit client with react+redux instead of nextjs)
 =======
+=======
+>>>>>>> 57adb06 (feat: add CORS support and update environment configuration)
   cookie@1.1.1: {}
 =======
+=======
+  cors@2.8.6:
+    dependencies:
+      object-assign: 4.1.1
+      vary: 1.1.2
+
+>>>>>>> 1913a5d (feat: add CORS support and update environment configuration)
   create-require@1.1.1: {}
 >>>>>>> e971aa8 (feat: initialize server with Express and MySQL connection)
 >>>>>>> 79d0d43 (feat: initialize server with Express and MySQL connection)
@@ -5198,12 +5240,17 @@ snapshots:
       eslint: 9.39.2(jiti@2.6.1)
       eslint-import-resolver-node: 0.3.9
 <<<<<<< HEAD
+<<<<<<< HEAD
       eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.2(jiti@2.6.1))
       eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.2(jiti@2.6.1))
 =======
       eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1))
       eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1))
 >>>>>>> ea37bb9 (feat: initialize server with Express and MySQL connection)
+=======
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.2(jiti@2.6.1))
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.2(jiti@2.6.1))
+>>>>>>> 975f04d (feat: add CORS support and update environment configuration)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@9.39.2(jiti@2.6.1))
       eslint-plugin-react: 7.37.5(eslint@9.39.2(jiti@2.6.1))
       eslint-plugin-react-hooks: 5.2.0(eslint@9.39.2(jiti@2.6.1))
@@ -5223,10 +5270,14 @@ snapshots:
       - supports-color
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.2(jiti@2.6.1)):
 =======
   eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1)):
 >>>>>>> ea37bb9 (feat: initialize server with Express and MySQL connection)
+=======
+  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.2(jiti@2.6.1)):
+>>>>>>> 975f04d (feat: add CORS support and update environment configuration)
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.4.3
@@ -5237,6 +5288,7 @@ snapshots:
       tinyglobby: 0.2.15
       unrs-resolver: 1.11.1
     optionalDependencies:
+<<<<<<< HEAD
 <<<<<<< HEAD
       eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.2(jiti@2.6.1))
     transitivePeerDependencies:
@@ -5250,12 +5302,20 @@ snapshots:
 
   eslint-module-utils@2.12.1(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1)):
 >>>>>>> ea37bb9 (feat: initialize server with Express and MySQL connection)
+=======
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.2(jiti@2.6.1))
+    transitivePeerDependencies:
+      - supports-color
+
+  eslint-module-utils@2.12.1(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.2(jiti@2.6.1)):
+>>>>>>> 975f04d (feat: add CORS support and update environment configuration)
     dependencies:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
       eslint: 9.39.2(jiti@2.6.1)
       eslint-import-resolver-node: 0.3.9
+<<<<<<< HEAD
 <<<<<<< HEAD
       eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.2(jiti@2.6.1))
     transitivePeerDependencies:
@@ -5269,6 +5329,13 @@ snapshots:
 
   eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1)):
 >>>>>>> ea37bb9 (feat: initialize server with Express and MySQL connection)
+=======
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.2(jiti@2.6.1))
+    transitivePeerDependencies:
+      - supports-color
+
+  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.2(jiti@2.6.1)):
+>>>>>>> 975f04d (feat: add CORS support and update environment configuration)
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9
@@ -5280,10 +5347,14 @@ snapshots:
       eslint: 9.39.2(jiti@2.6.1)
       eslint-import-resolver-node: 0.3.9
 <<<<<<< HEAD
+<<<<<<< HEAD
       eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.2(jiti@2.6.1))
 =======
       eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1))
 >>>>>>> ea37bb9 (feat: initialize server with Express and MySQL connection)
+=======
+      eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.2(jiti@2.6.1))
+>>>>>>> 975f04d (feat: add CORS support and update environment configuration)
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3
