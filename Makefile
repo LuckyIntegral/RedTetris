@@ -37,11 +37,13 @@ clean:
 	rm -rf server/node_modules server/dist
 	rm -rf .pnpm-store
 
-# Stop all running processes (for development)
+# Stop all running processes (for development only - kills processes by specific patterns)
 stop:
-	@echo "Stopping all node processes..."
-	-pkill -f "node.*red-tetris" || true
-	-pkill -f "ts-node" || true
+	@echo "Stopping development servers..."
+	-pkill -f "pnpm.*dev:server" || true
+	-pkill -f "pnpm.*dev:client" || true
+	-pkill -f "next dev --turbopack" || true
+	-pkill -f "ts-node app.ts" || true
 
 # Show help
 help:
