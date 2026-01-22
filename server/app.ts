@@ -1,30 +1,13 @@
 import dotenv from 'dotenv';
-import path from 'path';
-
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
-
-import cors from 'cors';
 import express, { Request, Response } from 'express';
 import db, { testConnection } from './db';
-import { logDbError } from './utils/logger';
+
+dotenv.config();
 
 const app = express();
-
-const rawPort = process.env.PORT;
-const PORT = (() => {
-  if (rawPort === undefined) {
-    return 3001;
-  }
-  const parsedPort = parseInt(rawPort, 10);
-  if (Number.isNaN(parsedPort) || !Number.isInteger(parsedPort) || parsedPort <= 0 || parsedPort > 65535) {
-    console.error(`Invalid PORT environment variable "${rawPort}". Expected an integer between 1 and 65535.`);
-    process.exit(1);
-  }
-  return parsedPort;
-})();
+const PORT = process.env.PORT ?? 3001;
 
 // Middleware
-app.use(cors({ origin: process.env.CLIENT_URL ?? 'http://localhost:3000', credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -43,35 +26,22 @@ app.get('/api/test-db', async (req: Request, res: Response) => {
   try {
     const [rows] = await db.query('SELECT 1 + 1 AS result');
     res.json({ success: true, data: rows });
-  } catch (error: unknown) {
-    logDbError('GET /api/test-db', error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        error: { code: 'DB_TEST_QUERY_FAILED', message: 'Database query failed while executing test query.' },
-      });
+  } catch (error) {
+    console.error('Database query error:', error);
+    res.status(500).json({ success: false, error: 'Database query failed' });
   }
 });
 
 // Start server
 const startServer = async () => {
   // Test database connection on startup
-  const dbConnected = await testConnection();
-
-  if (!dbConnected) {
-    console.error('❌ Failed to connect to database. Server will not start.');
-    process.exit(1);
-  }
+  await testConnection();
 
   app.listen(PORT, () => {
     console.log(`🚀 Server is running on port ${PORT}`);
   });
 };
 
-startServer().catch((error: unknown) => {
-  console.error('Failed to start server:', error);
-  process.exit(1);
-});
+void startServer();
 
 export default app;
