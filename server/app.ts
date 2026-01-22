@@ -1,8 +1,9 @@
 import dotenv from 'dotenv';
-import express, { Request, Response } from 'express';
-import db, { testConnection } from './db';
 
 dotenv.config();
+
+import express, { Request, Response } from 'express';
+import db, { testConnection } from './db';
 
 const app = express();
 const PORT = process.env.PORT ?? 3001;

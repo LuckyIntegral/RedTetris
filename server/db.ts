@@ -1,7 +1,4 @@
-import dotenv from 'dotenv';
 import mysql from 'mysql2/promise';
-
-dotenv.config();
 
 const dbPortRaw = process.env.DB_PORT ?? '3306';
 const dbPort = Number.parseInt(dbPortRaw, 10);
