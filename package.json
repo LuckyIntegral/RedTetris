@@ -8,13 +8,12 @@
     "server"
   ],
   "scripts": {
-    "prettier": "pnpm run prettier:server && pnpm run prettier:client",
-    "prettier:server": "prettier server",
-    "prettier:client": "prettier \"client/**/*.{ts,tsx}\"  --write",
+    "prettier": "pnpm --filter=server prettier && pnpm --filter=client prettier",
+    "prettier:check": "pnpm --filter=server prettier:check && pnpm --filter=client prettier:check",
 
     "lint": "pnpm run lint:server && pnpm run lint:client",
     "lint:server": "eslint server --ext js,jsx,ts,tsx",
-    "lint:client": "eslint client --ext js,jsx,ts,tsx --ignore-pattern client/.next --ignore-pattern client/next-env.d.ts --fix",
+    "lint:client": "pnpm --filter=client lint",
 
     "build": "pnpm run build:server && pnpm run build:client",
     "build:server": "pnpm --filter=server build",
