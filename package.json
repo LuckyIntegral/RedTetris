@@ -10,10 +10,8 @@
   "scripts": {
     "prettier": "pnpm --filter=server prettier && pnpm --filter=client prettier",
     "prettier:check": "pnpm --filter=server prettier:check && pnpm --filter=client prettier:check",
-
     "lint": "pnpm --filter=server lint && pnpm --filter=client lint",
     "lint:check": "pnpm --filter=server lint:check && pnpm --filter=client lint:check",
-
     "build": "pnpm run build:server && pnpm run build:client",
     "build:server": "pnpm --filter=server build",
     "build:client": "pnpm --filter=client build",
