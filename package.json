@@ -8,21 +8,28 @@
     "server"
   ],
   "scripts": {
+    "setup": "test -f .env || (echo 'Creating .env from .env.example...' && cp .env.example .env)",
     "prettier": "pnpm run prettier:server && pnpm run prettier:client",
-    "prettier:server": "prettier server",
+    "prettier:server": "prettier server --write",
     "prettier:client": "prettier \"client/**/*.{ts,tsx}\"  --write",
-
+    "prettier:check": "pnpm run prettier:check:server && pnpm run prettier:check:client",
+    "prettier:check:server": "prettier server --check",
+    "prettier:check:client": "prettier \"client/**/*.{ts,tsx}\" --check",
     "lint": "pnpm run lint:server && pnpm run lint:client",
     "lint:server": "eslint server --ext js,jsx,ts,tsx",
     "lint:client": "eslint client --ext js,jsx,ts,tsx --ignore-pattern client/.next --ignore-pattern client/next-env.d.ts --fix",
-
+    "lint:check": "pnpm run lint:check:server && pnpm run lint:check:client",
+    "lint:check:server": "eslint server --ext js,jsx,ts,tsx",
+    "lint:check:client": "eslint client --ext js,jsx,ts,tsx --ignore-pattern client/.next --ignore-pattern client/next-env.d.ts",
     "build": "pnpm run build:server && pnpm run build:client",
     "build:server": "pnpm --filter=server build",
     "build:client": "pnpm --filter=client build",
-
     "dev": "concurrently -k -p \"[{name}]\" -n \"Server,Client,Database\" -c \"red.bold,blue.bold\" \"pnpm run dev:server\" \"pnpm run dev:client\"",
     "dev:server": "pnpm --filter=server dev",
-    "dev:client": "pnpm --filter=client dev"
+    "dev:client": "pnpm --filter=client dev",
+    "start": "concurrently -k -p \"[{name}]\" -n \"Server,Client\" -c \"red.bold,blue.bold\" \"pnpm run start:server\" \"pnpm run start:client\"",
+    "start:server": "pnpm --filter=server start",
+    "start:client": "pnpm --filter=client start"
   },
   "keywords": [],
   "author": "",
@@ -40,6 +47,7 @@
     "eslint-plugin-unused-imports": "^4.2.0",
     "globals": "^16.4.0",
     "jiti": "^2.6.1",
+    "prettier": "^3.8.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.1"
   },
