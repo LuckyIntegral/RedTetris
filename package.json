@@ -8,6 +8,7 @@
     "server"
   ],
   "scripts": {
+    "setup": "test -f .env || (echo 'Creating .env from .env.example...' && cp .env.example .env)",
     "prettier": "pnpm run prettier:server && pnpm run prettier:client",
     "prettier:server": "prettier server --write",
     "prettier:client": "prettier \"client/**/*.{ts,tsx}\"  --write",
