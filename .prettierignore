@@ -1,5 +1,5 @@
 **/node_modules
-**/.next
+**/.react-router
 **/build
 /coverage
 
@@ -8,4 +8,3 @@
 *.css
 *.scss
 
-client/next.config.ts

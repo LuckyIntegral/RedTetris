@@ -6,8 +6,12 @@
   "scripts": {
     "dev": "ts-node app.ts",
     "build": "tsc",
+    "lint": "eslint . --ext js,jsx,ts,tsx --fix",
+    "lint:check": "eslint . --ext js,jsx,ts,tsx",
+    "prettier": "prettier \"**/*.{js,jsx,ts,tsx,json,css,md}\" --ignore-path ../.prettierignore --write",
+    "prettier:check": "prettier \"**/*.{js,jsx,ts,tsx,json,css,md}\" --ignore-path ../.prettierignore --list-different",
     "start": "node dist/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo 'Not implemented!'"
   },
   "keywords": [],
   "author": "",
