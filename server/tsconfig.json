@@ -12,6 +12,14 @@
     "resolveJsonModule": true,
     "moduleResolution": "node"
   },
-  "include": ["*.ts", "utils/**/*.ts"],
+  "include": [
+    "*.ts",
+    "utils/**/*.ts",
+    "models/**/*.ts",
+    "middleware/**/*.ts",
+    "controllers/**/*.ts",
+    "routes/**/*.ts",
+    "config/**/*.ts"
+  ],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]
 }
