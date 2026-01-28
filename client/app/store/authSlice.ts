@@ -18,17 +18,14 @@ const initialState: AuthState = {
 };
 
 // Async thunks
-export const registerUser = createAsyncThunk(
-  'auth/register',
-  async (data: RegisterData, { rejectWithValue }) => {
-    try {
-      const response = await authService.register(data);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue((error as Error).message);
-    }
-  },
-);
+export const registerUser = createAsyncThunk('auth/register', async (data: RegisterData, { rejectWithValue }) => {
+  try {
+    const response = await authService.register(data);
+    return response.data;
+  } catch (error) {
+    return rejectWithValue((error as Error).message);
+  }
+});
 
 export const loginUser = createAsyncThunk('auth/login', async (data: LoginData, { rejectWithValue }) => {
   try {

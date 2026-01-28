@@ -91,10 +91,7 @@ const createAuthService = () => {
     try {
       const token = getToken();
       if (token) {
-        await fetch(`${API_URL}/api/auth/logout`, {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await fetch(`${API_URL}/api/auth/logout`, { method: 'POST', headers: { Authorization: `Bearer ${token}` } });
       }
     } finally {
       clearToken();
@@ -126,16 +123,7 @@ const createAuthService = () => {
     return !!getToken();
   };
 
-  return {
-    setToken,
-    getToken,
-    clearToken,
-    register,
-    login,
-    logout,
-    getProfile,
-    isAuthenticated,
-  };
+  return { setToken, getToken, clearToken, register, login, logout, getProfile, isAuthenticated };
 };
 
 export const authService = createAuthService();
