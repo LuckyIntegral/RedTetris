@@ -20,7 +20,7 @@ export const verifyToken = (token: string): JwtPayload => {
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
     return decoded;
-  } catch (error) {
+  } catch {
     throw new Error('Invalid or expired token');
   }
 };

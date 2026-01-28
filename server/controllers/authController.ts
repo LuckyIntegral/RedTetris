@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
 import { ResultSetHeader } from 'mysql2';
 import db from '../db';
+import { AuthRequest } from '../middleware/auth';
 import { AuthResponse, CreateUserDto, LoginDto, UserRow, sanitizeUser } from '../models/User';
 import { generateToken } from '../utils/jwt';
 import { logDbError } from '../utils/logger';
@@ -24,7 +25,7 @@ const isValidPassword = (password: string): boolean => {
 
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { username, email, password }: CreateUserDto = req.body;
+    const { username, email, password } = req.body as CreateUserDto;
 
     // Validation
     if (!username || !email || !password) {
@@ -110,7 +111,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
 export const login = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { username, password }: LoginDto = req.body;
+    const { username, password } = req.body as LoginDto;
 
     // Validation
     if (!username || !password) {
@@ -157,7 +158,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 export const getProfile = async (req: Request, res: Response): Promise<void> => {
   try {
     // User is attached by auth middleware
-    const userId = (req as any).user?.userId;
+    const userId = (req as AuthRequest).user?.userId;
 
     if (!userId) {
       res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'User not authenticated' } });

@@ -26,7 +26,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         try {
           const profile = await authService.getProfile();
           setUser(profile);
-        } catch (error) {
+        } catch {
           // Token might be invalid, clear it
           authService.clearToken();
         }
@@ -34,7 +34,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     };
 
-    loadUser();
+    void loadUser();
   }, []);
 
   const login = async (username: string, password: string) => {

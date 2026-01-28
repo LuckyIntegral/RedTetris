@@ -9,7 +9,7 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
   try {
     const authHeader = req.headers.authorization;
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!authHeader?.startsWith('Bearer ')) {
       res
         .status(401)
         .json({ success: false, error: { code: 'NO_TOKEN', message: 'No authentication token provided' } });
@@ -22,10 +22,10 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
       const decoded = verifyToken(token);
       req.user = decoded;
       next();
-    } catch (error) {
+    } catch {
       res.status(401).json({ success: false, error: { code: 'INVALID_TOKEN', message: 'Invalid or expired token' } });
     }
-  } catch (error) {
+  } catch {
     res.status(500).json({ success: false, error: { code: 'AUTH_ERROR', message: 'Authentication error' } });
   }
 };

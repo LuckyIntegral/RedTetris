@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const API_URL = (import.meta.env.VITE_API_URL as string | undefined) ?? 'http://localhost:3001';
 
 export interface User {
   id: number;
@@ -64,14 +64,16 @@ class AuthService {
       body: JSON.stringify(data),
     });
 
-    const result = await response.json();
+    const result = (await response.json()) as AuthResponse | ErrorResponse;
 
     if (!response.ok) {
-      throw new Error(result.error?.message || 'Registration failed');
+      const errorResult = result as ErrorResponse;
+      throw new Error(errorResult.error?.message ?? 'Registration failed');
     }
 
-    this.setToken(result.data.token);
-    return result;
+    const successResult = result as AuthResponse;
+    this.setToken(successResult.data.token);
+    return successResult;
   }
 
   async login(data: LoginData): Promise<AuthResponse> {
@@ -81,14 +83,16 @@ class AuthService {
       body: JSON.stringify(data),
     });
 
-    const result = await response.json();
+    const result = (await response.json()) as AuthResponse | ErrorResponse;
 
     if (!response.ok) {
-      throw new Error(result.error?.message || 'Login failed');
+      const errorResult = result as ErrorResponse;
+      throw new Error(errorResult.error?.message ?? 'Login failed');
     }
 
-    this.setToken(result.data.token);
-    return result;
+    const successResult = result as AuthResponse;
+    this.setToken(successResult.data.token);
+    return successResult;
   }
 
   async logout(): Promise<void> {
@@ -114,13 +118,14 @@ class AuthService {
       headers: { Authorization: `Bearer ${this.token}` },
     });
 
-    const result = await response.json();
+    const result = (await response.json()) as { success: boolean; data: User } | ErrorResponse;
 
     if (!response.ok) {
-      throw new Error(result.error?.message || 'Failed to fetch profile');
+      const errorResult = result as ErrorResponse;
+      throw new Error(errorResult.error?.message ?? 'Failed to fetch profile');
     }
 
-    return result.data;
+    return (result as { success: boolean; data: User }).data;
   }
 
   isAuthenticated(): boolean {
