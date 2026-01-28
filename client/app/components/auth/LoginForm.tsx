@@ -1,29 +1,29 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { loginUser, clearError } from '../../store/authSlice';
 
 export function LoginForm() {
   const navigate = useNavigate();
-  const { login } = useAuth();
-  const [error, setError] = useState<string>('');
-  const [loading, setLoading] = useState(false);
+  const dispatch = useAppDispatch();
+  const { error, isLoading } = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    return () => {
+      dispatch(clearError());
+    };
+  }, [dispatch]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
 
     const formData = new FormData(e.currentTarget);
     const username = formData.get('username') as string;
     const password = formData.get('password') as string;
 
-    try {
-      await login(username, password);
+    const result = await dispatch(loginUser({ username, password }));
+    if (loginUser.fulfilled.match(result)) {
       void navigate('/');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -64,7 +64,7 @@ export function LoginForm() {
                 required
                 className='relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:z-10 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-400 sm:text-sm'
                 placeholder='Username'
-                disabled={loading}
+                disabled={isLoading}
               />
             </div>
             <div>
@@ -81,7 +81,7 @@ export function LoginForm() {
                 required
                 className='relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:z-10 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-400 sm:text-sm'
                 placeholder='Password'
-                disabled={loading}
+                disabled={isLoading}
               />
             </div>
           </div>
@@ -89,10 +89,10 @@ export function LoginForm() {
           <div>
             <button
               type='submit'
-              disabled={loading}
+              disabled={isLoading}
               className='group relative flex w-full justify-center rounded-md border border-transparent bg-blue-600 dark:bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-950 disabled:opacity-50'
             >
-              {loading ? 'Signing in...' : 'Sign in'}
+              {isLoading ? 'Signing in...' : 'Sign in'}
             </button>
           </div>
 

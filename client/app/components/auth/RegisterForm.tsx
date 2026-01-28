@@ -1,17 +1,26 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { registerUser, clearError } from '../../store/authSlice';
 
 export function RegisterForm() {
   const navigate = useNavigate();
-  const { register } = useAuth();
-  const [error, setError] = useState<string>('');
-  const [loading, setLoading] = useState(false);
+  const dispatch = useAppDispatch();
+  const { error: reduxError, isLoading } = useAppSelector((state) => state.auth);
+  const [localError, setLocalError] = useState<string>('');
+
+  const error = localError || reduxError;
+
+  useEffect(() => {
+    return () => {
+      dispatch(clearError());
+    };
+  }, [dispatch]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
+    setLocalError('');
+    dispatch(clearError());
 
     const formData = new FormData(e.currentTarget);
     const username = formData.get('username') as string;
@@ -20,18 +29,13 @@ export function RegisterForm() {
     const confirmPassword = formData.get('confirmPassword') as string;
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      setLoading(false);
+      setLocalError('Passwords do not match');
       return;
     }
 
-    try {
-      await register(username, email, password);
+    const result = await dispatch(registerUser({ username, email, password }));
+    if (registerUser.fulfilled.match(result)) {
       void navigate('/');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Registration failed');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -75,7 +79,7 @@ export function RegisterForm() {
                 pattern='[a-zA-Z0-9_-]+'
                 className='relative block w-full appearance-none rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:z-10 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-400 sm:text-sm'
                 placeholder='Username (3-50 characters, alphanumeric)'
-                disabled={loading}
+                disabled={isLoading}
               />
             </div>
             <div>
@@ -92,7 +96,7 @@ export function RegisterForm() {
                 required
                 className='relative block w-full appearance-none rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:z-10 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-400 sm:text-sm'
                 placeholder='Email address'
-                disabled={loading}
+                disabled={isLoading}
               />
             </div>
             <div>
@@ -110,7 +114,7 @@ export function RegisterForm() {
                 minLength={6}
                 className='relative block w-full appearance-none rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:z-10 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-400 sm:text-sm'
                 placeholder='Password (minimum 6 characters)'
-                disabled={loading}
+                disabled={isLoading}
               />
             </div>
             <div>
@@ -128,7 +132,7 @@ export function RegisterForm() {
                 minLength={6}
                 className='relative block w-full appearance-none rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:z-10 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-400 sm:text-sm'
                 placeholder='Confirm password'
-                disabled={loading}
+                disabled={isLoading}
               />
             </div>
           </div>
@@ -136,10 +140,10 @@ export function RegisterForm() {
           <div>
             <button
               type='submit'
-              disabled={loading}
+              disabled={isLoading}
               className='group relative flex w-full justify-center rounded-md border border-transparent bg-blue-600 dark:bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-950 disabled:opacity-50'
             >
-              {loading ? 'Creating account...' : 'Create account'}
+              {isLoading ? 'Creating account...' : 'Create account'}
             </button>
           </div>
 

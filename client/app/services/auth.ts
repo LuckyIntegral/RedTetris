@@ -29,35 +29,34 @@ export interface LoginData {
   password: string;
 }
 
-class AuthService {
-  private token: string | null = null;
+// Functional approach using closures
+const createAuthService = () => {
+  let token: string | null = null;
 
-  constructor() {
-    // Load token from localStorage on init
-    if (typeof window !== 'undefined') {
-      this.token = localStorage.getItem('auth_token');
-    }
+  // Initialize token from localStorage
+  if (typeof window !== 'undefined') {
+    token = localStorage.getItem('auth_token');
   }
 
-  setToken(token: string) {
-    this.token = token;
+  const setToken = (newToken: string): void => {
+    token = newToken;
     if (typeof window !== 'undefined') {
       localStorage.setItem('auth_token', token);
     }
-  }
+  };
 
-  getToken(): string | null {
-    return this.token;
-  }
+  const getToken = (): string | null => {
+    return token;
+  };
 
-  clearToken() {
-    this.token = null;
+  const clearToken = (): void => {
+    token = null;
     if (typeof window !== 'undefined') {
       localStorage.removeItem('auth_token');
     }
-  }
+  };
 
-  async register(data: RegisterData): Promise<AuthResponse> {
+  const register = async (data: RegisterData): Promise<AuthResponse> => {
     const response = await fetch(`${API_URL}/api/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -72,11 +71,11 @@ class AuthService {
     }
 
     const successResult = result as AuthResponse;
-    this.setToken(successResult.data.token);
+    setToken(successResult.data.token);
     return successResult;
-  }
+  };
 
-  async login(data: LoginData): Promise<AuthResponse> {
+  const login = async (data: LoginData): Promise<AuthResponse> => {
     const response = await fetch(`${API_URL}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -91,31 +90,31 @@ class AuthService {
     }
 
     const successResult = result as AuthResponse;
-    this.setToken(successResult.data.token);
+    setToken(successResult.data.token);
     return successResult;
-  }
+  };
 
-  async logout(): Promise<void> {
+  const logout = async (): Promise<void> => {
     try {
-      if (this.token) {
+      if (token) {
         await fetch(`${API_URL}/api/auth/logout`, {
           method: 'POST',
-          headers: { Authorization: `Bearer ${this.token}` },
+          headers: { Authorization: `Bearer ${token}` },
         });
       }
     } finally {
-      this.clearToken();
+      clearToken();
     }
-  }
+  };
 
-  async getProfile(): Promise<User> {
-    if (!this.token) {
+  const getProfile = async (): Promise<User> => {
+    if (!token) {
       throw new Error('No authentication token');
     }
 
     const response = await fetch(`${API_URL}/api/auth/profile`, {
       method: 'GET',
-      headers: { Authorization: `Bearer ${this.token}` },
+      headers: { Authorization: `Bearer ${token}` },
     });
 
     const result = (await response.json()) as { success: boolean; data: User } | ErrorResponse;
@@ -126,11 +125,22 @@ class AuthService {
     }
 
     return (result as { success: boolean; data: User }).data;
-  }
+  };
 
-  isAuthenticated(): boolean {
-    return !!this.token;
-  }
-}
+  const isAuthenticated = (): boolean => {
+    return !!token;
+  };
 
-export const authService = new AuthService();
+  return {
+    setToken,
+    getToken,
+    clearToken,
+    register,
+    login,
+    logout,
+    getProfile,
+    isAuthenticated,
+  };
+};
+
+export const authService = createAuthService();
