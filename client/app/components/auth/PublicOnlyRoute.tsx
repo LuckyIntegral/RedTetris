@@ -1,14 +1,23 @@
+import { useEffect } from 'react';
 import { Navigate } from 'react-router';
-import { useAppSelector } from '../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { fetchProfile } from '../../store/authSlice';
 
 interface PublicOnlyRouteProps {
   children: React.ReactNode;
 }
 
 export function PublicOnlyRoute({ children }: PublicOnlyRouteProps) {
-  const { isAuthenticated, isLoading } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+  const { isAuthenticated, isLoading, user } = useAppSelector((state) => state.auth);
 
-  if (isLoading) {
+  useEffect(() => {
+    if (isAuthenticated && !user) {
+      void dispatch(fetchProfile());
+    }
+  }, [dispatch, isAuthenticated, user]);
+
+  if (isLoading || (isAuthenticated && !user)) {
     return (
       <div className='flex items-center justify-center min-h-screen'>
         <div className='text-lg'>Loading...</div>

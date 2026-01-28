@@ -29,28 +29,21 @@ export interface LoginData {
   password: string;
 }
 
-// Functional approach using closures
 const createAuthService = () => {
-  let token: string | null = null;
-
-  // Initialize token from localStorage
-  if (typeof window !== 'undefined') {
-    token = localStorage.getItem('auth_token');
-  }
-
   const setToken = (newToken: string): void => {
-    token = newToken;
     if (typeof window !== 'undefined') {
-      localStorage.setItem('auth_token', token);
+      localStorage.setItem('auth_token', newToken);
     }
   };
 
   const getToken = (): string | null => {
-    return token;
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('auth_token');
+    }
+    return null;
   };
 
   const clearToken = (): void => {
-    token = null;
     if (typeof window !== 'undefined') {
       localStorage.removeItem('auth_token');
     }
@@ -96,6 +89,7 @@ const createAuthService = () => {
 
   const logout = async (): Promise<void> => {
     try {
+      const token = getToken();
       if (token) {
         await fetch(`${API_URL}/api/auth/logout`, {
           method: 'POST',
@@ -108,6 +102,7 @@ const createAuthService = () => {
   };
 
   const getProfile = async (): Promise<User> => {
+    const token = getToken();
     if (!token) {
       throw new Error('No authentication token');
     }
@@ -128,7 +123,7 @@ const createAuthService = () => {
   };
 
   const isAuthenticated = (): boolean => {
-    return !!token;
+    return !!getToken();
   };
 
   return {
