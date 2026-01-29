@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/app.js",
   "scripts": {
-    "dev": "ts-node app.ts",
+    "dev": "nodemon --exec ts-node app.ts --watch . --ext ts",
     "build": "tsc",
     "lint": "eslint . --ext js,jsx,ts,tsx --fix",
     "lint:check": "eslint . --ext js,jsx,ts,tsx",
@@ -26,6 +26,7 @@
     "@types/node": "^25.0.10",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
+    "nodemon": "^3.1.11",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   },
