@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { getProfile, login, logout, register } from '../controllers/authController';
 import { authenticate } from '../middleware/auth';
+import { authLimiter } from '../middleware/rateLimit';
 
 const router = Router();
 
@@ -41,8 +42,14 @@ const router = Router();
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *       429:
+ *         description: Too many requests
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.post('/register', register);
+router.post('/register', authLimiter, register);
 
 /**
  * @swagger
@@ -81,8 +88,14 @@ router.post('/register', register);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *       429:
+ *         description: Too many requests
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.post('/login', login);
+router.post('/login', authLimiter, login);
 
 /**
  * @swagger

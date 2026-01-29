@@ -1,5 +1,8 @@
 import swaggerJSDoc from 'swagger-jsdoc';
 
+const PORT = process.env.PORT ?? 3001;
+const SERVER_URL = `http://localhost:${PORT}`;
+
 const swaggerDefinition = {
   openapi: '3.0.0',
   info: {
@@ -8,7 +11,7 @@ const swaggerDefinition = {
     description: 'API documentation for Red Tetris game backend',
     contact: { name: 'Red Tetris Team' },
   },
-  servers: [{ url: 'http://localhost:3001', description: 'Development server' }],
+  servers: [{ url: SERVER_URL, description: 'Development server' }],
   components: {
     securitySchemes: {
       bearerAuth: {

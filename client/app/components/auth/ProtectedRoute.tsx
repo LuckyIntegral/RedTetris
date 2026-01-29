@@ -17,7 +17,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     }
   }, [dispatch, isAuthenticated, user]);
 
-  if (isLoading) {
+  if (isLoading || (isAuthenticated && !user)) {
     return (
       <div className='flex items-center justify-center min-h-screen'>
         <div className='text-lg'>Loading...</div>

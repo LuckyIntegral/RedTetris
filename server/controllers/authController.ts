@@ -124,19 +124,14 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     // Find user
     const [users] = await db.query<UserRow[]>('SELECT * FROM users WHERE username = ?', [username]);
 
-    if (users.length === 0) {
-      res
-        .status(401)
-        .json({ success: false, error: { code: 'INVALID_CREDENTIALS', message: 'Invalid username or password' } });
-      return;
-    }
-
     const user = users[0];
 
-    // Verify password
-    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+    // Always perform bcrypt.compare to prevent timing attacks
+    // Use a dummy hash if user doesn't exist to maintain consistent timing
+    const dummyHash = '$2b$10$dummyhashtopreventtimingattacks000000000000000000000';
+    const isPasswordValid = await bcrypt.compare(password, user?.password_hash ?? dummyHash);
 
-    if (!isPasswordValid) {
+    if (!user || !isPasswordValid) {
       res
         .status(401)
         .json({ success: false, error: { code: 'INVALID_CREDENTIALS', message: 'Invalid username or password' } });

@@ -18,14 +18,10 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
 
     const token = authHeader.substring(7); // Remove 'Bearer ' prefix
 
-    try {
-      const decoded = verifyToken(token);
-      req.user = decoded;
-      next();
-    } catch {
-      res.status(401).json({ success: false, error: { code: 'INVALID_TOKEN', message: 'Invalid or expired token' } });
-    }
+    const decoded = verifyToken(token);
+    req.user = decoded;
+    next();
   } catch {
-    res.status(500).json({ success: false, error: { code: 'AUTH_ERROR', message: 'Authentication error' } });
+    res.status(401).json({ success: false, error: { code: 'INVALID_TOKEN', message: 'Invalid or expired token' } });
   }
 };
