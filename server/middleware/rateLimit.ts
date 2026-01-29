@@ -22,10 +22,7 @@ export const apiLimiter = rateLimit({
   max: 100, // Limit each IP to 100 requests per windowMs
   message: {
     success: false,
-    error: {
-      code: 'TOO_MANY_REQUESTS',
-      message: 'Too many requests. Please try again later.',
-    },
+    error: { code: 'TOO_MANY_REQUESTS', message: 'Too many requests. Please try again later.' },
   },
   standardHeaders: true,
   legacyHeaders: false,
