@@ -10,8 +10,19 @@ import swaggerSpec from './config/swagger';
 import db, { testConnection } from './db';
 import authRoutes from './routes/auth';
 import { logDbError } from './utils/logger';
+import http from 'http';
+import { Server as IOServer } from 'socket.io';
+import { GameManager } from './core/GameManager';
+import db, { testConnection } from './db';
+import { registerSocketHandlers } from './net/socketHandlers';
+import { logDbError, logger } from './utils/logger';
 
 const app = express();
+const server = http.createServer(app);
+const io = new IOServer(server, { cors: { origin: process.env.CLIENT_URL ?? 'http://localhost:3000' } });
+const gameManager = new GameManager();
+
+registerSocketHandlers(io, gameManager);
 
 const rawPort = process.env.PORT;
 const PORT = (() => {
@@ -20,7 +31,7 @@ const PORT = (() => {
   }
   const parsedPort = parseInt(rawPort, 10);
   if (Number.isNaN(parsedPort) || !Number.isInteger(parsedPort) || parsedPort <= 0 || parsedPort > 65535) {
-    console.error(`Invalid PORT environment variable "${rawPort}". Expected an integer between 1 and 65535.`);
+    logger.error(`Invalid PORT environment variable "${rawPort}". Expected an integer between 1 and 65535.`);
     process.exit(1);
   }
   return parsedPort;
@@ -107,17 +118,17 @@ const startServer = async () => {
   const dbConnected = await testConnection();
 
   if (!dbConnected) {
-    console.error('❌ Failed to connect to database. Server will not start.');
+    logger.error('❌ Failed to connect to database. Server will not start.');
     process.exit(1);
   }
 
-  app.listen(PORT, () => {
-    console.log(`🚀 Server is running on port ${PORT}`);
+  server.listen(PORT, () => {
+    logger.info(`🚀 Server (HTTP + Socket.IO) is running on port ${PORT}`);
   });
 };
 
 startServer().catch((error: unknown) => {
-  console.error('Failed to start server:', error);
+  logger.error('Failed to start server:', error);
   process.exit(1);
 });
 

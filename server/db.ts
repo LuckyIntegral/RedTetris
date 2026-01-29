@@ -23,17 +23,19 @@ const pool = mysql.createPool({
 });
 
 // Test the connection
+import { logger } from './utils/logger';
+
 export const testConnection = async () => {
   try {
     const connection = await pool.getConnection();
-    console.log('✅ Database connected successfully');
+    logger.info('✅ Database connected successfully');
     connection.release();
     return true;
   } catch (error: unknown) {
     if (error instanceof Error) {
-      console.error('❌ Database connection failed:', error.message);
+      logger.error('❌ Database connection failed:', error.message);
     } else {
-      console.error('❌ Database connection failed with unknown error');
+      logger.error('❌ Database connection failed with unknown error');
     }
     return false;
   }

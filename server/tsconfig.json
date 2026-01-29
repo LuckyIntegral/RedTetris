@@ -19,7 +19,10 @@
     "middleware/**/*.ts",
     "controllers/**/*.ts",
     "routes/**/*.ts",
-    "config/**/*.ts"
+    "config/**/*.ts",
+    "core/**/*.ts",
+    "game/**/*.ts",
+    "net/**/*.ts"
   ],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]
 }
