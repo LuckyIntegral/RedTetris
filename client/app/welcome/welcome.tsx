@@ -1,7 +1,16 @@
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { logoutUser } from '../store/authSlice';
 import logoDark from './logo-dark.svg';
 import logoLight from './logo-light.svg';
 
 export function Welcome() {
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state.auth);
+
+  const handleLogout = () => {
+    void dispatch(logoutUser());
+  };
+
   return (
     <main className='flex items-center justify-center pt-16 pb-4'>
       <div className='flex-1 flex flex-col items-center gap-16 min-h-0'>
@@ -19,7 +28,28 @@ export function Welcome() {
             />
           </div>
         </header>
-        <div className='max-w-[300px] w-full space-y-6 px-4'>
+        <div className='max-w-[600px] w-full space-y-6 px-4'>
+          {user && (
+            <div className='rounded-3xl border border-gray-200 p-6 dark:border-gray-700 space-y-4'>
+              <h2 className='text-2xl font-bold text-center text-gray-900 dark:text-gray-100'>
+                Welcome, {user.username}!
+              </h2>
+              <div className='space-y-2 text-sm text-gray-600 dark:text-gray-400'>
+                <p>
+                  <strong>Email:</strong> {user.email}
+                </p>
+                <p>
+                  <strong>Member since:</strong> {new Date(user.created_at).toLocaleDateString()}
+                </p>
+              </div>
+              <button
+                onClick={handleLogout}
+                className='w-full rounded-md bg-red-600 dark:bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 dark:hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 focus:ring-offset-2'
+              >
+                Logout
+              </button>
+            </div>
+          )}
           <nav className='rounded-3xl border border-gray-200 p-6 dark:border-gray-700 space-y-4'>
             <p className='leading-6 text-gray-700 dark:text-gray-200 text-center'>What&apos;s next?</p>
             <ul>
