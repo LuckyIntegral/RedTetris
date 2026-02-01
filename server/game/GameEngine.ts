@@ -244,7 +244,7 @@ export class GameEngine {
         playerState.nextPiece = this.pieceGenerator.getPiece(playerState.piecesPlaced);
         playerState.piecesPlaced += 1;
 
-        const piece: Piece = { type: next, x: Math.floor(WIDTH / 2) - 1, y: -2, rotation: 0 };
+        const piece: Piece = { type: next, x: Math.floor(WIDTH / 2) - 1, y: -1, rotation: 0 };
 
         playerState.activePiece = piece;
         // immediate collision -> player loses
