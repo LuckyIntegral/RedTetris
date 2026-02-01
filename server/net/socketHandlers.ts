@@ -26,6 +26,8 @@ export function registerSocketHandlers(
           board: game.engine.renderBoardWithPiece(playerState.board, playerState.activePiece),
           activePiece: playerState.activePiece,
           nextPiece: playerState.nextPiece,
+          holdPiece: playerState.holdPiece,
+          holdLocked: playerState.holdLocked,
           piecesPlaced: playerState.piecesPlaced,
           isAlive: playerState.isAlive,
           name: playerState.name,

@@ -93,6 +93,7 @@ export default function GameRoute() {
       if (e.key === 'ArrowRight') s.emit('intent', { roomId: room, playerId, intent: { type: 'move', dir: 'right' } });
       if (e.key === 'ArrowUp') s.emit('intent', { roomId: room, playerId, intent: { type: 'rotate' } });
       if (e.key === 'ArrowDown') s.emit('intent', { roomId: room, playerId, intent: { type: 'soft' } });
+      if (e.key === 'Shift') s.emit('intent', { roomId: room, playerId, intent: { type: 'hold' } });
       if (e.code === 'Space') {
         e.preventDefault();
         s.emit('intent', { roomId: room, playerId, intent: { type: 'hard' } });
@@ -350,7 +351,7 @@ export default function GameRoute() {
             </div>
           </div>
           <div className='mt-2'>
-            <div className='space-x-2'>
+            <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
               <button
                 style={{ zIndex: 20, pointerEvents: 'auto', cursor: 'pointer' }}
                 onClick={() => sendIntent({ type: 'move', dir: 'left' })}
@@ -382,9 +383,15 @@ export default function GameRoute() {
                 Hard
               </button>
             </div>
-            <div className='mt-2'>
-              <strong>Next</strong>
-              <div style={{ marginTop: 6 }}>{renderNextPreview(myView?.nextPiece ?? null, 14)}</div>
+            <div style={{ display: 'flex', gap: 12, marginTop: 12, alignItems: 'center' }}>
+              <div>
+                <strong>Hold</strong>
+                <div style={{ marginTop: 6 }}>{renderNextPreview(myView?.holdPiece ?? null, 14)}</div>
+              </div>
+              <div>
+                <strong>Next</strong>
+                <div style={{ marginTop: 6 }}>{renderNextPreview(myView?.nextPiece ?? null, 14)}</div>
+              </div>
             </div>
           </div>
         </div>

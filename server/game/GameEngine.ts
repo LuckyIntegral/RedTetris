@@ -46,6 +46,8 @@ export class GameEngine {
           activePiece: null,
           nextPiece: null,
           piecesPlaced: 0,
+          holdPiece: null,
+          holdLocked: false,
           isAlive: true,
           name: '',
         },
@@ -62,6 +64,8 @@ export class GameEngine {
       activePiece: null,
       nextPiece: null,
       piecesPlaced: 0,
+      holdPiece: null,
+      holdLocked: false,
       isAlive: true,
       name: '',
     };
@@ -150,6 +154,37 @@ export class GameEngine {
       return newState;
     }
 
+    // HOLD (buffer) handling
+    if (input.type === 'hold') {
+      // cannot hold if already used since last placement
+      if (player.holdLocked) {
+        return newState;
+      }
+
+      const activeType = player.activePiece!.type;
+      if (!player.holdPiece) {
+        // move current piece into hold, spawn will occur next tick
+        player.holdPiece = activeType;
+        player.activePiece = null;
+        player.holdLocked = true;
+      } else {
+        // swap: take held piece into active (spawn position), put current into hold
+        const held = player.holdPiece;
+        player.holdPiece = activeType;
+        const spawn: Piece = { type: held, x: Math.floor(WIDTH / 2) - 1, y: -1, rotation: 0 };
+        if (this.collides(player.board, spawn)) {
+          // spawn collision -> player dies
+          player.isAlive = false;
+          player.activePiece = null;
+        } else {
+          player.activePiece = spawn;
+        }
+        player.holdLocked = true;
+      }
+
+      return newState;
+    }
+
     const cur = active;
     const tryMove = (dx: number, dy: number, drot = 0): boolean => {
       // use the current active piece as the base so repeated moves (eg. hard drop)
@@ -181,6 +216,8 @@ export class GameEngine {
       player.activePiece = null;
 
       this.computeLinesClearedReward(newState, playerId);
+
+      player.holdLocked = false;
     }
 
     return newState;
@@ -244,11 +281,10 @@ export class GameEngine {
       if (!this.collides(playerState.board, moved)) {
         playerState.activePiece = moved;
       } else {
-        // lock piece
         playerState.board = this.renderBoardWithPiece(playerState.board, playerState.activePiece);
         playerState.activePiece = null;
-        // clear lines
         this.computeLinesClearedReward(newState, playerId);
+        playerState.holdLocked = false;
       }
     }
 

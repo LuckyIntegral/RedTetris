@@ -5,13 +5,20 @@ export interface Piece {
   rotation: number;
 }
 
-export type Intent = { type: 'move'; dir: 'left' | 'right' } | { type: 'rotate' } | { type: 'soft' } | { type: 'hard' };
+export type Intent =
+  | { type: 'move'; dir: 'left' | 'right' }
+  | { type: 'rotate' }
+  | { type: 'soft' }
+  | { type: 'hard' }
+  | { type: 'hold' };
 
 export interface PlayerState {
   board: number[][];
   activePiece: Piece | null;
   nextPiece: string | null;
   piecesPlaced: number;
+  holdPiece: string | null;
+  holdLocked: boolean;
   isAlive: boolean;
   name: string;
 }
