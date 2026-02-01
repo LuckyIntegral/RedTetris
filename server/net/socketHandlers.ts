@@ -14,43 +14,25 @@ export function registerSocketHandlers(
   io.on('connection', (socket: Socket<ClientToServerEvents, ServerToClientEvents, SocketData>) => {
     logger.info('socket connected', socket.id);
 
-    // Helper: emit a sanitized per-player state: each player receives only their
-    // board (with the active piece merged in) and minimal info about opponents
-    // (spectrum, name, isAlive). Do not expose sharedQueue, nextQueue, or activePiece.
     function emitSanitizedState(game: Game) {
       const state = game.getState();
-
       const alivePlayers = game.getPlayers().filter((p) => p.isAlive);
       const winnerId = alivePlayers.length === 1 ? alivePlayers[0].id : null;
 
-      for (const player of game.getPlayers()) {
-        const playersObj: Record<string, PlayerState> = {};
+      const playersObj: Record<string, PlayerState> = {};
 
-        for (const [pid, playerState] of Object.entries(game.getState().playerStates)) {
-          if (pid === player.id) {
-            // TODO: refactor to be prettier
-            const merged = game.engine.renderBoardWithPiece(playerState.board, playerState.activePiece); // move to generator later
-            playersObj[pid] = {
-              board: merged,
-              activePiece: playerState.activePiece,
-              nextPiece: playerState.nextPiece,
-              piecesPlaced: playerState.piecesPlaced,
-              isAlive: playerState.isAlive,
-              spectrum: playerState.spectrum,
-              name: playerState.name,
-            };
-          } else {
-            playersObj[pid] = {
-              board: playerState.board,
-              activePiece: playerState.activePiece,
-              nextPiece: playerState.nextPiece,
-              piecesPlaced: playerState.piecesPlaced,
-              isAlive: playerState.isAlive,
-              spectrum: playerState.spectrum,
-              name: playerState.name,
-            };
-          }
-        }
+      for (const [pid, playerState] of Object.entries(game.getState().playerStates)) {
+        playersObj[pid] = {
+          board: game.engine.renderBoardWithPiece(playerState.board, playerState.activePiece),
+          activePiece: playerState.activePiece,
+          nextPiece: playerState.nextPiece,
+          piecesPlaced: playerState.piecesPlaced,
+          isAlive: playerState.isAlive,
+          name: playerState.name,
+        };
+      }
+
+      for (const player of game.getPlayers()) {
         io.to(player.socketId).emit('state', {
           status: state.status,
           tick: state.tick,
@@ -69,7 +51,6 @@ export function registerSocketHandlers(
 
       logger.info(`Game created: room=${game.id} host=${player.id}`);
 
-      // keep lobby in waiting state until host clicks start
       game.state.status = 'waiting';
 
       await socket.join(game.id); // TODO: check if await is needed here
@@ -106,7 +87,6 @@ export function registerSocketHandlers(
     socket.on('intent', (payload: { roomId: string; playerId: string; intent: Intent }) => {
       const game = manager.getGame(payload.roomId);
       if (!game) {
-        // throw error?
         return;
       }
       game.applyInput(payload.playerId, payload.intent);

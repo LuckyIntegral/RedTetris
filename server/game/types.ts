@@ -5,19 +5,14 @@ export interface Piece {
   rotation: number;
 }
 
-export type Intent =
-  | { type: 'move'; dir: 'left' | 'right' }
-  | { type: 'rotate' }
-  | { type: 'soft' }
-  | { type: 'hard' };
+export type Intent = { type: 'move'; dir: 'left' | 'right' } | { type: 'rotate' } | { type: 'soft' } | { type: 'hard' };
 
 export interface PlayerState {
   board: number[][];
   activePiece: Piece | null;
   nextPiece: string | null;
-  piecesPlaced: number; // number of pieces placed so far
+  piecesPlaced: number;
   isAlive: boolean;
-  spectrum: number[]; // TODO: delete probably
   name: string;
 }
 

@@ -47,7 +47,6 @@ export class GameEngine {
           nextPiece: null,
           piecesPlaced: 0,
           isAlive: true,
-          spectrum: Array.from({ length: WIDTH }, () => 0),
           name: '',
         },
       ])
@@ -64,7 +63,6 @@ export class GameEngine {
       nextPiece: null,
       piecesPlaced: 0,
       isAlive: true,
-      spectrum: Array.from({ length: WIDTH }, () => 0),
       name: '',
     };
     return newState;
@@ -138,20 +136,6 @@ export class GameEngine {
     }
 
     return { board: newBoard, cleared };
-  }
-
-  private computeSpectrum(board: number[][]) {
-    const spectrum = Array.from({ length: WIDTH }, () => 0);
-
-    for (let x = 0; x < WIDTH; x++) {
-      for (let y = 0; y < HEIGHT; y++) {
-        if (board[y][x]) {
-          spectrum[x] = HEIGHT - y;
-          break;
-        }
-      }
-    }
-    return spectrum;
   }
 
   applyInput(state: GameState, playerId: string, input: Intent): GameState {
@@ -266,9 +250,6 @@ export class GameEngine {
         // clear lines
         this.computeLinesClearedReward(newState, playerId);
       }
-
-      // recompute spectrum
-      playerState.spectrum = this.computeSpectrum(playerState.board);
     }
 
     // check KO: if only one or zero players alive and game was running, finish

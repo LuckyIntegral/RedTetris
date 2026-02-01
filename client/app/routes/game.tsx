@@ -19,6 +19,21 @@ export default function GameRoute() {
   const [message, setMessage] = useState<string | null>(null);
   const socketRef = useRef<any>(null);
 
+  const computeSpectrumFromBoard = (board: number[][]) => {
+    const cols = Array.from({ length: WIDTH }, () => 0);
+    for (let x = 0; x < WIDTH; x++) {
+      let h = 0;
+      for (let y = 0; y < HEIGHT; y++) {
+        if ((board[y] && board[y][x]) || board[y]?.[x] === -1) {
+          h = HEIGHT - y;
+          break;
+        }
+      }
+      cols[x] = h;
+    }
+    return cols;
+  };
+
   useEffect(() => {
     if (socketRef.current) return; // avoid duplicate sockets in StrictMode / HMR
     const url = (import.meta.env.VITE_SERVER_URL as string) ?? 'http://localhost:3001';
@@ -171,12 +186,114 @@ export default function GameRoute() {
     if (!state || !playerId) return [];
     return Object.entries(state.players)
       .filter(([id]) => id !== playerId)
-      .map(([id, p]: any) => ({
-        id,
-        name: p.name ?? id,
-        spectrum: p.spectrum ?? Array.from({ length: WIDTH }, () => 0),
-      }));
+      .map(([id, p]: any) => {
+        const board = p?.board ?? null;
+        const spectrum = Array.isArray(p?.spectrum)
+          ? p.spectrum
+          : board
+            ? computeSpectrumFromBoard(board)
+            : Array.from({ length: WIDTH }, () => 0);
+
+        return { id, name: p.name ?? id, spectrum, board, isAlive: Boolean(p.isAlive), nextPiece: p.nextPiece ?? null };
+      });
   }, [state, playerId]);
+
+  // Next-piece shapes (rotation 0) for preview; pad to 4x4 for consistent rendering
+  const PIECE_SHAPES: Record<string, number[][]> = {
+    I: [[1, 1, 1, 1]],
+    O: [
+      [1, 1],
+      [1, 1],
+    ],
+    T: [
+      [0, 1, 0],
+      [1, 1, 1],
+    ],
+    S: [
+      [0, 1, 1],
+      [1, 1, 0],
+    ],
+    Z: [
+      [1, 1, 0],
+      [0, 1, 1],
+    ],
+    J: [
+      [1, 0, 0],
+      [1, 1, 1],
+    ],
+    L: [
+      [0, 0, 1],
+      [1, 1, 1],
+    ],
+  };
+  const PIECE_COLORS: Record<string, string> = {
+    I: '#06b6d4',
+    O: '#f59e0b',
+    T: '#8b5cf6',
+    S: '#10b981',
+    Z: '#ef4444',
+    J: '#3b82f6',
+    L: '#f97316',
+  };
+
+  const PIECE_ID_COLORS: string[] = [
+    '#000000', // index 0 unused
+    PIECE_COLORS.I,
+    PIECE_COLORS.O,
+    PIECE_COLORS.T,
+    PIECE_COLORS.S,
+    PIECE_COLORS.Z,
+    PIECE_COLORS.J,
+    PIECE_COLORS.L,
+  ];
+
+  const renderOpponentBoard = (board: number[][] | null, isAlive: boolean, cell = 4) => {
+    const cells: any[] = [];
+    for (let y = 0; y < HEIGHT; y++) {
+      for (let x = 0; x < WIDTH; x++) {
+        const val = board?.[y]?.[x] ?? 0;
+        let bg = 'transparent';
+        if (val === 0) bg = 'transparent';
+        else if (val === -1) bg = isAlive ? '#111' : '#444';
+        else bg = isAlive ? (PIECE_ID_COLORS[val] ?? '#999') : '#777';
+
+        cells.push(
+          <div
+            key={`op-${x}-${y}`}
+            style={{ width: cell, height: cell, boxSizing: 'border-box', border: '1px solid #222', background: bg }}
+          />
+        );
+      }
+    }
+
+    return (
+      <div style={{ width: WIDTH * cell, height: HEIGHT * cell, overflow: 'hidden' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: `repeat(${WIDTH}, ${cell}px)`, gap: 0 }}>{cells}</div>
+      </div>
+    );
+  };
+
+  const renderNextPreview = (type: string | null, size = 12) => {
+    const mat = type && PIECE_SHAPES[type] ? PIECE_SHAPES[type] : null;
+    const gridSize = 4;
+    const color = (type && PIECE_COLORS[type]) || '#60a5fa';
+    const cells: any[] = [];
+    for (let r = 0; r < gridSize; r++) {
+      for (let c = 0; c < gridSize; c++) {
+        const inMat = Boolean(mat && r < mat.length && c < mat[0].length && mat[r][c]);
+        const bg = inMat ? color : 'transparent';
+        cells.push(
+          <div
+            key={`n-${r}-${c}`}
+            style={{ width: size, height: size, boxSizing: 'border-box', border: '1px solid #222', background: bg }}
+          />
+        );
+      }
+    }
+    return (
+      <div style={{ display: 'grid', gridTemplateColumns: `repeat(${gridSize}, ${size}px)`, gap: 0 }}>{cells}</div>
+    );
+  };
 
   return (
     <main
@@ -265,6 +382,10 @@ export default function GameRoute() {
                 Hard
               </button>
             </div>
+            <div className='mt-2'>
+              <strong>Next</strong>
+              <div style={{ marginTop: 6 }}>{renderNextPreview(myView?.nextPiece ?? null, 14)}</div>
+            </div>
           </div>
         </div>
 
@@ -276,15 +397,13 @@ export default function GameRoute() {
                 key={op.id}
                 style={{ width: 120 }}
               >
-                <div style={{ fontSize: 12 }}>{op.name}</div>
-                <div style={{ display: 'flex', gap: 2, alignItems: 'end', height: 120 }}>
-                  {op.spectrum.map((h: number, i: number) => (
-                    <div
-                      key={i}
-                      style={{ width: 8, height: Math.min(120, (h / HEIGHT) * 120) || 4, background: '#333' }}
-                    />
-                  ))}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ fontSize: 12 }}>{op.name}</div>
+                  <div style={{ fontSize: 10, color: op.isAlive ? '#000' : '#777' }}>
+                    {op.isAlive ? 'alive' : 'dead'}
+                  </div>
                 </div>
+                <div style={{ marginTop: 6 }}>{renderOpponentBoard(op.board ?? null, op.isAlive, 3)}</div>
               </div>
             ))}
           </div>

@@ -18,11 +18,6 @@ export interface ServerToClientEvents {
     winnerId: string | null;
     hostId: string;
   }) => void;
-  lobby_state: (payload: {
-    players: Record<string, { name: string; spectrum: number[]; isAlive: boolean }>;
-    status: string;
-    winnerId?: string;
-  }) => void;
   game_over: (payload: { message: string }) => void;
   join_failed: (payload: { code: string; message: string }) => void;
   start_failed: (payload: { code: string; message: string }) => void;
