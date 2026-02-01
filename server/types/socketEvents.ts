@@ -23,6 +23,7 @@ export interface ServerToClientEvents {
   start_failed: (payload: { code: string; message: string }) => void;
   joined: (payload: { playerId: string; roomId: string }) => void;
   winner: (payload: { message: string }) => void;
+  host_changed: (payload: { newHostId: string; message?: string }) => void;
   pong?: () => void;
 }
 

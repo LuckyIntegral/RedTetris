@@ -134,8 +134,6 @@ export function registerSocketHandlers(
           // compute alive and dead players
           const aliveIds = Object.keys(game.state.playerStates).filter((pid) => game.state.playerStates[pid].isAlive);
           const deadIds = Object.keys(game.state.playerStates).filter((pid) => !game.state.playerStates[pid].isAlive);
-          // logger.debug(`server: aliveIds=${aliveIds.length}`, aliveIds);
-          // logger.debug(`server: deadIds=${deadIds.length}`, deadIds);
 
           // notify newly-dead players (compare with prevAlive)
           for (const id of deadIds) {
@@ -198,8 +196,39 @@ export function registerSocketHandlers(
 
     socket.on('disconnect', () => {
       logger.info('socket disconnected', socket.id);
-      // Note: for brevity we don't reassign host or remove players here
-      // add broadcast message 'New host is XXX' if host left, etc.
+
+      // Find any games that contain this socket and remove the player
+      for (const [roomId, game] of manager.games.entries()) {
+        const playerEntry = game.getPlayers().find((p) => p.socketId === socket.id);
+        if (!playerEntry) continue;
+
+        const leavingId = playerEntry.id;
+        logger.info(`server: removing player ${leavingId} from game ${roomId}`);
+
+        // remove from players map and game state
+        game.players.delete(leavingId);
+        delete game.state.playerStates[leavingId];
+
+        // if host left, pick a random new host among remaining players
+        if (game.hostId === leavingId) {
+          const remaining = game.getPlayers();
+          if (remaining.length > 0) {
+            const idx = Math.floor(Math.random() * remaining.length);
+            const newHost = remaining[idx];
+            game.hostId = newHost.id;
+            logger.info(`server: new host for ${roomId} is ${newHost.id}`);
+            io.to(roomId).emit('host_changed', { newHostId: newHost.id, message: `New host is ${newHost.name}` });
+          } else {
+            // no players left, remove game
+            logger.info(`server: no players left in ${roomId}, removing game`);
+            manager.removeGame(roomId);
+            continue;
+          }
+        }
+
+        // broadcast updated sanitized state to remaining players
+        emitSanitizedState(game);
+      }
     });
   });
 }

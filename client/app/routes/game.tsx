@@ -63,6 +63,10 @@ export default function GameRoute() {
       setRoom(info.roomId ?? room);
       setError(null);
     });
+    s.on('host_changed', (info: any) => {
+      setHostId(info?.newHostId ?? null);
+      if (info?.message) setMessage(info.message);
+    });
     s.on('game_over', (info: any) => {
       console.log('client: received game_over', info);
       setMessage(info?.message ?? 'game over');
@@ -141,6 +145,12 @@ export default function GameRoute() {
     return state.players?.[playerId] ?? null;
   }, [state, playerId]);
 
+  const hostName = useMemo(() => {
+    if (!state) return hostId ?? null;
+    const hid = hostId ?? state.hostId ?? null;
+    return hid ? (state.players?.[hid]?.name ?? hid) : null;
+  }, [state, hostId]);
+
   // show win/lose messages based on state transitions
   const prevAliveRef = useRef<boolean | null>(null);
   useEffect(() => {
@@ -195,7 +205,14 @@ export default function GameRoute() {
             ? computeSpectrumFromBoard(board)
             : Array.from({ length: WIDTH }, () => 0);
 
-        return { id, name: p.name ?? id, spectrum, board, isAlive: Boolean(p.isAlive), nextPiece: p.nextPiece ?? null };
+        return {
+          id,
+          name: p.name ?? id,
+          spectrum,
+          board,
+          isAlive: Boolean(p.isAlive),
+          isHost: id === (hostId ?? state.hostId),
+        };
       });
   }, [state, playerId]);
 
@@ -331,6 +348,11 @@ export default function GameRoute() {
         {hostId && playerId === hostId && (
           <div className='mt-2'>
             <strong>Passcode:</strong> {room}
+          </div>
+        )}
+        {hostName && (
+          <div className='mt-2'>
+            <strong>Host:</strong> {hostName} {hostId === playerId || state?.hostId === playerId ? '(you)' : ''}
           </div>
         )}
         {error && <div className='mt-2 text-red-600'>Error: {error}</div>}
