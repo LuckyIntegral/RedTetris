@@ -20,6 +20,7 @@ export interface PlayerState {
   speed: number;
   holdPiece: string | null;
   holdLocked: boolean;
+  score: number;
   isAlive: boolean;
   name: string;
 }

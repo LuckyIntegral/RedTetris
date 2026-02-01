@@ -217,6 +217,7 @@ export default function GameRoute() {
           spectrum,
           board,
           isAlive: Boolean(p.isAlive),
+          score: p?.score ?? 0,
           isHost: id === (hostId ?? state.hostId),
         };
       });
@@ -381,6 +382,9 @@ export default function GameRoute() {
               })()}
             </div>
           </div>
+          <div style={{ marginTop: 8 }}>
+            <strong>Score:</strong> {myView?.score ?? 0}
+          </div>
           <div className='mt-2'>
             <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
               <button
@@ -436,7 +440,10 @@ export default function GameRoute() {
                 style={{ width: 120 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ fontSize: 12 }}>{op.name}</div>
+                  <div>
+                    <div style={{ fontSize: 12 }}>{op.name}</div>
+                    <div style={{ fontSize: 11, color: '#333' }}>Score: {op.score}</div>
+                  </div>
                   <div style={{ fontSize: 10, color: op.isAlive ? '#000' : '#777' }}>
                     {op.isAlive ? 'alive' : 'dead'}
                   </div>

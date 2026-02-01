@@ -6,6 +6,8 @@ import { GameState, Intent, Piece, PlayerState } from './types';
 const WIDTH = 10;
 const HEIGHT = 20;
 
+const BSP_SCORES: Record<number, number> = { 0: 0, 1: 40, 2: 100, 3: 300, 4: 1200 };
+
 function createEmptyBoard(): number[][] {
   return Array.from({ length: HEIGHT }, () => Array.from({ length: WIDTH }, () => 0));
 }
@@ -50,6 +52,7 @@ export class GameEngine {
           piecesPlaced: 0,
           holdPiece: null,
           holdLocked: false,
+          score: 0,
           isAlive: true,
           name: '',
         },
@@ -69,6 +72,7 @@ export class GameEngine {
       piecesPlaced: 0,
       holdPiece: null,
       holdLocked: false,
+      score: 0,
       isAlive: true,
       name: '',
     };
@@ -135,11 +139,8 @@ export class GameEngine {
         continue;
       }
 
-      if (!row.some((cell) => cell === -1)) {
-        cleared += 1;
-      }
-
       newBoard.unshift(Array.from({ length: WIDTH }, () => 0));
+      cleared += 1;
     }
 
     return { board: newBoard, cleared };
@@ -212,13 +213,14 @@ export class GameEngine {
     } else if (input.type === 'soft') {
       tryMove(0, 1);
     } else if (input.type === 'hard') {
-      // TODO: add levitation effect here
       while (tryMove(0, 1));
+
+      const dropRows = (player.activePiece?.y ?? 0) - cur.y;
 
       player.board = this.renderBoardWithPiece(player.board, player.activePiece);
       player.activePiece = null;
 
-      this.computeLinesClearedReward(newState, playerId);
+      this.computeLinesClearedReward(newState, playerId, dropRows, true);
 
       player.holdLocked = false;
     }
@@ -226,28 +228,31 @@ export class GameEngine {
     return newState;
   }
 
-  private computeLinesClearedReward(state: GameState, playerId: string) {
+  private computeLinesClearedReward(state: GameState, playerId: string, dropRows = 0, isHard = false) {
     const { board: clearedBoard, cleared } = this.clearLines(state.playerStates[playerId].board);
     state.playerStates[playerId].board = clearedBoard;
+
+    const base = BSP_SCORES[cleared];
+    const dropBonus = isHard ? Math.max(0, dropRows + 1) : 0;
+
+    state.playerStates[playerId].score += base + dropBonus;
 
     if (cleared > 1) {
       const generatedLine = Array.from({ length: WIDTH }, () => -1);
       generatedLine[Math.floor(Math.random() * WIDTH)] = 0;
 
-      const garbageLines = Math.max(0, cleared - 1);
-      if (garbageLines > 0) {
-        for (const otherId of Object.keys(state.playerStates)) {
-          if (otherId === playerId) {
-            continue;
-          }
-          const other = state.playerStates[otherId];
-          if (!other.isAlive) {
-            continue;
-          }
-          for (let g = 0; g < garbageLines; g++) {
-            other.board.shift();
-            other.board.push(generatedLine.slice());
-          }
+      const garbageLines = cleared - 1;
+      for (const otherId of Object.keys(state.playerStates)) {
+        if (otherId === playerId) {
+          continue;
+        }
+        const other = state.playerStates[otherId];
+        if (!other.isAlive) {
+          continue;
+        }
+        for (let g = 0; g < garbageLines; g++) {
+          other.board.shift();
+          other.board.push(generatedLine.slice());
         }
       }
     }

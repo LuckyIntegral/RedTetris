@@ -33,6 +33,7 @@ export function registerSocketHandlers(
           holdPiece: playerState.holdPiece,
           holdLocked: playerState.holdLocked,
           piecesPlaced: playerState.piecesPlaced,
+          score: playerState.score,
           isAlive: playerState.isAlive,
           name: playerState.name,
         };
@@ -129,14 +130,11 @@ export function registerSocketHandlers(
 
       const interval = setInterval(() => {
         try {
-          // tick game
           game.tick();
 
-          // compute alive and dead players
           const aliveIds = Object.keys(game.state.playerStates).filter((pid) => game.state.playerStates[pid].isAlive);
           const deadIds = Object.keys(game.state.playerStates).filter((pid) => !game.state.playerStates[pid].isAlive);
 
-          // notify newly-dead players (compare with prevAlive)
           for (const id of deadIds) {
             if (prevAlive[id]) {
               logger.info(`server: player ${id} dead`);
@@ -148,7 +146,6 @@ export function registerSocketHandlers(
             }
           }
 
-          // broadcast sanitized per-player state
           emitSanitizedState(game);
 
           // if finished (0 or 1 alive), notify winner or broadcast game over, stop and cleanup
