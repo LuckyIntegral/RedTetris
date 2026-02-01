@@ -129,6 +129,61 @@ export class GameEngine {
     return newBoard;
   }
 
+  public renderBoardWithGhost(board: number[][], piece: Piece | null) {
+    const newBoard = cloneBoard(board);
+    if (!piece) {
+      return newBoard;
+    }
+
+    let y = piece.y;
+    let landedY = y;
+
+    while (true) {
+      const candidate: Piece = { ...piece, y: y + 1 };
+      if (this.collides(board, candidate)) {
+        landedY = y;
+        break;
+      }
+      y += 1;
+      if (y > HEIGHT + 5) {
+        landedY = y;
+        break;
+      }
+    }
+
+    const { piece: mat } = this.pieceGenerator.getPieceShapeAndColor(piece.type, piece.rotation);
+    for (let r = 0; r < mat.length; r++) {
+      for (let c = 0; c < mat[r].length; c++) {
+        if (!mat[r][c]) {
+          continue;
+        }
+        const x = piece.x + c;
+        const yy = landedY + r;
+        if (yy >= 0 && yy < HEIGHT && x >= 0 && x < WIDTH) {
+          if (!newBoard[yy][x]) {
+            newBoard[yy][x] = -2;
+          }
+        }
+      }
+    }
+
+    const { piece: mat2, color } = this.pieceGenerator.getPieceShapeAndColor(piece.type, piece.rotation);
+    for (let r = 0; r < mat2.length; r++) {
+      for (let c = 0; c < mat2[r].length; c++) {
+        if (!mat2[r][c]) {
+          continue;
+        }
+        const x = piece.x + c;
+        const y2 = piece.y + r;
+        if (y2 >= 0 && y2 < HEIGHT && x >= 0 && x < WIDTH) {
+          newBoard[y2][x] = color;
+        }
+      }
+    }
+
+    return newBoard;
+  }
+
   private clearLines(board: number[][]) {
     const newBoard: number[][] = [];
     let cleared = 0;

@@ -26,7 +26,7 @@ export function registerSocketHandlers(
 
       for (const [pid, playerState] of Object.entries(game.getState().playerStates)) {
         playersObj[pid] = {
-          board: game.engine.renderBoardWithPiece(playerState.board, playerState.activePiece),
+          board: game.engine.renderBoardWithGhost(playerState.board, playerState.activePiece),
           activePiece: playerState.activePiece,
           nextPiece: playerState.nextPiece,
           speed: playerState.speed,

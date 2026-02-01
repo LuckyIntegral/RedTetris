@@ -177,19 +177,21 @@ export default function GameRoute() {
     const color =
       val == 0
         ? 'bg-transparent'
-        : val == -1
-          ? 'bg-gray-800'
-          : [
-              'bg-red-200',
-              'bg-green-200',
-              'bg-blue-200',
-              'bg-yellow-200',
-              'bg-purple-200',
-              'bg-pink-200',
-              'bg-orange-200',
-              'bg-gray-200',
-              'bg-white-200',
-            ][val - 1];
+        : val == -2
+          ? 'bg-[rgba(255,255,255,0.06)]'
+          : val == -1
+            ? 'bg-gray-800'
+            : [
+                'bg-red-200',
+                'bg-green-200',
+                'bg-blue-200',
+                'bg-yellow-200',
+                'bg-purple-200',
+                'bg-pink-200',
+                'bg-orange-200',
+                'bg-gray-200',
+                'bg-white-200',
+              ][val - 1];
     return (
       <div
         key={`${x}-${y}`}
@@ -279,6 +281,7 @@ export default function GameRoute() {
         const val = board?.[y]?.[x] ?? 0;
         let bg = 'transparent';
         if (val === 0) bg = 'transparent';
+        else if (val === -2) bg = isAlive ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.03)';
         else if (val === -1) bg = isAlive ? '#111' : '#444';
         else bg = isAlive ? (PIECE_ID_COLORS[val] ?? '#999') : '#777';
 
