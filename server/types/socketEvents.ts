@@ -15,6 +15,7 @@ export interface ServerToClientEvents {
   state: (payload: {
     status: GameState['status'];
     tick: number;
+    speed: number;
     players: Record<string, PlayerState>;
     winnerId: string | null;
     hostId: string;

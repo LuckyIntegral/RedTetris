@@ -8,6 +8,8 @@ import type { Intent, PlayerState } from '../game/types';
 import { ClientToServerEvents, ServerToClientEvents, SocketData } from '../types/socketEvents';
 import { logger } from '../utils/logger';
 
+export const TICK_RATE = 20;
+
 export function registerSocketHandlers(
   io: Server<ClientToServerEvents, ServerToClientEvents, SocketData>,
   manager: GameManager
@@ -27,6 +29,7 @@ export function registerSocketHandlers(
           board: game.engine.renderBoardWithPiece(playerState.board, playerState.activePiece),
           activePiece: playerState.activePiece,
           nextPiece: playerState.nextPiece,
+          speed: playerState.speed,
           holdPiece: playerState.holdPiece,
           holdLocked: playerState.holdLocked,
           piecesPlaced: playerState.piecesPlaced,
@@ -39,6 +42,7 @@ export function registerSocketHandlers(
         io.to(player.socketId).emit('state', {
           status: state.status,
           tick: state.tick,
+          speed: state.speed,
           players: playersObj,
           winnerId,
           hostId: game.hostId,
@@ -116,10 +120,6 @@ export function registerSocketHandlers(
       }
 
       game.state.status = 'running';
-
-      // start game loop for this room (slower)
-      // TODO: extract to game manager later?
-      const TICK_RATE = 1; // ticks per second
 
       // track previous alive state to emit game over messages
       const prevAlive: Record<string, boolean> = {};

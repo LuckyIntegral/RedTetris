@@ -1,3 +1,4 @@
+import { TICK_RATE } from '../net/socketHandlers';
 import { logger } from '../utils/logger';
 import { PieceGenerator } from './PieceGenerator';
 import { GameState, Intent, Piece, PlayerState } from './types';
@@ -45,6 +46,7 @@ export class GameEngine {
           board: createEmptyBoard(),
           activePiece: null,
           nextPiece: null,
+          speed: 0,
           piecesPlaced: 0,
           holdPiece: null,
           holdLocked: false,
@@ -54,7 +56,7 @@ export class GameEngine {
       ])
     );
 
-    return { status: 'waiting', tick: 0, playerStates } as GameState;
+    return { status: 'waiting', tick: 0, speed: TICK_RATE, playerStates } as GameState;
   }
 
   addPlayer(state: GameState, playerId: string): GameState {
@@ -63,6 +65,7 @@ export class GameEngine {
       board: createEmptyBoard(),
       activePiece: null,
       nextPiece: null,
+      speed: 0,
       piecesPlaced: 0,
       holdPiece: null,
       holdLocked: false,
@@ -253,6 +256,13 @@ export class GameEngine {
   tick(state: GameState): GameState {
     const newState: GameState = this.cloneState(state);
     newState.tick += 1;
+    if (newState.tick % 140 === 0) {
+      newState.speed = Math.max(1, newState.speed - 1);
+    }
+
+    if (newState.tick % newState.speed !== 0) {
+      return newState;
+    }
 
     for (const [playerId, playerState] of Object.entries(newState.playerStates)) {
       if (!playerState.activePiece) {

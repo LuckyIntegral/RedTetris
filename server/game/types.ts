@@ -17,6 +17,7 @@ export interface PlayerState {
   activePiece: Piece | null;
   nextPiece: string | null;
   piecesPlaced: number;
+  speed: number;
   holdPiece: string | null;
   holdLocked: boolean;
   isAlive: boolean;
@@ -26,5 +27,6 @@ export interface PlayerState {
 export interface GameState {
   status: 'waiting' | 'running' | 'finished';
   tick: number;
+  speed: number;
   playerStates: Record<string, PlayerState>;
 }
