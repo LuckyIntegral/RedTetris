@@ -17,10 +17,24 @@ export class Game {
     this.state = this.engine.createInitialState([host.id]);
   }
 
+  getState(): GameState {
+    return this.state;
+  }
+
   addPlayer(player: Player) {
-    if (this.state.status !== 'waiting') return;
+    if (this.state.status !== 'waiting') {
+      return;
+    }
     this.players.set(player.id, player);
     this.state = this.engine.addPlayer(this.state, player.id);
+  }
+
+  getPlayers(): Player[] {
+    return Array.from(this.players.values());
+  }
+
+  getPlayer(playerId: string): Player | undefined {
+    return this.players.get(playerId);
   }
 
   applyInput(playerId: string, input: Intent) {

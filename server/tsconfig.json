@@ -22,7 +22,8 @@
     "config/**/*.ts",
     "core/**/*.ts",
     "game/**/*.ts",
-    "net/**/*.ts"
+    "net/**/*.ts",
+    "types/**/*.ts"
   ],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]
 }

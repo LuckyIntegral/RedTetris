@@ -5,16 +5,14 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 import cors from 'cors';
 import express, { Request, Response } from 'express';
-import swaggerUi from 'swagger-ui-express';
-import swaggerSpec from './config/swagger';
-import db, { testConnection } from './db';
-import authRoutes from './routes/auth';
-import { logDbError } from './utils/logger';
 import http from 'http';
 import { Server as IOServer } from 'socket.io';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './config/swagger';
 import { GameManager } from './core/GameManager';
 import db, { testConnection } from './db';
 import { registerSocketHandlers } from './net/socketHandlers';
+import authRoutes from './routes/auth';
 import { logDbError, logger } from './utils/logger';
 
 const app = express();

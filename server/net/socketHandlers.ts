@@ -2,130 +2,120 @@ import { randomUUID } from 'crypto';
 import { Server, Socket } from 'socket.io';
 import { GameManager } from '../core/GameManager';
 import { Player } from '../core/Player';
-import type { Intent } from '../game/types';
+import { Game } from '../game/Game';
+import type { Intent, PlayerState } from '../game/types';
+import { ClientToServerEvents, ServerToClientEvents, SocketData } from '../types/socketEvents';
 import { logger } from '../utils/logger';
 
-export function registerSocketHandlers(io: Server, manager: GameManager) {
-  io.on('connection', (socket: Socket) => {
+export function registerSocketHandlers(
+  io: Server<ClientToServerEvents, ServerToClientEvents, SocketData>,
+  manager: GameManager
+) {
+  io.on('connection', (socket: Socket<ClientToServerEvents, ServerToClientEvents, SocketData>) => {
     logger.info('socket connected', socket.id);
-
-    function generateRoomCode() {
-      const gen = () => Math.random().toString(36).slice(2, 8).toUpperCase();
-      let code = gen();
-      while (manager.getGame(code)) code = gen();
-      return code;
-    }
-
-    // Create a new game (host)
-    socket.on('create', (payload: { room?: string; name: string }) => {
-      logger.info('create a game, ', payload);
-      const room = payload.room?.trim() ? payload.room.trim() : generateRoomCode();
-      const name = payload.name || 'host';
-      const playerId = randomUUID();
-      const sid = String(socket.id);
-      const player = new Player(playerId, name, sid);
-
-      // ensure room does not already exist
-      const existing = manager.getGame(room);
-      if (existing) {
-        socket.emit('create_failed', { reason: 'ROOM_ALREADY_EXISTS', room });
-        return;
-      }
-
-      const game = manager.createGame(room, player);
-
-      logger.info(`Game created: room=${room} host=${playerId}`);
-
-      // keep lobby in waiting state until host clicks start
-      game.state.status = 'waiting';
-
-      void socket.join(room);
-      socket.emit('created', { playerId, room });
-      // send initial lobby state to creator and all other players (sanitized)
-      emitSanitizedState(game);
-    });
 
     // Helper: emit a sanitized per-player state: each player receives only their
     // board (with the active piece merged in) and minimal info about opponents
     // (spectrum, name, isAlive). Do not expose sharedQueue, nextQueue, or activePiece.
-    function emitSanitizedState(game: any) {
-      if (!game) return;
-      const full = game.state;
-      // simple board clone
-      const cloneBoard = (b: number[][]) => b.map((r: number[]) => r.slice());
+    function emitSanitizedState(game: Game) {
+      const state = game.getState();
 
-      const aliveIds = Object.keys(full.players).filter((pid) => full.players[pid].isAlive);
-      const winnerId = aliveIds.length === 1 ? aliveIds[0] : null;
+      const alivePlayers = game.getPlayers().filter((p) => p.isAlive);
+      const winnerId = alivePlayers.length === 1 ? alivePlayers[0].id : null;
 
-      for (const [pid, player] of game.players) {
-        const sockId = player?.socketId;
-        if (!sockId) continue;
-        const playersObj: Record<string, any> = {};
-        for (const otherId of Object.keys(full.players)) {
-          const otherState = full.players[otherId];
-          const otherPlayer = game.players.get(otherId);
-          if (otherId === pid) {
-            const merged = game.engine.renderBoardWithPiece(cloneBoard(otherState.board), otherState.activePiece);
-            playersObj[otherId] = {
+      for (const player of game.getPlayers()) {
+        const playersObj: Record<string, PlayerState> = {};
+
+        for (const [pid, playerState] of Object.entries(game.getState().playerStates)) {
+          if (pid === player.id) {
+            // TODO: refactor to be prettier
+            const merged = game.engine.renderBoardWithPiece(playerState.board, playerState.activePiece); // move to generator later
+            playersObj[pid] = {
               board: merged,
-              isAlive: otherState.isAlive,
-              spectrum: otherState.spectrum,
-              name: otherPlayer?.name,
+              activePiece: playerState.activePiece,
+              nextQueue: [], // TODO: remove later
+              isAlive: playerState.isAlive,
+              spectrum: playerState.spectrum,
+              name: playerState.name,
             };
           } else {
-            playersObj[otherId] = {
-              isAlive: otherState.isAlive,
-              spectrum: otherState.spectrum,
-              name: otherPlayer?.name,
+            playersObj[pid] = {
+              board: playerState.board,
+              activePiece: playerState.activePiece,
+              nextQueue: [], // TODO: remove later
+              isAlive: playerState.isAlive,
+              spectrum: playerState.spectrum,
+              name: playerState.name,
             };
           }
         }
-        const view = { status: full.status, tick: full.tick, players: playersObj, winnerId };
-        io.to(sockId).emit('state', { state: view, hostId: game.hostId });
+        io.to(player.socketId).emit('state', {
+          status: state.status,
+          tick: state.tick,
+          players: playersObj,
+          winnerId,
+          hostId: game.hostId,
+        });
       }
     }
 
-    // Join an existing lobby by passcode
-    socket.on('join', (payload: { room: string; name: string }) => {
-      logger.info('join a game', payload);
-      const room = payload.room?.trim() ?? '';
-      const name = payload.name || 'anon';
-      if (!room) {
-        socket.emit('join_failed', { code: 'INVALID_PASSCODE', message: 'Invalid passcode' });
+    socket.on('create', async (payload: { username: string }) => {
+      // TODO: extend later with game modes/settings, payload should take it and connect with authenticated user
+      logger.info('create a game for username ', payload.username);
+      const player = new Player(randomUUID(), payload.username, socket.id);
+      const game = manager.createNewGame(player);
+
+      logger.info(`Game created: room=${game.id} host=${player.id}`);
+
+      // keep lobby in waiting state until host clicks start
+      game.state.status = 'waiting';
+
+      await socket.join(game.id); // TODO: check if await is needed here
+      socket.emit('created', { playerId: player.id, roomId: game.id });
+      emitSanitizedState(game);
+    });
+
+    socket.on('join', async (payload: { roomId: string; username: string }) => {
+      // TODO: extend later with authenticated user
+      logger.info('Player ', payload.username, ' joins a game ', payload);
+
+      const name = payload.username;
+      const game = manager.getGame(payload.roomId);
+      if (!game) {
+        socket.emit('join_failed', { code: 'ROOM_NOT_FOUND', message: 'Room not found' });
         return;
       }
 
-      const game = manager.getGame(room);
-      if (!game) {
-        socket.emit('join_failed', { code: 'ROOM_NOT_FOUND', message: 'Room not found', room });
-        return;
-      }
       if (game.state.status !== 'waiting') {
         socket.emit('join_failed', { code: 'GAME_STARTED', message: 'Game already started' });
         return;
       }
 
-      const playerId: string = randomUUID();
-      const sid = String(socket.id);
-      const player = new Player(playerId, name, sid);
+      const playerId: string = randomUUID(); // TODO: use players authenticated ID later
+      const player = new Player(playerId, name, socket.id);
       game.addPlayer(player);
-      void socket.join(room);
+      await socket.join(payload.roomId);
       emitSanitizedState(game);
-      socket.emit('joined', { playerId, room });
+      // TODO: it is probably useless, make one response on success only
+      socket.emit('joined', { playerId, roomId: payload.roomId });
     });
 
-    socket.on('intent', (payload: { room: string; playerId: string; intent: Intent }) => {
-      const game = manager.getGame(payload.room);
-      if (!game) return;
+    socket.on('intent', (payload: { roomId: string; playerId: string; intent: Intent }) => {
+      const game = manager.getGame(payload.roomId);
+      if (!game) {
+        // throw error?
+        return;
+      }
       game.applyInput(payload.playerId, payload.intent);
       emitSanitizedState(game);
     });
 
-    socket.on('start', (payload: { room: string; playerId: string }) => {
-      logger.info('start a game');
-      const room = payload.room;
+    socket.on('start', (payload: { roomId: string; playerId: string }) => {
+      logger.info('start the game');
+      const roomId = payload.roomId;
       const playerId = payload.playerId;
-      const game = manager.getGame(room);
+      const game = manager.getGame(roomId);
+
       if (!game) {
         socket.emit('start_failed', { code: 'INVALID_ROOM', message: 'Room not found' });
         return;
@@ -138,14 +128,18 @@ export function registerSocketHandlers(io: Server, manager: GameManager) {
         socket.emit('start_failed', { code: 'ALREADY_STARTED', message: 'Game already started' });
         return;
       }
+
       game.state.status = 'running';
 
       // start game loop for this room (slower)
+      // TODO: extract to game manager later?
       const TICK_RATE = 10; // ticks per second
 
       // track previous alive state to emit game over messages
       const prevAlive: Record<string, boolean> = {};
-      for (const [id, p] of game.players) prevAlive[id] = Boolean(game.state.players[id]?.isAlive);
+      for (const player of game.getPlayers()) {
+        prevAlive[player.id] = Boolean(game.state.playerStates[player.id]?.isAlive);
+      }
 
       const interval = setInterval(() => {
         try {
@@ -153,23 +147,21 @@ export function registerSocketHandlers(io: Server, manager: GameManager) {
           game.tick();
 
           // compute alive and dead players
-          const aliveIds = Object.keys(game.state.players).filter((pid) => game.state.players[pid].isAlive);
-          const deadIds = Object.keys(game.state.players).filter((pid) => !game.state.players[pid].isAlive);
-          logger.debug(`server: aliveIds=${aliveIds.length}`, aliveIds);
-          logger.debug(`server: deadIds=${deadIds.length}`, deadIds);
+          const aliveIds = Object.keys(game.state.playerStates).filter((pid) => game.state.playerStates[pid].isAlive);
+          const deadIds = Object.keys(game.state.playerStates).filter((pid) => !game.state.playerStates[pid].isAlive);
+          // logger.debug(`server: aliveIds=${aliveIds.length}`, aliveIds);
+          // logger.debug(`server: deadIds=${deadIds.length}`, deadIds);
 
           // notify newly-dead players (compare with prevAlive)
           for (const id of deadIds) {
-            const wasAlive = prevAlive[id];
-            if (wasAlive) {
-              logger.info(`server: player ${id} transitioned alive->dead`);
-              const p = game.players.get(id);
+            if (prevAlive[id]) {
+              logger.info(`server: player ${id} dead`);
+              const p = game.getPlayer(id);
               if (p?.socketId) {
                 logger.info(`server: emitting game_over to ${p.socketId} for player ${id}`);
                 io.to(p.socketId).emit('game_over', { message: 'game over' });
               }
             }
-            prevAlive[id] = false;
           }
 
           // broadcast sanitized per-player state
@@ -180,15 +172,16 @@ export function registerSocketHandlers(io: Server, manager: GameManager) {
             if (aliveIds.length === 1) {
               const winnerId = aliveIds[0];
               logger.info(`server: winner detected: ${winnerId}`);
-              const winnerPlayer = game.players.get(winnerId);
+              const winnerPlayer = game.getPlayer(winnerId);
               if (winnerPlayer?.socketId) {
                 logger.info(`server: emitting winner to ${winnerPlayer.socketId} for player ${winnerId}`);
                 io.to(winnerPlayer.socketId).emit('winner', { message: 'winner winner chicken dinner' });
               }
+
               // notify losers as well
-              for (const id of Object.keys(game.state.players)) {
+              for (const id of Object.keys(game.state.playerStates)) {
                 if (id === winnerId) continue;
-                const p = game.players.get(id);
+                const p = game.getPlayer(id);
                 if (p?.socketId) {
                   logger.info(`server: emitting game_over to ${p.socketId} for player ${id}`);
                   io.to(p.socketId).emit('game_over', { message: 'game over' });
@@ -197,8 +190,8 @@ export function registerSocketHandlers(io: Server, manager: GameManager) {
             } else if (aliveIds.length === 0) {
               logger.info('server: no alive players at end of game');
               // no winners, notify all of game over
-              for (const id of Object.keys(game.state.players)) {
-                const p = game.players.get(id);
+              for (const id of Object.keys(game.state.playerStates)) {
+                const p = game.getPlayer(id);
                 if (p?.socketId) {
                   logger.info(`server: emitting game_over to ${p.socketId} for player ${id}`);
                   io.to(p.socketId).emit('game_over', { message: 'game over' });
@@ -207,10 +200,8 @@ export function registerSocketHandlers(io: Server, manager: GameManager) {
             }
 
             clearInterval(interval);
-            // emit final sanitized state
             emitSanitizedState(game);
-            // cleanup
-            manager.removeGame(room);
+            manager.removeGame(roomId);
           }
         } catch (err) {
           logger.error('game tick error', err);
@@ -223,6 +214,7 @@ export function registerSocketHandlers(io: Server, manager: GameManager) {
     socket.on('disconnect', () => {
       logger.info('socket disconnected', socket.id);
       // Note: for brevity we don't reassign host or remove players here
+      // add broadcast message 'New host is XXX' if host left, etc.
     });
   });
 }

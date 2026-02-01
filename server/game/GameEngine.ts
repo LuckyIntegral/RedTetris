@@ -1,4 +1,4 @@
-import { GameState, Intent, Piece } from './types';
+import { GameState, Intent, Piece, PlayerState } from './types';
 
 const WIDTH = 10;
 const HEIGHT = 20;
@@ -144,6 +144,7 @@ export class GameEngine {
   }
 
   private ensureQueue(queue: string[], min = 20) {
+    // TODO: delete with refactoring
     while (queue.length < min) {
       queue.push(...this.drawBag());
     }
@@ -154,33 +155,35 @@ export class GameEngine {
   }
 
   createInitialState(playerIds: string[]): GameState {
-    const sharedQueue: string[] = [];
+    const sharedQueue: string[] = []; // TODO: no queue model later
     this.ensureQueue(sharedQueue, 50);
 
-    const players = Object.fromEntries(
+    const playerStates: Record<string, PlayerState> = Object.fromEntries(
       playerIds.map((id) => [
         id,
         {
           board: createEmptyBoard(),
           activePiece: null,
-          nextQueue: sharedQueue.slice(0, 5),
+          nextQueue: sharedQueue.slice(0, 5), // TODO: no queue model later
           isAlive: true,
           spectrum: Array.from({ length: WIDTH }, () => 0),
+          name: '',
         },
       ])
     );
 
-    return { status: 'waiting', tick: 0, sharedQueue, sharedIndex: 0, players } as GameState;
+    return { status: 'waiting', tick: 0, sharedQueue, sharedIndex: 0, playerStates } as GameState;
   }
 
   addPlayer(state: GameState, playerId: string): GameState {
     const newState: GameState = this.cloneState(state);
-    newState.players[playerId] = {
+    newState.playerStates[playerId] = {
       board: createEmptyBoard(),
       activePiece: null,
       nextQueue: newState.sharedQueue.slice(newState.sharedIndex, newState.sharedIndex + 5),
       isAlive: true,
       spectrum: Array.from({ length: WIDTH }, () => 0),
+      name: '',
     };
     return newState;
   }
@@ -224,15 +227,22 @@ export class GameEngine {
   // encoded as numeric IDs 1..N based on the piece type index in PIECE_TYPES.
   public renderBoardWithPiece(board: number[][], piece: Piece | null) {
     const newBoard = cloneBoard(board);
-    if (!piece) return newBoard;
+
+    if (!piece) {
+      return newBoard;
+    }
     const mat = this.getPieceMatrix(piece.type, piece.rotation);
     const id = PIECE_TYPES.indexOf(piece.type) + 1;
     for (let r = 0; r < mat.length; r++) {
       for (let c = 0; c < mat[r].length; c++) {
-        if (!mat[r][c]) continue;
+        if (!mat[r][c]) {
+          continue;
+        }
         const x = piece.x + c;
         const y = piece.y + r;
-        if (y >= 0 && y < HEIGHT && x >= 0 && x < WIDTH) newBoard[y][x] = id;
+        if (y >= 0 && y < HEIGHT && x >= 0 && x < WIDTH) {
+          newBoard[y][x] = id; // TODO: switch to color
+        }
       }
     }
     return newBoard;
@@ -241,12 +251,15 @@ export class GameEngine {
   private clearLines(board: number[][]) {
     const newBoard = board.filter((row) => row.some((cell) => cell === 0));
     const cleared = HEIGHT - newBoard.length;
-    while (newBoard.length < HEIGHT) newBoard.unshift(Array.from({ length: WIDTH }, () => 0));
+    while (newBoard.length < HEIGHT) {
+      newBoard.unshift(Array.from({ length: WIDTH }, () => 0));
+    }
     return { board: newBoard, cleared };
   }
 
   private computeSpectrum(board: number[][]) {
     const spectrum = Array.from({ length: WIDTH }, () => 0);
+
     for (let x = 0; x < WIDTH; x++) {
       for (let y = 0; y < HEIGHT; y++) {
         if (board[y][x]) {
@@ -260,45 +273,41 @@ export class GameEngine {
 
   applyInput(state: GameState, playerId: string, input: Intent): GameState {
     const newState: GameState = this.cloneState(state);
-    const player = newState.players[playerId];
-    if (!player?.isAlive) return newState;
+    const player = newState.playerStates[playerId];
+    if (!player?.isAlive) {
+      return newState;
+    }
 
-    let active: Piece | null = player.activePiece;
-    if (!active) return newState;
+    const active: Piece | null = player.activePiece;
+    if (!active) {
+      return newState;
+    }
 
     const cur = active;
-    const tryMove = (dx: number, dy: number, drot = 0) => {
+    const tryMove = (dx: number, dy: number, drot = 0): boolean => {
       const candidate: Piece = { type: cur.type, x: cur.x + dx, y: cur.y + dy, rotation: cur.rotation + drot };
       if (!this.collides(player.board, candidate)) {
         player.activePiece = candidate;
+        return true;
       }
+      return false;
     };
 
-    switch (input?.type) {
-      case 'move':
-        if (input.dir === 'left') tryMove(-1, 0);
-        if (input.dir === 'right') tryMove(1, 0);
-        break;
-      case 'rotate':
-        tryMove(0, 0, 1);
-        break;
-      case 'soft':
-        tryMove(0, 1);
-        break;
-      case 'hard':
-        // drop until collision
-        while (active) {
-          const cand: Piece = { ...active, y: active.y + 1 };
-          if (this.collides(player.board, cand)) break;
-          active = cand;
-        }
-        player.activePiece = active;
-        // lock immediately
-        player.board = this.placePiece(player.board, player.activePiece);
-        player.activePiece = null;
-        break;
-      default:
-        break;
+    if (input.type === 'move') {
+      if (input.dir === 'left') {
+        tryMove(-1, 0);
+      } else if (input.dir === 'right') {
+        tryMove(1, 0);
+      }
+    } else if (input.type === 'rotate') {
+      tryMove(0, 0, 1);
+    } else if (input.type === 'soft') {
+      tryMove(0, 1);
+    } else if (input.type === 'hard') {
+      // TODO: add levitation effect here
+      while (tryMove(0, 1)) {}
+      player.board = this.placePiece(player.board, player.activePiece!);
+      player.activePiece = null;
     }
 
     return newState;
@@ -309,57 +318,61 @@ export class GameEngine {
     newState.tick += 1;
 
     // Ensure shared queue
+    // TODO: go to no queue model later
     this.ensureQueue(newState.sharedQueue, 20);
 
-    for (const playerId of Object.keys(newState.players)) {
-      const p = newState.players[playerId];
-      if (!p.isAlive) continue;
-
+    for (const [playerId, playerState] of Object.entries(newState.playerStates)) {
       // spawn piece if none
-      if (!p.activePiece) {
+      if (!playerState.activePiece) {
         // assign the next piece from shared queue using sharedIndex so all players get the same order
+        // TODO: no queue model later
         const next = newState.sharedQueue[newState.sharedIndex];
         // ensure there are at least 20 pieces after the current index
         this.ensureQueue(newState.sharedQueue, Math.max(20, newState.sharedIndex + 5));
         if (!next) {
-          p.isAlive = false;
+          playerState.isAlive = false;
           continue;
         }
         const piece: Piece = { type: next, x: Math.floor(WIDTH / 2) - 1, y: -2, rotation: 0 };
         // advance shared index by 1 so next spawn uses the following piece
         newState.sharedIndex = (newState.sharedIndex || 0) + 1;
-        p.activePiece = piece;
-        p.nextQueue = newState.sharedQueue.slice(newState.sharedIndex, newState.sharedIndex + 5);
+        playerState.activePiece = piece;
+        playerState.nextQueue = newState.sharedQueue.slice(newState.sharedIndex, newState.sharedIndex + 5);
         // immediate collision -> player loses
-        if (this.collides(p.board, piece)) {
-          p.isAlive = false;
+        if (this.collides(playerState.board, piece)) {
+          playerState.isAlive = false;
           continue;
         }
       }
 
       // gravity step: attempt to move down
-      const moved: Piece = { ...p.activePiece, y: p.activePiece.y + 1 };
-      if (!this.collides(p.board, moved)) {
-        p.activePiece = moved;
+      const moved: Piece = { ...playerState.activePiece, y: playerState.activePiece.y + 1 };
+      if (!this.collides(playerState.board, moved)) {
+        playerState.activePiece = moved;
       } else {
         // lock piece
-        p.board = this.placePiece(p.board, p.activePiece);
-        p.activePiece = null;
+        playerState.board = this.placePiece(playerState.board, playerState.activePiece);
+        playerState.activePiece = null;
         // clear lines
-        const { board: clearedBoard, cleared } = this.clearLines(p.board);
-        p.board = clearedBoard;
-        if (cleared > 0) {
-          // send garbage to others: n-1 rows
-          const garbageLines = Math.max(0, cleared - 1);
-          if (garbageLines > 0) {
-            for (const otherId of Object.keys(newState.players)) {
-              if (otherId === playerId) continue;
-              const other = newState.players[otherId];
-              if (!other.isAlive) continue;
-              // add garbage at bottom
-              for (let g = 0; g < garbageLines; g++) {
-                other.board.shift();
-                other.board.push(Array.from({ length: WIDTH }, () => PIECE_TYPES.length));
+        const { board: clearedBoard, cleared } = this.clearLines(playerState.board);
+        playerState.board = clearedBoard;
+        if (cleared > 1) {
+          const generatedLine = Array.from({ length: WIDTH }, () => 0);
+          generatedLine[Math.floor(this.rng() * WIDTH)] = 0;
+
+          for (const otherId of Object.keys(newState.playerStates)) {
+            if (otherId === playerId) {
+              continue;
+            }
+            const other = newState.playerStates[otherId];
+            if (!other.isAlive) {
+              continue;
+            }
+
+            for (let g = 0; g < cleared - 1; g++) {
+              other.board.shift();
+              for (let x = 0; x < WIDTH; x++) {
+                other.board.push(generatedLine);
               }
             }
           }
@@ -367,12 +380,14 @@ export class GameEngine {
       }
 
       // recompute spectrum
-      p.spectrum = this.computeSpectrum(p.board);
+      playerState.spectrum = this.computeSpectrum(playerState.board);
     }
 
     // check KO: if only one or zero players alive and game was running, finish
-    const alive = Object.values(newState.players).filter((p) => p.isAlive).length;
-    if (newState.status === 'running' && alive <= 1) newState.status = 'finished';
+    const alive = Object.values(newState.playerStates).filter((p) => p.isAlive).length;
+    if (newState.status === 'running' && alive <= 1) {
+      newState.status = 'finished';
+    }
 
     return newState;
   }
