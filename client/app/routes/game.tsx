@@ -26,28 +26,26 @@ export default function GameRoute() {
     socketRef.current = s;
 
     s.on('connect', () => console.log('connected to server'));
+
+    // server may emit either a raw state object or { state, hostId } historically.
     s.on('state', (payload: any) => {
-      console.log(
-        'client: state',
-        payload?.state?.status,
-        payload?.state?.players && Object.keys(payload.state.players).length
-      );
-      // server sends { state, hostId }
-      if (payload && typeof payload === 'object' && 'state' in payload) {
-        setState(payload.state);
-        setHostId(payload.hostId ?? null);
-      } else {
-        setState(payload);
-      }
+      // normalize payload to `state` object
+      let incoming = payload;
+      if (payload && typeof payload === 'object' && 'state' in payload) incoming = payload.state;
+      setState(incoming);
+      // hostId may be attached at top-level of payload or inside incoming
+      const hid = payload?.hostId ?? incoming?.hostId ?? null;
+      setHostId(hid);
     });
+
     s.on('joined', (info: any) => {
       setPlayerId(info.playerId);
-      setRoom(info.room ?? room);
+      setRoom(info.roomId ?? room);
       setError(null);
     });
     s.on('created', (info: any) => {
       setPlayerId(info.playerId);
-      setRoom(info.room ?? room);
+      setRoom(info.roomId ?? room);
       setError(null);
     });
     s.on('game_over', (info: any) => {
@@ -75,15 +73,14 @@ export default function GameRoute() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (!playerId || !socketRef.current) return;
-      if (e.key === 'ArrowLeft')
-        socketRef.current.emit('intent', { room, playerId, intent: { type: 'move', dir: 'left' } });
-      if (e.key === 'ArrowRight')
-        socketRef.current.emit('intent', { room, playerId, intent: { type: 'move', dir: 'right' } });
-      if (e.key === 'ArrowUp') socketRef.current.emit('intent', { room, playerId, intent: { type: 'rotate' } });
-      if (e.key === 'ArrowDown') socketRef.current.emit('intent', { room, playerId, intent: { type: 'soft' } });
+      const s = socketRef.current;
+      if (e.key === 'ArrowLeft') s.emit('intent', { roomId: room, playerId, intent: { type: 'move', dir: 'left' } });
+      if (e.key === 'ArrowRight') s.emit('intent', { roomId: room, playerId, intent: { type: 'move', dir: 'right' } });
+      if (e.key === 'ArrowUp') s.emit('intent', { roomId: room, playerId, intent: { type: 'rotate' } });
+      if (e.key === 'ArrowDown') s.emit('intent', { roomId: room, playerId, intent: { type: 'soft' } });
       if (e.code === 'Space') {
         e.preventDefault();
-        socketRef.current.emit('intent', { room, playerId, intent: { type: 'hard' } });
+        s.emit('intent', { roomId: room, playerId, intent: { type: 'hard' } });
       }
     };
     window.addEventListener('keydown', onKey);
@@ -94,35 +91,33 @@ export default function GameRoute() {
     const s = socketRef.current;
     if (!s) return;
     if (!s.connected) s.connect();
-    s.emit('join', { room, name });
+    s.emit('join', { roomId: room, username: name });
   };
 
   const create = () => {
     const s = socketRef.current;
     if (!s) return;
     if (!s.connected) s.connect();
-    s.emit('create', { room: room || undefined, name });
-    // optimistically show passcode while server confirms
+    // server expects { username } (room creation handled server-side)
+    s.emit('create', { username: name });
     setError(null);
   };
 
   const start = () => {
     const s = socketRef.current;
     if (!s || !playerId) return;
-    // only host can start
     if (hostId && playerId !== hostId) {
       setError('ONLY_HOST_CAN_START');
       return;
     }
-    s.emit('start', { room, playerId });
+    s.emit('start', { roomId: room, playerId });
   };
 
   const sendIntent = (intent: any) => {
     const s = socketRef.current;
     if (!s || !playerId) return;
-    // don't send intents after game end
     if (state?.status === 'finished' || message) return;
-    s.emit('intent', { room, playerId, intent });
+    s.emit('intent', { roomId: room, playerId, intent });
   };
 
   const myView = useMemo(() => {
@@ -130,18 +125,15 @@ export default function GameRoute() {
     return state.players?.[playerId] ?? null;
   }, [state, playerId]);
 
-  // show win/lose messages based on state transitions in case socket events
-  // are missed or as additional UX feedback
+  // show win/lose messages based on state transitions
   const prevAliveRef = useRef<boolean | null>(null);
   useEffect(() => {
     if (!state || !playerId) return;
     const alive = Boolean(state.players?.[playerId]?.isAlive);
     const prev = prevAliveRef.current;
-    // on transition alive -> dead
     if (prev === true && alive === false) {
       setMessage('You lost');
     }
-    // when game finished and player still alive -> winner
     if ((state.status === 'finished' || state.winnerId) && state.winnerId === playerId) {
       setMessage('You win');
     }
@@ -149,28 +141,28 @@ export default function GameRoute() {
   }, [state, playerId]);
 
   const renderCell = (x: number, y: number) => {
-    // player board rows are indexed 0..HEIGHT-1
-    // server provides numeric board values 0..N (0 = empty)
     const val = myView?.board?.[y]?.[x] ?? 0;
+    const color =
+      val == 0
+        ? 'bg-transparent'
+        : val == -1
+          ? 'bg-gray-800'
+          : [
+              'bg-red-200',
+              'bg-green-200',
+              'bg-blue-200',
+              'bg-yellow-200',
+              'bg-purple-200',
+              'bg-pink-200',
+              'bg-orange-200',
+              'bg-gray-200',
+              'bg-white-200',
+            ][val - 1];
     return (
       <div
         key={`${x}-${y}`}
         style={{ width: CELL, height: CELL, boxSizing: 'border-box', border: '1px solid #222' }}
-        className={
-          val == 0
-            ? 'bg-transparent'
-            : [
-                'bg-red-200',
-                'bg-green-200',
-                'bg-blue-200',
-                'bg-yellow-200',
-                'bg-purple-200',
-                'bg-pink-200',
-                'bg-orange-200',
-                'bg-gray-200',
-                'bg-white-200',
-              ][val - 1]
-        }
+        className={color}
       />
     );
   };

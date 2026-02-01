@@ -77,17 +77,18 @@ export function registerSocketHandlers(
 
     socket.on('join', async (payload: { roomId: string; username: string }) => {
       // TODO: extend later with authenticated user
-      logger.info('Player ', payload.username, ' joins a game ', payload);
-
       const name = payload.username;
+      logger.info('Existing rooms:', Array.from(manager.games.keys()));
       const game = manager.getGame(payload.roomId);
       if (!game) {
         socket.emit('join_failed', { code: 'ROOM_NOT_FOUND', message: 'Room not found' });
+        logger.error('Room not found: ' + payload.roomId);
         return;
       }
 
       if (game.state.status !== 'waiting') {
         socket.emit('join_failed', { code: 'GAME_STARTED', message: 'Game already started' });
+        logger.error('Game already started: ' + payload.roomId);
         return;
       }
 
@@ -133,7 +134,7 @@ export function registerSocketHandlers(
 
       // start game loop for this room (slower)
       // TODO: extract to game manager later?
-      const TICK_RATE = 10; // ticks per second
+      const TICK_RATE = 1; // ticks per second
 
       // track previous alive state to emit game over messages
       const prevAlive: Record<string, boolean> = {};

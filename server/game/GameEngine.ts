@@ -1,3 +1,4 @@
+import { logger } from '../utils/logger';
 import { GameState, Intent, Piece, PlayerState } from './types';
 
 const WIDTH = 10;
@@ -194,7 +195,9 @@ export class GameEngine {
   }
 
   private collides(board: number[][], piece: Piece) {
-    if (!piece) return true;
+    if (!piece) {
+      return true;
+    }
     const mat = this.getPieceMatrix(piece.type, piece.rotation);
     for (let r = 0; r < mat.length; r++) {
       for (let c = 0; c < mat[r].length; c++) {
@@ -249,11 +252,22 @@ export class GameEngine {
   }
 
   private clearLines(board: number[][]) {
-    const newBoard = board.filter((row) => row.some((cell) => cell === 0));
-    const cleared = HEIGHT - newBoard.length;
-    while (newBoard.length < HEIGHT) {
+    const newBoard: number[][] = [];
+    let cleared = 0;
+
+    for (const row of board) {
+      if (row.some((cell) => cell === 0)) {
+        newBoard.push(row);
+        continue;
+      }
+
+      if (!row.some((cell) => cell === -1)) {
+        cleared += 1;
+      }
+
       newBoard.unshift(Array.from({ length: WIDTH }, () => 0));
     }
+
     return { board: newBoard, cleared };
   }
 
@@ -285,7 +299,10 @@ export class GameEngine {
 
     const cur = active;
     const tryMove = (dx: number, dy: number, drot = 0): boolean => {
-      const candidate: Piece = { type: cur.type, x: cur.x + dx, y: cur.y + dy, rotation: cur.rotation + drot };
+      // use the current active piece as the base so repeated moves (eg. hard drop)
+      // advance from the most-recent position instead of a stale snapshot
+      const base = player.activePiece ?? cur;
+      const candidate: Piece = { type: base.type, x: base.x + dx, y: base.y + dy, rotation: base.rotation + drot };
       if (!this.collides(player.board, candidate)) {
         player.activePiece = candidate;
         return true;
@@ -305,12 +322,42 @@ export class GameEngine {
       tryMove(0, 1);
     } else if (input.type === 'hard') {
       // TODO: add levitation effect here
-      while (tryMove(0, 1)) {}
+      while (tryMove(0, 1));
+
       player.board = this.placePiece(player.board, player.activePiece!);
       player.activePiece = null;
+
+      this.computeLinesClearedReward(newState, playerId);
     }
 
     return newState;
+  }
+
+  private computeLinesClearedReward(state: GameState, playerId: string) {
+    const { board: clearedBoard, cleared } = this.clearLines(state.playerStates[playerId].board);
+    state.playerStates[playerId].board = clearedBoard;
+
+    if (cleared > 1) {
+      const generatedLine = Array.from({ length: WIDTH }, () => -1);
+      generatedLine[Math.floor(this.rng() * WIDTH)] = 0;
+
+      for (const otherId of Object.keys(state.playerStates)) {
+        if (otherId === playerId) {
+          continue;
+        }
+        const other = state.playerStates[otherId];
+        if (!other.isAlive) {
+          continue;
+        }
+
+        for (let g = 0; g < cleared - 1; g++) {
+          other.board.shift();
+          for (let x = 0; x < WIDTH; x++) {
+            other.board.push(generatedLine.slice());
+          }
+        }
+      }
+    }
   }
 
   tick(state: GameState): GameState {
@@ -340,6 +387,7 @@ export class GameEngine {
         playerState.nextQueue = newState.sharedQueue.slice(newState.sharedIndex, newState.sharedIndex + 5);
         // immediate collision -> player loses
         if (this.collides(playerState.board, piece)) {
+          logger.info(`player ${playerId} collided on spawn and dies`);
           playerState.isAlive = false;
           continue;
         }
@@ -354,29 +402,7 @@ export class GameEngine {
         playerState.board = this.placePiece(playerState.board, playerState.activePiece);
         playerState.activePiece = null;
         // clear lines
-        const { board: clearedBoard, cleared } = this.clearLines(playerState.board);
-        playerState.board = clearedBoard;
-        if (cleared > 1) {
-          const generatedLine = Array.from({ length: WIDTH }, () => 0);
-          generatedLine[Math.floor(this.rng() * WIDTH)] = 0;
-
-          for (const otherId of Object.keys(newState.playerStates)) {
-            if (otherId === playerId) {
-              continue;
-            }
-            const other = newState.playerStates[otherId];
-            if (!other.isAlive) {
-              continue;
-            }
-
-            for (let g = 0; g < cleared - 1; g++) {
-              other.board.shift();
-              for (let x = 0; x < WIDTH; x++) {
-                other.board.push(generatedLine);
-              }
-            }
-          }
-        }
+        this.computeLinesClearedReward(newState, playerId);
       }
 
       // recompute spectrum
