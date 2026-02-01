@@ -33,7 +33,8 @@ export function registerSocketHandlers(
             playersObj[pid] = {
               board: merged,
               activePiece: playerState.activePiece,
-              nextQueue: [], // TODO: remove later
+              nextPiece: playerState.nextPiece,
+              piecesPlaced: playerState.piecesPlaced,
               isAlive: playerState.isAlive,
               spectrum: playerState.spectrum,
               name: playerState.name,
@@ -42,7 +43,8 @@ export function registerSocketHandlers(
             playersObj[pid] = {
               board: playerState.board,
               activePiece: playerState.activePiece,
-              nextQueue: [], // TODO: remove later
+              nextPiece: playerState.nextPiece,
+              piecesPlaced: playerState.piecesPlaced,
               isAlive: playerState.isAlive,
               spectrum: playerState.spectrum,
               name: playerState.name,
@@ -78,7 +80,7 @@ export function registerSocketHandlers(
     socket.on('join', async (payload: { roomId: string; username: string }) => {
       // TODO: extend later with authenticated user
       const name = payload.username;
-      logger.info('Existing rooms:', Array.from(manager.games.keys()));
+
       const game = manager.getGame(payload.roomId);
       if (!game) {
         socket.emit('join_failed', { code: 'ROOM_NOT_FOUND', message: 'Room not found' });

@@ -14,7 +14,8 @@ export type Intent =
 export interface PlayerState {
   board: number[][];
   activePiece: Piece | null;
-  nextQueue: string[]; // TODO: delete as well later
+  nextPiece: string | null;
+  piecesPlaced: number; // number of pieces placed so far
   isAlive: boolean;
   spectrum: number[]; // TODO: delete probably
   name: string;
@@ -23,8 +24,5 @@ export interface PlayerState {
 export interface GameState {
   status: 'waiting' | 'running' | 'finished';
   tick: number;
-  sharedQueue: string[]; // TODO: seed it here once with 50+-, and then return pieces from it
-  // pointer into sharedQueue so all players receive the same next piece
-  sharedIndex: number; // TODO: delete as well later
   playerStates: Record<string, PlayerState>;
 }

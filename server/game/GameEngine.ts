@@ -1,102 +1,9 @@
 import { logger } from '../utils/logger';
+import { PieceGenerator } from './PieceGenerator';
 import { GameState, Intent, Piece, PlayerState } from './types';
 
 const WIDTH = 10;
 const HEIGHT = 20;
-
-const TETROMINOS: Record<string, number[][][]> = {
-  I: [[[1, 1, 1, 1]], [[1], [1], [1], [1]]],
-  O: [
-    [
-      [1, 1],
-      [1, 1],
-    ],
-  ],
-  T: [
-    [
-      [0, 1, 0],
-      [1, 1, 1],
-    ],
-    [
-      [1, 0],
-      [1, 1],
-      [1, 0],
-    ],
-    [
-      [1, 1, 1],
-      [0, 1, 0],
-    ],
-    [
-      [0, 1],
-      [1, 1],
-      [0, 1],
-    ],
-  ],
-  S: [
-    [
-      [0, 1, 1],
-      [1, 1, 0],
-    ],
-    [
-      [1, 0],
-      [1, 1],
-      [0, 1],
-    ],
-  ],
-  Z: [
-    [
-      [1, 1, 0],
-      [0, 1, 1],
-    ],
-    [
-      [0, 1],
-      [1, 1],
-      [1, 0],
-    ],
-  ],
-  J: [
-    [
-      [1, 0, 0],
-      [1, 1, 1],
-    ],
-    [
-      [1, 1],
-      [1, 0],
-      [1, 0],
-    ],
-    [
-      [1, 1, 1],
-      [0, 0, 1],
-    ],
-    [
-      [0, 1],
-      [0, 1],
-      [1, 1],
-    ],
-  ],
-  L: [
-    [
-      [0, 0, 1],
-      [1, 1, 1],
-    ],
-    [
-      [1, 0],
-      [1, 0],
-      [1, 1],
-    ],
-    [
-      [1, 1, 1],
-      [1, 0, 0],
-    ],
-    [
-      [1, 1],
-      [0, 1],
-      [0, 1],
-    ],
-  ],
-};
-
-const PIECE_TYPES = Object.keys(TETROMINOS);
 
 function createEmptyBoard(): number[][] {
   return Array.from({ length: HEIGHT }, () => Array.from({ length: WIDTH }, () => 0));
@@ -115,40 +22,15 @@ function hashStringToSeed(s: string) {
   return h;
 }
 
-function mulberry32(a: number) {
-  return function () {
-    let t = (a += 0x6d2b79f5);
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
 export class GameEngine {
   seed: string;
-  rng: () => number;
+  private pieceGenerator: PieceGenerator;
 
   constructor(seed = 'default') {
     this.seed = seed;
     const h = hashStringToSeed(seed);
-    this.rng = mulberry32(h);
-  }
 
-  private drawBag() {
-    const bag = PIECE_TYPES.slice();
-    // Fisher-Yates shuffle with seeded rng
-    for (let i = bag.length - 1; i > 0; i--) {
-      const j = Math.floor(this.rng() * (i + 1));
-      [bag[i], bag[j]] = [bag[j], bag[i]];
-    }
-    return bag;
-  }
-
-  private ensureQueue(queue: string[], min = 20) {
-    // TODO: delete with refactoring
-    while (queue.length < min) {
-      queue.push(...this.drawBag());
-    }
+    this.pieceGenerator = new PieceGenerator(h);
   }
 
   private cloneState<T>(obj: T): T {
@@ -156,16 +38,14 @@ export class GameEngine {
   }
 
   createInitialState(playerIds: string[]): GameState {
-    const sharedQueue: string[] = []; // TODO: no queue model later
-    this.ensureQueue(sharedQueue, 50);
-
     const playerStates: Record<string, PlayerState> = Object.fromEntries(
       playerIds.map((id) => [
         id,
         {
           board: createEmptyBoard(),
           activePiece: null,
-          nextQueue: sharedQueue.slice(0, 5), // TODO: no queue model later
+          nextPiece: null,
+          piecesPlaced: 0,
           isAlive: true,
           spectrum: Array.from({ length: WIDTH }, () => 0),
           name: '',
@@ -173,7 +53,7 @@ export class GameEngine {
       ])
     );
 
-    return { status: 'waiting', tick: 0, sharedQueue, sharedIndex: 0, playerStates } as GameState;
+    return { status: 'waiting', tick: 0, playerStates } as GameState;
   }
 
   addPlayer(state: GameState, playerId: string): GameState {
@@ -181,7 +61,8 @@ export class GameEngine {
     newState.playerStates[playerId] = {
       board: createEmptyBoard(),
       activePiece: null,
-      nextQueue: newState.sharedQueue.slice(newState.sharedIndex, newState.sharedIndex + 5),
+      nextPiece: null,
+      piecesPlaced: 0,
       isAlive: true,
       spectrum: Array.from({ length: WIDTH }, () => 0),
       name: '',
@@ -189,41 +70,28 @@ export class GameEngine {
     return newState;
   }
 
-  private getPieceMatrix(type: string, rotation: number) {
-    const rots = TETROMINOS[type];
-    return rots[rotation % rots.length];
-  }
-
   private collides(board: number[][], piece: Piece) {
     if (!piece) {
       return true;
     }
-    const mat = this.getPieceMatrix(piece.type, piece.rotation);
+    const { piece: mat } = this.pieceGenerator.getPieceShapeAndColor(piece.type, piece.rotation);
+
     for (let r = 0; r < mat.length; r++) {
       for (let c = 0; c < mat[r].length; c++) {
-        if (!mat[r][c]) continue;
+        if (!mat[r][c]) {
+          continue;
+        }
         const x = piece.x + c;
         const y = piece.y + r;
-        if (x < 0 || x >= WIDTH || y >= HEIGHT) return true;
-        if (y >= 0 && board[y][x]) return true;
+        if (x < 0 || x >= WIDTH || y >= HEIGHT) {
+          return true;
+        }
+        if (y >= 0 && board[y][x]) {
+          return true;
+        }
       }
     }
     return false;
-  }
-
-  private placePiece(board: number[][], piece: Piece) {
-    const newBoard = cloneBoard(board);
-    const mat = this.getPieceMatrix(piece.type, piece.rotation);
-    const id = PIECE_TYPES.indexOf(piece.type) + 1;
-    for (let r = 0; r < mat.length; r++) {
-      for (let c = 0; c < mat[r].length; c++) {
-        if (!mat[r][c]) continue;
-        const x = piece.x + c;
-        const y = piece.y + r;
-        if (y >= 0 && y < HEIGHT && x >= 0 && x < WIDTH) newBoard[y][x] = id;
-      }
-    }
-    return newBoard;
   }
 
   // Render a board with an active piece merged in. Piece cells are
@@ -234,8 +102,9 @@ export class GameEngine {
     if (!piece) {
       return newBoard;
     }
-    const mat = this.getPieceMatrix(piece.type, piece.rotation);
-    const id = PIECE_TYPES.indexOf(piece.type) + 1;
+
+    const { piece: mat, color } = this.pieceGenerator.getPieceShapeAndColor(piece.type, piece.rotation);
+
     for (let r = 0; r < mat.length; r++) {
       for (let c = 0; c < mat[r].length; c++) {
         if (!mat[r][c]) {
@@ -244,7 +113,7 @@ export class GameEngine {
         const x = piece.x + c;
         const y = piece.y + r;
         if (y >= 0 && y < HEIGHT && x >= 0 && x < WIDTH) {
-          newBoard[y][x] = id; // TODO: switch to color
+          newBoard[y][x] = color;
         }
       }
     }
@@ -256,7 +125,7 @@ export class GameEngine {
     let cleared = 0;
 
     for (const row of board) {
-      if (row.some((cell) => cell === 0)) {
+      if (!row.every((cell) => cell !== 0)) {
         newBoard.push(row);
         continue;
       }
@@ -324,7 +193,7 @@ export class GameEngine {
       // TODO: add levitation effect here
       while (tryMove(0, 1));
 
-      player.board = this.placePiece(player.board, player.activePiece!);
+      player.board = this.renderBoardWithPiece(player.board, player.activePiece);
       player.activePiece = null;
 
       this.computeLinesClearedReward(newState, playerId);
@@ -339,20 +208,20 @@ export class GameEngine {
 
     if (cleared > 1) {
       const generatedLine = Array.from({ length: WIDTH }, () => -1);
-      generatedLine[Math.floor(this.rng() * WIDTH)] = 0;
+      generatedLine[Math.floor(Math.random() * WIDTH)] = 0;
 
-      for (const otherId of Object.keys(state.playerStates)) {
-        if (otherId === playerId) {
-          continue;
-        }
-        const other = state.playerStates[otherId];
-        if (!other.isAlive) {
-          continue;
-        }
-
-        for (let g = 0; g < cleared - 1; g++) {
-          other.board.shift();
-          for (let x = 0; x < WIDTH; x++) {
+      const garbageLines = Math.max(0, cleared - 1);
+      if (garbageLines > 0) {
+        for (const otherId of Object.keys(state.playerStates)) {
+          if (otherId === playerId) {
+            continue;
+          }
+          const other = state.playerStates[otherId];
+          if (!other.isAlive) {
+            continue;
+          }
+          for (let g = 0; g < garbageLines; g++) {
+            other.board.shift();
             other.board.push(generatedLine.slice());
           }
         }
@@ -364,27 +233,20 @@ export class GameEngine {
     const newState: GameState = this.cloneState(state);
     newState.tick += 1;
 
-    // Ensure shared queue
-    // TODO: go to no queue model later
-    this.ensureQueue(newState.sharedQueue, 20);
-
     for (const [playerId, playerState] of Object.entries(newState.playerStates)) {
-      // spawn piece if none
       if (!playerState.activePiece) {
-        // assign the next piece from shared queue using sharedIndex so all players get the same order
-        // TODO: no queue model later
-        const next = newState.sharedQueue[newState.sharedIndex];
-        // ensure there are at least 20 pieces after the current index
-        this.ensureQueue(newState.sharedQueue, Math.max(20, newState.sharedIndex + 5));
-        if (!next) {
-          playerState.isAlive = false;
-          continue;
+        if (!playerState.nextPiece) {
+          playerState.nextPiece = this.pieceGenerator.getPiece(playerState.piecesPlaced);
+          playerState.piecesPlaced += 1;
         }
+
+        const next = playerState.nextPiece;
+        playerState.nextPiece = this.pieceGenerator.getPiece(playerState.piecesPlaced);
+        playerState.piecesPlaced += 1;
+
         const piece: Piece = { type: next, x: Math.floor(WIDTH / 2) - 1, y: -2, rotation: 0 };
-        // advance shared index by 1 so next spawn uses the following piece
-        newState.sharedIndex = (newState.sharedIndex || 0) + 1;
+
         playerState.activePiece = piece;
-        playerState.nextQueue = newState.sharedQueue.slice(newState.sharedIndex, newState.sharedIndex + 5);
         // immediate collision -> player loses
         if (this.collides(playerState.board, piece)) {
           logger.info(`player ${playerId} collided on spawn and dies`);
@@ -399,7 +261,7 @@ export class GameEngine {
         playerState.activePiece = moved;
       } else {
         // lock piece
-        playerState.board = this.placePiece(playerState.board, playerState.activePiece);
+        playerState.board = this.renderBoardWithPiece(playerState.board, playerState.activePiece);
         playerState.activePiece = null;
         // clear lines
         this.computeLinesClearedReward(newState, playerId);
