@@ -3,6 +3,7 @@ import { Server, Socket } from 'socket.io';
 import { GameManager } from '../core/GameManager';
 import { Player } from '../core/Player';
 import { Game } from '../game/Game';
+import { GameEngine } from '../game/GameEngine';
 import type { Intent, PlayerState } from '../game/types';
 import { ClientToServerEvents, ServerToClientEvents, SocketData } from '../types/socketEvents';
 import { logger } from '../utils/logger';
@@ -184,13 +185,39 @@ export function registerSocketHandlers(
 
             clearInterval(interval);
             emitSanitizedState(game);
-            manager.removeGame(roomId);
           }
         } catch (err) {
           logger.error('game tick error', err);
         }
       }, 1000 / TICK_RATE);
       // initial broadcast
+      emitSanitizedState(game);
+    });
+
+    socket.on('restart', (payload: { roomId: string; playerId: string }) => {
+      logger.info('restart the game', payload);
+      const roomId = payload.roomId;
+      const playerId = payload.playerId;
+      const game = manager.getGame(roomId);
+
+      if (!game) {
+        socket.emit('restart_failed', { code: 'INVALID_ROOM', message: 'Room not found' });
+        return;
+      }
+
+      if (game.hostId !== playerId) {
+        socket.emit('restart_failed', { code: 'NOT_HOST', message: 'Only host may restart the game' });
+        return;
+      }
+
+      // reset engine and state while preserving players and host
+      logger.info(`server: restarting game ${roomId} by host ${playerId}`);
+      game.engine = new GameEngine(game.id);
+      const playerIds = game.getPlayers().map((p) => p.id);
+      game.state = game.engine.createInitialState(playerIds);
+      game.state.status = 'waiting';
+
+      io.to(roomId).emit('restarted', { message: 'Game restarted by host' });
       emitSanitizedState(game);
     });
 

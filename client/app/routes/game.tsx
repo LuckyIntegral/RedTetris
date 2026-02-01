@@ -67,6 +67,12 @@ export default function GameRoute() {
       setHostId(info?.newHostId ?? null);
       if (info?.message) setMessage(info.message);
     });
+    s.on('restarted', (info: any) => {
+      if (info?.message) setMessage(info.message);
+    });
+    s.on('restart_failed', (info: any) => {
+      setError(info?.message ?? info?.reason ?? 'RESTART_FAILED');
+    });
     s.on('game_over', (info: any) => {
       console.log('client: received game_over', info);
       setMessage(info?.message ?? 'game over');
@@ -344,6 +350,9 @@ export default function GameRoute() {
           >
             Start
           </button>
+          {state?.status === 'finished' && playerId && hostId && playerId === hostId && (
+            <button onClick={() => socketRef.current?.emit('restart', { roomId: room, playerId })}>Restart</button>
+          )}
         </div>
         {hostId && playerId === hostId && (
           <div className='mt-2'>
