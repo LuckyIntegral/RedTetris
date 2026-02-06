@@ -6,19 +6,41 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 import cors from 'cors';
 import express, { Request, Response } from 'express';
 import http from 'http';
-import { Server as IOServer } from 'socket.io';
+import { Server as IOServer, Socket } from 'socket.io';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger';
 import { GameManager } from './core/GameManager';
-import db, { testConnection } from './db';
+import db, { runMigrations, testConnection } from './db';
 import { registerSocketHandlers } from './net/socketHandlers';
 import authRoutes from './routes/auth';
+import { ClientToServerEvents, ServerToClientEvents, SocketData } from './types/socketEvents';
+
+import { verifyToken } from './utils/jwt';
 import { logDbError, logger } from './utils/logger';
 
 const app = express();
 const server = http.createServer(app);
-const io = new IOServer(server, { cors: { origin: process.env.CLIENT_URL ?? 'http://localhost:3000' } });
+const io = new IOServer<ClientToServerEvents, ServerToClientEvents, ServerToClientEvents, SocketData>(server, {
+  cors: { origin: process.env.CLIENT_URL ?? 'http://localhost:3000' },
+});
 const gameManager = new GameManager();
+
+io.use((socket: Socket<ClientToServerEvents, ServerToClientEvents, ServerToClientEvents, SocketData>, next) => {
+  try {
+    const token = socket.handshake.auth?.token as string | undefined;
+    if (!token) {
+      logger.info('socket auth: no token provided');
+      return next();
+    }
+
+    socket.data.user = verifyToken(token);
+    logger.info('socket authenticated as', socket.data.user.username);
+    return next();
+  } catch (err) {
+    logger.info('socket auth failed', err);
+    return next();
+  }
+});
 
 registerSocketHandlers(io, gameManager);
 
@@ -116,12 +138,21 @@ const startServer = async () => {
   const dbConnected = await testConnection();
 
   if (!dbConnected) {
-    logger.error('❌ Failed to connect to database. Server will not start.');
+    logger.error('Failed to connect to database. Server will not start.');
+    process.exit(1);
+  }
+
+  try {
+    logger.info('Running database migrations...');
+    await runMigrations();
+    logger.info('Database migrations applied successfully.');
+  } catch (error: unknown) {
+    logger.error('Failed to apply database migrations:', error);
     process.exit(1);
   }
 
   server.listen(PORT, () => {
-    logger.info(`🚀 Server (HTTP + Socket.IO) is running on port ${PORT}`);
+    logger.info(`Server (HTTP + Socket.IO) is running on port ${PORT}`);
   });
 };
 

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
+import { authService } from '../services/auth';
 
 const WIDTH = 10;
 const HEIGHT = 20;
@@ -37,7 +38,8 @@ export default function GameRoute() {
   useEffect(() => {
     if (socketRef.current) return; // avoid duplicate sockets in StrictMode / HMR
     const url = (import.meta.env.VITE_SERVER_URL as string) ?? 'http://localhost:3001';
-    const s = io(url, { autoConnect: false });
+    const token = authService.getToken();
+    const s = io(url, { autoConnect: false, auth: { token } });
     socketRef.current = s;
 
     s.on('connect', () => console.log('connected to server'));
@@ -53,14 +55,24 @@ export default function GameRoute() {
       setHostId(hid);
     });
 
-    s.on('joined', (info: any) => {
-      setPlayerId(info.playerId);
+    s.on('joined', async (info: any) => {
       setRoom(info.roomId ?? room);
+      try {
+        const profile = await authService.getProfile();
+        setPlayerId(String(profile.id));
+      } catch (err) {
+        console.warn('failed to fetch profile after join', err);
+      }
       setError(null);
     });
-    s.on('created', (info: any) => {
-      setPlayerId(info.playerId);
+    s.on('created', async (info: any) => {
       setRoom(info.roomId ?? room);
+      try {
+        const profile = await authService.getProfile();
+        setPlayerId(String(profile.id));
+      } catch (err) {
+        console.warn('failed to fetch profile after create', err);
+      }
       setError(null);
     });
     s.on('host_changed', (info: any) => {
@@ -82,10 +94,16 @@ export default function GameRoute() {
       setMessage(info?.message ?? 'YOU WIN');
     });
     s.on('create_failed', (info: any) => {
-      setError(info?.reason ?? 'CREATE_FAILED');
+      setError(info?.message ?? info?.code ?? 'CREATE_FAILED');
     });
     s.on('join_failed', (info: any) => {
-      setError(info?.reason ?? 'JOIN_FAILED');
+      setError(info?.message ?? info?.code ?? 'JOIN_FAILED');
+    });
+    s.on('start_failed', (info: any) => {
+      setError(info?.message ?? info?.code ?? 'START_FAILED');
+    });
+    s.on('connect_error', (err: any) => {
+      setError(String(err?.message ?? err ?? 'connect_error'));
     });
 
     return () => {
@@ -99,14 +117,14 @@ export default function GameRoute() {
     const onKey = (e: KeyboardEvent) => {
       if (!playerId || !socketRef.current) return;
       const s = socketRef.current;
-      if (e.key === 'ArrowLeft') s.emit('intent', { roomId: room, playerId, intent: { type: 'move', dir: 'left' } });
-      if (e.key === 'ArrowRight') s.emit('intent', { roomId: room, playerId, intent: { type: 'move', dir: 'right' } });
-      if (e.key === 'ArrowUp') s.emit('intent', { roomId: room, playerId, intent: { type: 'rotate' } });
-      if (e.key === 'ArrowDown') s.emit('intent', { roomId: room, playerId, intent: { type: 'soft' } });
-      if (e.key === 'Shift') s.emit('intent', { roomId: room, playerId, intent: { type: 'hold' } });
+      if (e.key === 'ArrowLeft') s.emit('intent', { roomId: room, intent: { type: 'move', dir: 'left' } });
+      if (e.key === 'ArrowRight') s.emit('intent', { roomId: room, intent: { type: 'move', dir: 'right' } });
+      if (e.key === 'ArrowUp') s.emit('intent', { roomId: room, intent: { type: 'rotate' } });
+      if (e.key === 'ArrowDown') s.emit('intent', { roomId: room, intent: { type: 'soft' } });
+      if (e.key === 'Shift') s.emit('intent', { roomId: room, intent: { type: 'hold' } });
       if (e.code === 'Space') {
         e.preventDefault();
-        s.emit('intent', { roomId: room, playerId, intent: { type: 'hard' } });
+        s.emit('intent', { roomId: room, intent: { type: 'hard' } });
       }
     };
     window.addEventListener('keydown', onKey);
@@ -117,15 +135,15 @@ export default function GameRoute() {
     const s = socketRef.current;
     if (!s) return;
     if (!s.connected) s.connect();
-    s.emit('join', { roomId: room, username: name });
+    s.emit('join', { roomId: room });
   };
 
   const create = () => {
     const s = socketRef.current;
     if (!s) return;
     if (!s.connected) s.connect();
-    // server expects { username } (room creation handled server-side)
-    s.emit('create', { username: name });
+    // server uses authenticated user for creation
+    s.emit('create');
     setError(null);
   };
 
@@ -136,14 +154,14 @@ export default function GameRoute() {
       setError('ONLY_HOST_CAN_START');
       return;
     }
-    s.emit('start', { roomId: room, playerId });
+    s.emit('start', { roomId: room });
   };
 
   const sendIntent = (intent: any) => {
     const s = socketRef.current;
     if (!s || !playerId) return;
     if (state?.status === 'finished' || message) return;
-    s.emit('intent', { roomId: room, playerId, intent });
+    s.emit('intent', { roomId: room, intent });
   };
 
   const myView = useMemo(() => {
@@ -355,7 +373,7 @@ export default function GameRoute() {
             Start
           </button>
           {state?.status === 'finished' && playerId && hostId && playerId === hostId && (
-            <button onClick={() => socketRef.current?.emit('restart', { roomId: room, playerId })}>Restart</button>
+            <button onClick={() => socketRef.current?.emit('restart', { roomId: room })}>Restart</button>
           )}
         </div>
         {hostId && playerId === hostId && (

@@ -1,17 +1,18 @@
 import { GameState, Intent, PlayerState } from '../game/types';
+import { JwtPayload } from '../utils/jwt';
 
 // TODO: extract types from functions
 export interface ClientToServerEvents {
-  create: (payload: { username: string }) => Promise<void>;
-  join: (payload: { roomId: string; username: string }) => Promise<void>;
-  start: (payload: { roomId: string; playerId: string }) => void;
-  restart: (payload: { roomId: string; playerId: string }) => void;
-  intent: (payload: { roomId: string; playerId: string; intent: Intent }) => void; // refine intent shape
+  create: () => Promise<void>;
+  join: (payload: { roomId: string }) => Promise<void>;
+  start: (payload: { roomId: string }) => void;
+  restart: (payload: { roomId: string }) => void;
+  intent: (payload: { roomId: string; intent: Intent }) => void;
   ping?: () => void;
 }
 
 export interface ServerToClientEvents {
-  created: (payload: { playerId: string; roomId: string }) => void;
+  created: (payload: { roomId: string }) => void;
   state: (payload: {
     status: GameState['status'];
     tick: number;
@@ -24,8 +25,9 @@ export interface ServerToClientEvents {
   join_failed: (payload: { code: string; message: string }) => void;
   start_failed: (payload: { code: string; message: string }) => void;
   restart_failed: (payload: { code: string; message: string }) => void;
+  create_failed: (payload: { code: string; message: string }) => void;
   restarted: (payload: { message: string }) => void;
-  joined: (payload: { playerId: string; roomId: string }) => void;
+  joined: (payload: { roomId: string }) => void;
   winner: (payload: { message: string }) => void;
   host_changed: (payload: { newHostId: string; message?: string }) => void;
   pong?: () => void;
@@ -34,4 +36,5 @@ export interface ServerToClientEvents {
 export interface SocketData {
   playerId?: string;
   room?: string;
+  user?: JwtPayload;
 }

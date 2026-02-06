@@ -15,6 +15,10 @@ export class Game {
     this.players.set(host.id, host);
     this.engine = new GameEngine(id);
     this.state = this.engine.createInitialState([host.id]);
+    // ensure player name is present in state
+    if (this.state.playerStates[host.id]) {
+      this.state.playerStates[host.id].name = host.name;
+    }
   }
 
   getState(): GameState {
@@ -27,6 +31,9 @@ export class Game {
     }
     this.players.set(player.id, player);
     this.state = this.engine.addPlayer(this.state, player.id);
+    if (this.state.playerStates[player.id]) {
+      this.state.playerStates[player.id].name = player.name;
+    }
   }
 
   getPlayers(): Player[] {
