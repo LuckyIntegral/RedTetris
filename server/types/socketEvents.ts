@@ -1,14 +1,12 @@
 import { GameState, Intent, PlayerState } from '../game/types';
 import { JwtPayload } from '../utils/jwt';
 
-// TODO: extract types from functions
 export interface ClientToServerEvents {
   create: () => Promise<void>;
   join: (payload: { roomId: string }) => Promise<void>;
   start: (payload: { roomId: string }) => void;
   restart: (payload: { roomId: string }) => void;
   intent: (payload: { roomId: string; intent: Intent }) => void;
-  ping?: () => void;
 }
 
 export interface ServerToClientEvents {
@@ -30,7 +28,6 @@ export interface ServerToClientEvents {
   joined: (payload: { roomId: string }) => void;
   winner: (payload: { message: string }) => void;
   host_changed: (payload: { newHostId: string; message?: string }) => void;
-  pong?: () => void;
 }
 
 export interface SocketData {

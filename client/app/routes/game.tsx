@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type JSX } from 'react';
 import { io } from 'socket.io-client';
 import { authService } from '../services/auth';
+import type { GameState, Intent, PlayerState, Socket } from '../types/socket';
 
 const WIDTH = 10;
 const HEIGHT = 20;
@@ -14,18 +15,18 @@ export default function GameRoute() {
   const [room, setRoom] = useState('test-room');
   const [name, setName] = useState('alice');
   const [playerId, setPlayerId] = useState<string | null>(null);
-  const [state, setState] = useState<any>(null);
+  const [state, setState] = useState<GameState | null>(null);
   const [hostId, setHostId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
-  const socketRef = useRef<any>(null);
+  const socketRef = useRef<Socket | null>(null);
 
-  const computeSpectrumFromBoard = (board: number[][]) => {
+  const computeSpectrumFromBoard = (board: number[][]): number[] => {
     const cols = Array.from({ length: WIDTH }, () => 0);
     for (let x = 0; x < WIDTH; x++) {
       let h = 0;
       for (let y = 0; y < HEIGHT; y++) {
-        if ((board[y] && board[y][x]) || board[y]?.[x] === -1) {
+        if (board[y]?.[x] || board[y]?.[x] === -1) {
           h = HEIGHT - y;
           break;
         }
@@ -39,23 +40,22 @@ export default function GameRoute() {
     if (socketRef.current) return; // avoid duplicate sockets in StrictMode / HMR
     const url = (import.meta.env.VITE_SERVER_URL as string) ?? 'http://localhost:3001';
     const token = authService.getToken();
-    const s = io(url, { autoConnect: false, auth: { token } });
+    const s = io(url, { autoConnect: false, auth: { token } }) as unknown as Socket;
     socketRef.current = s;
 
     s.on('connect', () => console.log('connected to server'));
 
     // server may emit either a raw state object or { state, hostId } historically.
-    s.on('state', (payload: any) => {
+    s.on('state', (payload: GameState | { state: GameState; hostId?: string }) => {
       // normalize payload to `state` object
-      let incoming = payload;
-      if (payload && typeof payload === 'object' && 'state' in payload) incoming = payload.state;
+      const incoming: GameState = 'state' in payload ? payload.state : payload;
       setState(incoming);
       // hostId may be attached at top-level of payload or inside incoming
-      const hid = payload?.hostId ?? incoming?.hostId ?? null;
+      const hid = 'hostId' in payload ? (payload.hostId ?? incoming?.hostId ?? null) : (incoming?.hostId ?? null);
       setHostId(hid);
     });
 
-    s.on('joined', async (info: any) => {
+    s.on('joined', async (info: { roomId?: string }) => {
       setRoom(info.roomId ?? room);
       try {
         const profile = await authService.getProfile();
@@ -65,7 +65,7 @@ export default function GameRoute() {
       }
       setError(null);
     });
-    s.on('created', async (info: any) => {
+    s.on('created', async (info: { roomId?: string }) => {
       setRoom(info.roomId ?? room);
       try {
         const profile = await authService.getProfile();
@@ -75,35 +75,36 @@ export default function GameRoute() {
       }
       setError(null);
     });
-    s.on('host_changed', (info: any) => {
+    s.on('host_changed', (info: { newHostId?: string; message?: string }) => {
       setHostId(info?.newHostId ?? null);
       if (info?.message) setMessage(info.message);
     });
-    s.on('restarted', (info: any) => {
+    s.on('restarted', (info: { message?: string }) => {
       if (info?.message) setMessage(info.message);
     });
-    s.on('restart_failed', (info: any) => {
+    s.on('restart_failed', (info: { code?: string; message?: string; reason?: string }) => {
       setError(info?.message ?? info?.reason ?? 'RESTART_FAILED');
     });
-    s.on('game_over', (info: any) => {
+    s.on('game_over', (info: { message?: string }) => {
       console.log('client: received game_over', info);
       setMessage(info?.message ?? 'game over');
     });
-    s.on('winner', (info: any) => {
+    s.on('winner', (info: { message?: string }) => {
       console.log('client: received winner', info);
       setMessage(info?.message ?? 'YOU WIN');
     });
-    s.on('create_failed', (info: any) => {
+    s.on('create_failed', (info: { code?: string; message?: string }) => {
       setError(info?.message ?? info?.code ?? 'CREATE_FAILED');
     });
-    s.on('join_failed', (info: any) => {
+    s.on('join_failed', (info: { code?: string; message?: string }) => {
       setError(info?.message ?? info?.code ?? 'JOIN_FAILED');
     });
-    s.on('start_failed', (info: any) => {
+    s.on('start_failed', (info: { code?: string; message?: string }) => {
       setError(info?.message ?? info?.code ?? 'START_FAILED');
     });
-    s.on('connect_error', (err: any) => {
-      setError(String(err?.message ?? err ?? 'connect_error'));
+    s.on('connect_error', (err: Error | string) => {
+      if (typeof err === 'string') setError(err);
+      else setError(err?.message ?? String(err));
     });
 
     return () => {
@@ -157,16 +158,16 @@ export default function GameRoute() {
     s.emit('start', { roomId: room });
   };
 
-  const sendIntent = (intent: any) => {
+  const sendIntent = (intent: Intent) => {
     const s = socketRef.current;
     if (!s || !playerId) return;
     if (state?.status === 'finished' || message) return;
     s.emit('intent', { roomId: room, intent });
   };
 
-  const myView = useMemo(() => {
+  const myView = useMemo<PlayerState | null>(() => {
     if (!state || !playerId) return null;
-    return state.players?.[playerId] ?? null;
+    return (state.players?.[playerId] ?? null) as PlayerState | null;
   }, [state, playerId]);
 
   const hostName = useMemo(() => {
@@ -219,11 +220,22 @@ export default function GameRoute() {
     );
   };
 
-  const opponents = useMemo(() => {
+  const opponents = useMemo<
+    {
+      id: string;
+      name: string;
+      spectrum: number[];
+      board: number[][] | null;
+      isAlive: boolean;
+      score: number;
+      isHost: boolean;
+    }[]
+  >(() => {
     if (!state || !playerId) return [];
-    return Object.entries(state.players)
+    const entries = Object.entries(state.players ?? ({} as Record<string, PlayerState>));
+    return entries
       .filter(([id]) => id !== playerId)
-      .map(([id, p]: any) => {
+      .map(([id, p]) => {
         const board = p?.board ?? null;
         const spectrum = Array.isArray(p?.spectrum)
           ? p.spectrum
@@ -293,7 +305,7 @@ export default function GameRoute() {
   ];
 
   const renderOpponentBoard = (board: number[][] | null, isAlive: boolean, cell = 4) => {
-    const cells: any[] = [];
+    const cells: JSX.Element[] = [];
     for (let y = 0; y < HEIGHT; y++) {
       for (let x = 0; x < WIDTH; x++) {
         const val = board?.[y]?.[x] ?? 0;
@@ -322,8 +334,8 @@ export default function GameRoute() {
   const renderNextPreview = (type: string | null, size = 12) => {
     const mat = type && PIECE_SHAPES[type] ? PIECE_SHAPES[type] : null;
     const gridSize = 4;
-    const color = (type && PIECE_COLORS[type]) || '#60a5fa';
-    const cells: any[] = [];
+    const color = (type && PIECE_COLORS[type]) ?? '#60a5fa';
+    const cells: JSX.Element[] = [];
     for (let r = 0; r < gridSize; r++) {
       for (let c = 0; c < gridSize; c++) {
         const inMat = Boolean(mat && r < mat.length && c < mat[0].length && mat[r][c]);
@@ -395,7 +407,7 @@ export default function GameRoute() {
           <div style={{ width: 220 }}>
             <div style={{ width: '100%', display: 'grid', gridTemplateColumns: `repeat(${WIDTH}, 20px)` }}>
               {(function rows() {
-                const cells = [] as any[];
+                const cells: JSX.Element[] = [];
                 for (let y = 0; y < HEIGHT; y++) {
                   for (let x = 0; x < WIDTH; x++) cells.push(renderCell(x, y));
                 }
