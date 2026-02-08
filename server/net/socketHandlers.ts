@@ -153,6 +153,10 @@ export function registerSocketHandlers(
           prevAlive[player.id] = Boolean(game.state.playerStates[player.id]?.isAlive);
         }
 
+        // remember how many players were present when the game started
+        const initialPlayerCount = game.getPlayers().length;
+        game.state.initialPlayerCount = initialPlayerCount;
+
         const interval = setInterval(() => {
           try {
             game.tick();
@@ -173,9 +177,16 @@ export function registerSocketHandlers(
 
             emitSanitizedState(game);
 
-            // if finished (0 or 1 alive), notify winner or broadcast game over, stop and cleanup
-            if (game.state.status === 'finished' || aliveIds.length <= 1) {
-              if (aliveIds.length === 1) {
+            // decide end-of-game behavior:
+            // - For multi-player games (initialPlayerCount > 1) we stop when 0 or 1 alive and declare a winner if 1 remains.
+            // - For single-player games (initialPlayerCount === 1) we only stop when the player dies (aliveIds.length === 0).
+            const shouldEnd =
+              game.state.status === 'finished' ||
+              (initialPlayerCount > 1 && aliveIds.length <= 1) ||
+              (initialPlayerCount === 1 && aliveIds.length === 0);
+
+            if (shouldEnd) {
+              if (initialPlayerCount > 1 && aliveIds.length === 1) {
                 const winnerId = aliveIds[0];
                 logger.info(`server: winner detected: ${winnerId}`);
                 const winnerPlayer = game.getPlayer(winnerId);
@@ -195,7 +206,7 @@ export function registerSocketHandlers(
                 }
               } else if (aliveIds.length === 0) {
                 logger.info('server: no alive players at end of game');
-                // no winners, notify all of game over
+                // notify all of game over
                 for (const id of Object.keys(game.state.playerStates)) {
                   const p = game.getPlayer(id);
                   if (p?.socketId) {

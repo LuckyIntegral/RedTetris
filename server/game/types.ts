@@ -30,4 +30,5 @@ export interface GameState {
   tick: number;
   speed: number;
   playerStates: Record<string, PlayerState>;
+  initialPlayerCount: number;
 }

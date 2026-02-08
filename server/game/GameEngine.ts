@@ -360,7 +360,8 @@ export class GameEngine {
 
     // check KO: if only one or zero players alive and game was running, finish
     const alive = Object.values(newState.playerStates).filter((p) => p.isAlive).length;
-    if (newState.status === 'running' && alive <= 1) {
+    const initAlive = newState.initialPlayerCount;
+    if (newState.status === 'running' && (initAlive > 1 ? alive <= 1 : alive === 0)) {
       newState.status = 'finished';
     }
 
