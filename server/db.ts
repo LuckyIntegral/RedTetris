@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import mysql from 'mysql2/promise';
-import path from 'path/posix';
+import path from 'path'; // use platform path, not path/posix
 import { logger } from './utils/logger';
 
 const dbPortRaw = process.env.DB_PORT ?? '3306';
@@ -43,7 +43,7 @@ export const testConnection = async () => {
 };
 
 export const runMigrations = async (): Promise<void> => {
-  const migrationsDir = path.resolve(__dirname, 'migrations');
+  const migrationsDir = path.resolve(process.cwd(), 'migrations');
   let conn: mysql.PoolConnection | undefined;
 
   try {
