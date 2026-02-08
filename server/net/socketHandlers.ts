@@ -12,6 +12,9 @@ export function registerSocketHandlers(
   io: Server<ClientToServerEvents, ServerToClientEvents, ServerToClientEvents, SocketData>,
   manager: GameManager
 ) {
+  // Track running game loops so we can clear them when game ends/restarts/removed
+  const gameIntervals = new Map<string, NodeJS.Timeout>();
+
   io.on(
     'connection',
     (socket: Socket<ClientToServerEvents, ServerToClientEvents, ServerToClientEvents, SocketData>) => {
@@ -156,6 +159,10 @@ export function registerSocketHandlers(
         const initialPlayerCount = game.getPlayers().length;
         game.state.initialPlayerCount = initialPlayerCount;
 
+        const existing = gameIntervals.get(game.id);
+        if (existing) {
+          clearInterval(existing);
+        }
         const interval = setInterval(() => {
           try {
             game.tick();
@@ -216,19 +223,26 @@ export function registerSocketHandlers(
                 }
               }
 
-              clearInterval(interval);
+              // stop and remove stored interval for this game
+              const iv = gameIntervals.get(game.id);
+              if (iv) {
+                clearInterval(iv);
+                gameIntervals.delete(game.id);
+              }
               emitSanitizedState(game);
             }
           } catch (err) {
             logger.error('game tick error', err);
           }
         }, 1000 / TICK_RATE);
+        // store the interval so we can clear it later (restart/disconnect/remove)
+        gameIntervals.set(game.id, interval);
         // initial broadcast
         emitSanitizedState(game);
       });
 
       socket.on('restart', (payload: { roomId: string }) => {
-        logger.info('restart the game', payload);
+        logger.info('restart the game');
 
         const user = socket.data.user;
         if (!user) {
@@ -250,6 +264,12 @@ export function registerSocketHandlers(
           return;
         }
 
+        // clear any existing loop for this room before resetting
+        const iv = gameIntervals.get(roomId);
+        if (iv) {
+          clearInterval(iv);
+          gameIntervals.delete(roomId);
+        }
         // reset engine and state while preserving players and host
         logger.info(`server: restarting game ${roomId} by host ${playerId}`);
         game.engine = new GameEngine(game.id);
@@ -288,6 +308,11 @@ export function registerSocketHandlers(
             } else {
               // no players left, remove game
               logger.info(`server: no players left in ${roomId}, removing game`);
+              const iv = gameIntervals.get(roomId);
+              if (iv) {
+                clearInterval(iv);
+                gameIntervals.delete(roomId);
+              }
               manager.removeGame(roomId);
               continue;
             }
