@@ -1,16 +1,7 @@
-import { TICK_RATE } from '../net/socketHandlers';
 import { logger } from '../utils/logger';
+import { BSP_SCORES, PLAYGROUND_HEIGHT, PLAYGROUND_WIDTH, TETROMINOS, TICK_RATE } from './contstants';
 import { PieceGenerator } from './PieceGenerator';
 import { GameState, Intent, Piece, PlayerState } from './types';
-
-const WIDTH = 10;
-const HEIGHT = 20;
-
-const BSP_SCORES: Record<number, number> = { 0: 0, 1: 40, 2: 100, 3: 300, 4: 1200 };
-
-function createEmptyBoard(): number[][] {
-  return Array.from({ length: HEIGHT }, () => Array.from({ length: WIDTH }, () => 0));
-}
 
 function cloneBoard(board: number[][]) {
   return board.map((row) => row.slice());
@@ -28,16 +19,23 @@ function hashStringToSeed(s: string) {
 export class GameEngine {
   seed: string;
   private pieceGenerator: PieceGenerator;
+  private width: number;
+  private height: number;
 
   constructor(seed = 'default') {
     this.seed = seed;
     const h = hashStringToSeed(seed);
-
-    this.pieceGenerator = new PieceGenerator(h);
+    this.width = PLAYGROUND_WIDTH;
+    this.height = PLAYGROUND_HEIGHT;
+    this.pieceGenerator = new PieceGenerator(h, TETROMINOS);
   }
 
   private cloneState<T>(obj: T): T {
     return JSON.parse(JSON.stringify(obj)) as T;
+  }
+
+  private createEmptyBoard(): number[][] {
+    return Array.from({ length: this.height }, () => Array.from({ length: this.width }, () => 0));
   }
 
   createInitialState(playerIds: string[]): GameState {
@@ -45,7 +43,7 @@ export class GameEngine {
       playerIds.map((id) => [
         id,
         {
-          board: createEmptyBoard(),
+          board: this.createEmptyBoard(),
           activePiece: null,
           nextPiece: null,
           speed: 0,
@@ -65,7 +63,7 @@ export class GameEngine {
   addPlayer(state: GameState, playerId: string): GameState {
     const newState: GameState = this.cloneState(state);
     newState.playerStates[playerId] = {
-      board: createEmptyBoard(),
+      board: this.createEmptyBoard(),
       activePiece: null,
       nextPiece: null,
       speed: 0,
@@ -92,7 +90,7 @@ export class GameEngine {
         }
         const x = piece.x + c;
         const y = piece.y + r;
-        if (x < 0 || x >= WIDTH || y >= HEIGHT) {
+        if (x < 0 || x >= this.width || y >= this.height) {
           return true;
         }
         if (y >= 0 && board[y][x]) {
@@ -121,7 +119,7 @@ export class GameEngine {
         }
         const x = piece.x + c;
         const y = piece.y + r;
-        if (y >= 0 && y < HEIGHT && x >= 0 && x < WIDTH) {
+        if (y >= 0 && y < this.height && x >= 0 && x < this.width) {
           newBoard[y][x] = color;
         }
       }
@@ -145,7 +143,7 @@ export class GameEngine {
         break;
       }
       y += 1;
-      if (y > HEIGHT + 5) {
+      if (y > this.height + 5) {
         landedY = y;
         break;
       }
@@ -159,7 +157,7 @@ export class GameEngine {
         }
         const x = piece.x + c;
         const yy = landedY + r;
-        if (yy >= 0 && yy < HEIGHT && x >= 0 && x < WIDTH) {
+        if (yy >= 0 && yy < this.height && x >= 0 && x < this.width) {
           if (!newBoard[yy][x]) {
             newBoard[yy][x] = -2;
           }
@@ -175,7 +173,7 @@ export class GameEngine {
         }
         const x = piece.x + c;
         const y2 = piece.y + r;
-        if (y2 >= 0 && y2 < HEIGHT && x >= 0 && x < WIDTH) {
+        if (y2 >= 0 && y2 < this.height && x >= 0 && x < this.width) {
           newBoard[y2][x] = color;
         }
       }
@@ -194,7 +192,7 @@ export class GameEngine {
         continue;
       }
 
-      newBoard.unshift(Array.from({ length: WIDTH }, () => 0));
+      newBoard.unshift(Array.from({ length: this.width }, () => 0));
       cleared += 1;
     }
 
@@ -230,7 +228,7 @@ export class GameEngine {
         // swap: take held piece into active (spawn position), put current into hold
         const held = player.holdPiece;
         player.holdPiece = activeType;
-        const spawn: Piece = { type: held, x: Math.floor(WIDTH / 2) - 1, y: -1, rotation: 0 };
+        const spawn: Piece = { type: held, x: Math.floor(this.width / 2) - 1, y: -1, rotation: 0 };
         if (this.collides(player.board, spawn)) {
           // spawn collision -> player dies
           player.isAlive = false;
@@ -293,8 +291,8 @@ export class GameEngine {
     state.playerStates[playerId].score += base + dropBonus;
 
     if (cleared > 1) {
-      const generatedLine = Array.from({ length: WIDTH }, () => -1);
-      generatedLine[Math.floor(Math.random() * WIDTH)] = 0;
+      const generatedLine = Array.from({ length: this.width }, () => -1);
+      generatedLine[Math.floor(Math.random() * this.width)] = 0;
 
       const garbageLines = cleared - 1;
       for (const otherId of Object.keys(state.playerStates)) {
@@ -335,7 +333,7 @@ export class GameEngine {
         playerState.nextPiece = this.pieceGenerator.getPiece(playerState.piecesPlaced);
         playerState.piecesPlaced += 1;
 
-        const piece: Piece = { type: next, x: Math.floor(WIDTH / 2) - 1, y: -1, rotation: 0 };
+        const piece: Piece = { type: next, x: Math.floor(this.width / 2) - 1, y: -1, rotation: 0 };
 
         playerState.activePiece = piece;
         // immediate collision -> player loses

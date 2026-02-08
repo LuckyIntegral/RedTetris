@@ -1,6 +1,6 @@
 import { Player } from '../core/Player';
 import { GameEngine } from './GameEngine';
-import { GameState, Intent } from './GameState';
+import { GameState, Intent } from './types';
 
 export class Game {
   id: string;

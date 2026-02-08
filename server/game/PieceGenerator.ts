@@ -1,156 +1,19 @@
-const TETROMINOS: Record<string, number[][][]> = {
-  I: [
-    [
-      [0, 0, 0, 0],
-      [1, 1, 1, 1],
-    ],
-    [
-      [0, 0, 1],
-      [0, 0, 1],
-      [0, 0, 1],
-      [0, 0, 1],
-    ],
-    [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [1, 1, 1, 1],
-    ],
-    [
-      [0, 1],
-      [0, 1],
-      [0, 1],
-      [0, 1],
-    ],
-  ],
-  O: [
-    [
-      [1, 1],
-      [1, 1],
-    ],
-  ],
-  T: [
-    [
-      [0, 1, 0],
-      [1, 1, 1],
-    ],
-    [
-      [0, 1, 0],
-      [0, 1, 1],
-      [0, 1, 0],
-    ],
-    [
-      [0, 0, 0],
-      [1, 1, 1],
-      [0, 1, 0],
-    ],
-    [
-      [0, 1],
-      [1, 1],
-      [0, 1],
-    ],
-  ],
-  S: [
-    [
-      [0, 1, 1],
-      [1, 1, 0],
-    ],
-    [
-      [0, 1, 0],
-      [0, 1, 1],
-      [0, 0, 1],
-    ],
-    [
-      [0, 0, 0],
-      [0, 1, 1],
-      [1, 1, 0],
-    ],
-    [
-      [1, 0, 0],
-      [1, 1, 0],
-      [0, 1, 0],
-    ],
-  ],
-  Z: [
-    [
-      [1, 1, 0],
-      [0, 1, 1],
-    ],
-    [
-      [0, 0, 1],
-      [0, 1, 1],
-      [0, 1, 0],
-    ],
-    [
-      [0, 0, 0],
-      [1, 1, 0],
-      [0, 1, 1],
-    ],
-    [
-      [0, 1, 0],
-      [1, 1, 0],
-      [1, 0, 0],
-    ],
-  ],
-  J: [
-    [
-      [1, 0, 0],
-      [1, 1, 1],
-    ],
-    [
-      [0, 1, 1],
-      [0, 1, 0],
-      [0, 1, 0],
-    ],
-    [
-      [0, 0, 0],
-      [1, 1, 1],
-      [0, 0, 1],
-    ],
-    [
-      [0, 1],
-      [0, 1],
-      [1, 1],
-    ],
-  ],
-  L: [
-    [
-      [0, 0, 1],
-      [1, 1, 1],
-    ],
-    [
-      [0, 1, 0],
-      [0, 1, 0],
-      [0, 1, 1],
-    ],
-    [
-      [0, 0, 0],
-      [1, 1, 1],
-      [1, 0, 0],
-    ],
-    [
-      [1, 1],
-      [0, 1],
-      [0, 1],
-    ],
-  ],
-};
-
-const PIECE_TYPES = Object.keys(TETROMINOS);
-
 export class PieceGenerator {
   private seed: number;
   private generatedPieces: number[] = [];
+  private tetrominos: Record<string, number[][][]>;
 
-  constructor(seed: number) {
+  constructor(seed: number, tetrominos: Record<string, number[][][]>) {
     this.seed = seed;
+    this.tetrominos = tetrominos;
   }
 
   getPieceShapeAndColor(type: string, rotation: number): { piece: number[][]; color: number } {
-    const shapes = TETROMINOS[type];
+    const shapes = this.tetrominos[type];
     if (!shapes) {
       throw new Error(`Invalid piece type: ${type}`);
     }
-    return { piece: shapes[rotation % shapes.length], color: PIECE_TYPES.indexOf(type) + 1 };
+    return { piece: shapes[rotation % shapes.length], color: Object.keys(this.tetrominos).indexOf(type) + 1 };
   }
 
   getPiece(iteration: number): string {
@@ -158,11 +21,11 @@ export class PieceGenerator {
       this.generateNextPiece();
     }
 
-    return PIECE_TYPES[this.generatedPieces[iteration]];
+    return Object.keys(this.tetrominos)[this.generatedPieces[iteration]];
   }
 
   private generateNextPiece() {
-    const arr = Array.from({ length: PIECE_TYPES.length }, (_, i) => i);
+    const arr = Array.from({ length: Object.keys(this.tetrominos).length }, (_, i) => i);
     while (arr.length > 0) {
       const next = this.seed % arr.length;
       this.generatedPieces.push(arr[next]);

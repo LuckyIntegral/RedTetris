@@ -6,8 +6,7 @@ import { GameEngine } from '../game/GameEngine';
 import type { Intent, PlayerState } from '../game/types';
 import { ClientToServerEvents, ServerToClientEvents, SocketData } from '../types/socketEvents';
 import { logger } from '../utils/logger';
-
-export const TICK_RATE = 20;
+import { TICK_RATE } from '../game/contstants';
 
 export function registerSocketHandlers(
   io: Server<ClientToServerEvents, ServerToClientEvents, ServerToClientEvents, SocketData>,
