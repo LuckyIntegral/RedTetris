@@ -162,7 +162,12 @@ export class PieceGenerator {
   }
 
   private generateNextPiece() {
-    this.generatedPieces.push(this.seed % PIECE_TYPES.length);
-    this.seed = (this.seed * 48271) % 2147483647;
+    const arr = Array.from({ length: PIECE_TYPES.length }, (_, i) => i);
+    while (arr.length > 0) {
+      const next = this.seed % arr.length;
+      this.generatedPieces.push(arr[next]);
+      arr.splice(next, 1);
+      this.seed = (this.seed * 48271) % 2147483647;
+    }
   }
 }
