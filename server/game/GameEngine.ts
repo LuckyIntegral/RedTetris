@@ -57,7 +57,13 @@ export class GameEngine {
       ])
     );
 
-    return { status: 'waiting', tick: 0, speed: TICK_RATE, playerStates } as GameState;
+    return {
+      status: 'waiting',
+      tick: 0,
+      speed: TICK_RATE,
+      playerStates,
+      initialPlayerCount: playerIds.length,
+    } as GameState;
   }
 
   addPlayer(state: GameState, playerId: string): GameState {
