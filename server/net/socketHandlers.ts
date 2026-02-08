@@ -171,6 +171,7 @@ export function registerSocketHandlers(
                   logger.info(`server: emitting game_over to ${p.socketId} for player ${id}`);
                   io.to(p.socketId).emit('game_over', { message: 'game over' });
                 }
+                prevAlive[id] = false;
               }
             }
 
