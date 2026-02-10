@@ -1,4 +1,7 @@
+import fs from 'fs/promises';
 import mysql from 'mysql2/promise';
+import path from 'path'; // use platform path, not path/posix
+import { logger } from './utils/logger';
 
 const dbPortRaw = process.env.DB_PORT ?? '3306';
 const dbPort = Number.parseInt(dbPortRaw, 10);
@@ -20,22 +23,80 @@ const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
+  multipleStatements: true,
 });
 
-// Test the connection
 export const testConnection = async () => {
   try {
     const connection = await pool.getConnection();
-    console.log('✅ Database connected successfully');
+    logger.info('✅ Database connected successfully');
     connection.release();
     return true;
   } catch (error: unknown) {
     if (error instanceof Error) {
-      console.error('❌ Database connection failed:', error.message);
+      logger.error('❌ Database connection failed:', error.message);
     } else {
-      console.error('❌ Database connection failed with unknown error');
+      logger.error('❌ Database connection failed with unknown error');
     }
     return false;
+  }
+};
+
+export const runMigrations = async (): Promise<void> => {
+  const migrationsDir = path.resolve(process.cwd(), 'migrations');
+  let conn: mysql.PoolConnection | undefined;
+
+  try {
+    const stat = await fs.stat(migrationsDir).catch(() => null);
+    if (!stat?.isDirectory()) {
+      logger.info(`No migrations directory found at ${migrationsDir} — skipping migrations`);
+      return;
+    }
+
+    const files = await fs.readdir(migrationsDir);
+    const sqlFiles = files.filter((f) => f.endsWith('.sql')).sort();
+    if (sqlFiles.length === 0) {
+      logger.info(`No .sql migration files found in ${migrationsDir} — skipping migrations`);
+      return;
+    }
+
+    conn = await pool.getConnection();
+
+    await conn.query(
+      `CREATE TABLE IF NOT EXISTS migrations (
+         id INT AUTO_INCREMENT PRIMARY KEY,
+         filename VARCHAR(255) NOT NULL UNIQUE,
+         applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`
+    );
+
+    for (const file of sqlFiles) {
+      const [rows] = await conn.query<mysql.RowDataPacket[]>('SELECT 1 FROM migrations WHERE filename = ? LIMIT 1', [
+        file,
+      ]);
+      if (Array.isArray(rows) && rows.length > 0) {
+        logger.info(`Skipping already applied migration ${file}`);
+        continue;
+      }
+
+      const filePath = path.join(migrationsDir, file);
+      logger.info(`Applying migration ${file}`);
+      const sql = await fs.readFile(filePath, 'utf8');
+
+      // execute the migration SQL (multipleStatements enabled above)
+      await conn.query(sql);
+
+      // record applied migration
+      await conn.query('INSERT INTO migrations (filename) VALUES (?)', [file]);
+      logger.info(`Applied ${file}`);
+    }
+
+    logger.info('All migrations applied successfully');
+  } catch (err: unknown) {
+    logger.error('Migrations failed:', err);
+    throw err;
+  } finally {
+    if (conn) conn.release();
   }
 };
 
