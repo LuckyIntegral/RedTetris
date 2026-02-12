@@ -24,8 +24,7 @@
     "start:server": "pnpm --filter=server start",
     "start:client": "pnpm --filter=client start",
     "test": "pnpm --filter=server test && pnpm --filter=client test",
-    "test:server": "pnpm --filter=server test",
-    "test:client": "pnpm --filter=client test"
+    "coverage": "pnpm --filter=server coverage && pnpm --filter=client coverage"
   },
   "keywords": [],
   "author": "",
