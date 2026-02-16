@@ -1,10 +1,10 @@
-import * as chai from 'chai';
+import { should } from 'chai';
 
-const expect = chai.expect;
+should();
 
 describe('Hi there!', function () {
   it('1+1 == 2', () => {
     const res = 1 + 1;
-    expect(res).to.equal(2);
+    should().equal(res, 2);
   });
 });
