@@ -83,7 +83,7 @@ export class GameEngine {
     return newState;
   }
 
-  private collides(board: number[][], piece: Piece) {
+  collides(board: number[][], piece: Piece) {
     if (!piece) {
       return true;
     }
@@ -188,7 +188,8 @@ export class GameEngine {
     return newBoard;
   }
 
-  private clearLines(board: number[][]) {
+  /** Clear completed lines from a board and return the new board and number of cleared lines. */
+  clearLines(board: number[][]) {
     const newBoard: number[][] = [];
     let cleared = 0;
 
@@ -287,7 +288,7 @@ export class GameEngine {
     return newState;
   }
 
-  private computeLinesClearedReward(state: GameState, playerId: string, dropRows = 0, isHard = false) {
+  computeLinesClearedReward(state: GameState, playerId: string, dropRows = 0, isHard = false) {
     const { board: clearedBoard, cleared } = this.clearLines(state.playerStates[playerId].board);
     state.playerStates[playerId].board = clearedBoard;
 

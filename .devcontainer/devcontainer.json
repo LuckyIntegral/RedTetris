@@ -60,7 +60,8 @@
                 "bradlc.vscode-tailwindcss",
                 "yoavbls.pretty-ts-errors",
                 "streetsidesoftware.code-spell-checker",
-                "diemasmichiels.emulate"
+                "diemasmichiels.emulate",
+                "hbenl.vscode-mocha-test-adapter"
             ]
         }
     }
