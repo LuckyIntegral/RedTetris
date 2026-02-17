@@ -110,13 +110,13 @@ describe('PieceGenerator exhaustive scenarios', () => {
     }
   });
 
-  for (let i = 0; i < 80; i++) {
-    it(`sanity check iteration ${i}`, () => {
+  it('sanity check across first 80 seeds', () => {
+    for (let i = 0; i < 80; i++) {
       const g = new PieceGenerator(i + 1, tet);
       const p0 = g.getPiece(0);
       expect(typeof p0).to.equal('string');
-    });
-  }
+    }
+  });
 });
 
 describe('PieceGenerator focused extra', () => {
