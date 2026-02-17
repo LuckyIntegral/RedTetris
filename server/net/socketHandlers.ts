@@ -6,6 +6,7 @@ import { GameEngine } from '../game/GameEngine';
 import type { Intent, PlayerState } from '../game/types';
 import { ClientToServerEvents, ServerToClientEvents, SocketData } from '../types/socketEvents';
 import { logger } from '../utils/logger';
+import { TICK_INTERVAL_MS } from '../game/contstants';
 
 export function registerSocketHandlers(
   io: Server<ClientToServerEvents, ServerToClientEvents, ServerToClientEvents, SocketData>,
@@ -233,7 +234,7 @@ export function registerSocketHandlers(
           } catch (err) {
             logger.error('game tick error', err);
           }
-        }, 50);
+        }, TICK_INTERVAL_MS);
         // store the interval so we can clear it later (restart/disconnect/remove)
         gameIntervals.set(game.id, interval);
         // initial broadcast
