@@ -342,12 +342,12 @@ describe('GameEngine', () => {
     expect(after.playerStates.p1.piecesPlaced).to.be.at.least(beforePlaced);
   });
 
-  for (let i = 0; i < 220; i++) {
-    it(`engine quick sanity ${i}`, () => {
+  it('engine quick sanity across multiple seeds', () => {
+    for (let i = 0; i < 220; i++) {
       const e2 = new GameEngine(`s-${i}`);
       const st = e2.createInitialState([`p${i}`, `q${i}`]);
       for (let t = 0; t < 3; t++) e2.tick(st);
       expect(Object.keys(st.playerStates).length).to.equal(2);
-    });
-  }
+    }
+  });
 });
