@@ -29,13 +29,13 @@ describe('GameEngine additional coverage', () => {
     }
   });
 
-  it('tick reduces speed when tick reaches 140 boundary', () => {
+  it('tick reduces speed when tick reaches 200 boundary', () => {
     const e = new GameEngine('t1');
     const s = e.createInitialState(['p1']);
-    s.tick = 139; // so tick will increment to 140
+    s.tick = 199; // so tick will increment to 200
     s.speed = 20;
     const after = e.tick(s);
-    expect(after.tick).to.equal(140);
+    expect(after.tick).to.equal(200);
     expect(after.speed).to.equal(19);
   });
 
@@ -151,10 +151,10 @@ describe('GameEngine (cleaned focused tests)', () => {
   it('tick reduces speed when crossing threshold', () => {
     const e = new GameEngine('t1');
     const s = e.createInitialState(['p1']);
-    s.tick = 139;
+    s.tick = 199;
     s.speed = 20;
     const after = e.tick(s);
-    expect(after.tick).to.equal(140);
+    expect(after.tick).to.equal(200);
     expect(after.speed).to.equal(19);
   });
 
@@ -209,13 +209,13 @@ describe('GameEngine focused extras', () => {
     }
   });
 
-  it('tick reduces speed when tick reaches 140 boundary', () => {
+  it('tick reduces speed when tick reaches 200 boundary', () => {
     const e = new GameEngine('t1');
     const s = e.createInitialState(['p1']);
-    s.tick = 139;
+    s.tick = 199;
     s.speed = 20;
     const after = e.tick(s);
-    expect(after.tick).to.equal(140);
+    expect(after.tick).to.equal(200);
     expect(after.speed).to.equal(19);
   });
 

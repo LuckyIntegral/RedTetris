@@ -1,12 +1,12 @@
 import { Server, Socket } from 'socket.io';
 import { GameManager } from '../core/GameManager';
 import { Player } from '../core/Player';
-import { TICK_RATE } from '../game/contstants';
 import { Game } from '../game/Game';
 import { GameEngine } from '../game/GameEngine';
 import type { Intent, PlayerState } from '../game/types';
 import { ClientToServerEvents, ServerToClientEvents, SocketData } from '../types/socketEvents';
 import { logger } from '../utils/logger';
+import { STANDARD_FIRST_SPEED } from '../game/contstants';
 
 export function registerSocketHandlers(
   io: Server<ClientToServerEvents, ServerToClientEvents, ServerToClientEvents, SocketData>,
@@ -234,7 +234,7 @@ export function registerSocketHandlers(
           } catch (err) {
             logger.error('game tick error', err);
           }
-        }, 1000 / TICK_RATE);
+        }, 50);
         // store the interval so we can clear it later (restart/disconnect/remove)
         gameIntervals.set(game.id, interval);
         // initial broadcast

@@ -1,5 +1,5 @@
 import { logger } from '../utils/logger';
-import { BSP_SCORES, PLAYGROUND_HEIGHT, PLAYGROUND_WIDTH, TETROMINOS, TICK_RATE } from './contstants';
+import { BSP_SCORES, PLAYGROUND_HEIGHT, PLAYGROUND_WIDTH, TETROMINOS, STANDARD_FIRST_SPEED } from './contstants';
 import { PieceGenerator } from './PieceGenerator';
 import { GameState, Intent, Piece, PlayerState } from './types';
 
@@ -60,7 +60,7 @@ export class GameEngine {
     return {
       status: 'waiting',
       tick: 0,
-      speed: TICK_RATE,
+      speed: STANDARD_FIRST_SPEED,
       playerStates,
       initialPlayerCount: playerIds.length,
     } as GameState;
@@ -333,13 +333,6 @@ export class GameEngine {
   tick(state: GameState): GameState {
     const newState: GameState = this.cloneState(state);
     newState.tick += 1;
-    if (newState.tick % 140 === 0) {
-      newState.speed = Math.max(1, newState.speed - 1);
-    }
-
-    if (newState.tick % newState.speed !== 0) {
-      return newState;
-    }
 
     for (const [playerId, playerState] of Object.entries(newState.playerStates)) {
       if (!playerState.activePiece) {
@@ -355,15 +348,28 @@ export class GameEngine {
         const piece: Piece = { type: next, x: Math.floor(this.width / 2) - 1, y: -1, rotation: 0 };
 
         playerState.activePiece = piece;
-        // immediate collision -> player loses
         if (this.collides(playerState.board, piece)) {
           logger.info(`player ${playerId} collided on spawn and dies`);
           playerState.isAlive = false;
           continue;
         }
       }
+    }
 
-      // gravity step: attempt to move down
+    if (newState.tick % 200 === 0) {
+      newState.speed = Math.max(1, newState.speed - 1);
+    }
+
+    if (newState.tick % newState.speed !== 0) {
+      return newState;
+    }
+
+    // gravity step: attempt to move down
+    for (const [playerId, playerState] of Object.entries(newState.playerStates)) {
+      if (!playerState.isAlive || !playerState.activePiece) {
+        continue;
+      }
+
       const moved: Piece = { ...playerState.activePiece, y: playerState.activePiece.y + 1 };
       if (!this.collides(playerState.board, moved)) {
         playerState.activePiece = moved;
