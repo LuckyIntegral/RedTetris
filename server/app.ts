@@ -20,8 +20,17 @@ import { logDbError, logger } from './utils/logger';
 
 const app = express();
 const server = http.createServer(app);
+
+// Parse allowed client origins from env. Support comma-separated list in
+// `CLIENT_URLS`. Falls back to legacy `CLIENT_URL` for compatibility.
+const clientUrlsRaw = process.env.CLIENT_URL ?? 'http://localhost:3001';
+const allowedOrigins = clientUrlsRaw
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean);
+
 const io = new IOServer<ClientToServerEvents, ServerToClientEvents, ServerToClientEvents, SocketData>(server, {
-  cors: { origin: process.env.CLIENT_URL },
+  cors: { origin: allowedOrigins, credentials: true },
 });
 const gameManager = new GameManager();
 
@@ -58,7 +67,16 @@ const SERVER_PORT = (() => {
 })();
 
 // Middleware
-app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      return callback(new Error('Not allowed by CORS'));
+    },
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
