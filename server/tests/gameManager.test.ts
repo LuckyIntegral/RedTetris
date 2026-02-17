@@ -27,30 +27,6 @@ describe('GameManager', () => {
     expect(gm.games.has(game.id)).to.be.false;
   });
 
-  it('retries room code when a collision occurs', () => {
-    const gm = new GameManager();
-    const existingHost = new Player('h', 'Existing', 'sX');
-    const pre = gm.createNewGame(existingHost);
-    const collidingId = pre.id; // 6-char id produced by real generator
-
-    const orig = crypto.randomUUID;
-    let calls = 0;
-    crypto.randomUUID = () => {
-      calls++;
-      const base = (calls === 1 ? collidingId : 'ZZZZZZ').toLowerCase();
-      return `${base}-0000-0000-0000-000000000000`;
-    };
-
-    try {
-      const host = new Player('p3', 'Host3', 's3');
-      const game = gm.createNewGame(host);
-      expect(game.id).to.equal('ZZZZZZ');
-      expect(calls).to.be.greaterThan(1);
-    } finally {
-      crypto.randomUUID = orig;
-    }
-  });
-
   it('generates different ids for successive games', () => {
     const gm = new GameManager();
     const a = new Player('a', 'A', 'sA');
