@@ -1,7 +1,7 @@
 import swaggerJSDoc from 'swagger-jsdoc';
 
-const PORT = process.env.PORT ?? 3001;
-const SERVER_URL = `http://localhost:${PORT}`;
+const SERVER_PORT = process.env.SERVER_PORT ?? 3002;
+const SERVER_URL = `http://localhost:${SERVER_PORT}`;
 
 const swaggerDefinition = {
   openapi: '3.0.0',

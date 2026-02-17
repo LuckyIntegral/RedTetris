@@ -21,7 +21,7 @@ import { logDbError, logger } from './utils/logger';
 const app = express();
 const server = http.createServer(app);
 const io = new IOServer<ClientToServerEvents, ServerToClientEvents, ServerToClientEvents, SocketData>(server, {
-  cors: { origin: process.env.CLIENT_URL ?? 'http://localhost:3000' },
+  cors: { origin: process.env.CLIENT_URL },
 });
 const gameManager = new GameManager();
 
@@ -44,21 +44,21 @@ io.use((socket: Socket<ClientToServerEvents, ServerToClientEvents, ServerToClien
 
 registerSocketHandlers(io, gameManager);
 
-const rawPort = process.env.PORT;
-const PORT = (() => {
+const rawPort = process.env.SERVER_PORT;
+const SERVER_PORT = (() => {
   if (rawPort === undefined) {
     return 3001;
   }
   const parsedPort = parseInt(rawPort, 10);
   if (Number.isNaN(parsedPort) || !Number.isInteger(parsedPort) || parsedPort <= 0 || parsedPort > 65535) {
-    logger.error(`Invalid PORT environment variable "${rawPort}". Expected an integer between 1 and 65535.`);
+    logger.error(`Invalid SERVER_PORT environment variable "${rawPort}". Expected an integer between 1 and 65535.`);
     process.exit(1);
   }
   return parsedPort;
 })();
 
 // Middleware
-app.use(cors({ origin: process.env.CLIENT_URL ?? 'http://localhost:3000', credentials: true }));
+app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -151,8 +151,8 @@ const startServer = async () => {
     process.exit(1);
   }
 
-  server.listen(PORT, () => {
-    logger.info(`Server (HTTP + Socket.IO) is running on port ${PORT}`);
+  server.listen(SERVER_PORT, () => {
+    logger.info(`Server (HTTP + Socket.IO) is running on port ${SERVER_PORT}`);
   });
 };
 
