@@ -6,7 +6,6 @@ import { GameEngine } from '../game/GameEngine';
 import type { Intent, PlayerState } from '../game/types';
 import { ClientToServerEvents, ServerToClientEvents, SocketData } from '../types/socketEvents';
 import { logger } from '../utils/logger';
-import { STANDARD_FIRST_SPEED } from '../game/contstants';
 
 export function registerSocketHandlers(
   io: Server<ClientToServerEvents, ServerToClientEvents, ServerToClientEvents, SocketData>,
