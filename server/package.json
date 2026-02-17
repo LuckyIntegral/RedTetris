@@ -32,7 +32,10 @@
     "@types/swagger-ui-express": "^4.1.8",
     "nodemon": "^3.1.11",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "mocha": "^11.7.5",
+    "nyc": "^17.1.0",
+    "sinon": "^21.0.1"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -42,10 +45,7 @@
     "express": "^4.21.2",
     "express-rate-limit": "^8.2.1",
     "jsonwebtoken": "^9.0.3",
-    "mocha": "^11.7.5",
     "mysql2": "^3.16.1",
-    "nyc": "^17.1.0",
-    "sinon": "^21.0.1",
     "socket.io": "^4.8.3",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
