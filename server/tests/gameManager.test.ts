@@ -2,7 +2,6 @@
 import { expect } from 'chai';
 import { GameManager } from '../core/GameManager';
 import { Player } from '../core/Player';
-import crypto from 'crypto';
 
 describe('GameManager', () => {
   it('creates and stores a new game with 6-char uppercase id', () => {
