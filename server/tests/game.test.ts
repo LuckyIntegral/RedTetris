@@ -44,15 +44,15 @@ describe('Game extended behaviors and invariants', () => {
     expect(g.getState()).to.be.an('object');
   });
 
-  for (let i = 0; i < 120; i++) {
-    it(`game sanity ${i}`, () => {
+  it('game sanity suite', () => {
+    for (let i = 0; i < 120; i++) {
       const host = new Player(`h${i}`, `Host${i}`, `s${i}`);
       const gg = new Game(`gid${i}`, host);
       expect(gg.getPlayers().length).to.equal(1);
       gg.addPlayer(new Player(`p${i}`, `P${i}`, `s${i}`));
       expect(gg.getPlayers().length).to.equal(2);
-    });
-  }
+    }
+  });
 });
 
 describe('Game focused extras', () => {
