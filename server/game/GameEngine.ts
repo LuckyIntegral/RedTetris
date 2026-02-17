@@ -269,7 +269,19 @@ export class GameEngine {
         tryMove(1, 0);
       }
     } else if (input.type === 'rotate') {
-      tryMove(0, 0, 1);
+      const base = player.activePiece ?? cur;
+      const rotated: Piece = { type: base.type, x: base.x, y: base.y, rotation: base.rotation + 1 };
+      if (!this.collides(player.board, rotated)) {
+        player.activePiece = rotated;
+      } else {
+        for (const dy of [-1, -2]) {
+          const candidate: Piece = { ...rotated, y: base.y + dy };
+          if (!this.collides(player.board, candidate)) {
+            player.activePiece = candidate;
+            break;
+          }
+        }
+      }
     } else if (input.type === 'soft') {
       tryMove(0, 1);
     } else if (input.type === 'hard') {
