@@ -54,7 +54,7 @@ registerSocketHandlers(io, gameManager);
 const rawPort = process.env.SERVER_PORT;
 const SERVER_PORT = (() => {
   if (rawPort === undefined) {
-    return 3001;
+    return 3002;
   }
   const parsedPort = parseInt(rawPort, 10);
   if (Number.isNaN(parsedPort) || !Number.isInteger(parsedPort) || parsedPort <= 0 || parsedPort > 65535) {
