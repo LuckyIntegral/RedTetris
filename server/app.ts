@@ -21,8 +21,6 @@ import { logDbError, logger } from './utils/logger';
 const app = express();
 const server = http.createServer(app);
 
-// Parse allowed client origins from env. Support comma-separated list in
-// `CLIENT_URLS`. Falls back to legacy `CLIENT_URL` for compatibility.
 const clientUrlsRaw = process.env.CLIENT_URL ?? 'http://localhost:3001';
 const allowedOrigins = clientUrlsRaw
   .split(',')
