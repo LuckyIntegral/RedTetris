@@ -1,32 +1,40 @@
 {
   "name": "client",
   "private": true,
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
-    "dev": "react-router dev --port 3000 --host 127.0.0.1",
+    "dev": "react-router dev --port 3001 --host 127.0.0.1",
     "build": "react-router build",
     "start": "react-router-serve build/server/index.js",
     "lint": "eslint . --ext js,jsx,ts,tsx --ignore-pattern .react-router --ignore-pattern build --ignore-pattern node_modules --fix",
     "lint:check": "eslint . --ext js,jsx,ts,tsx --ignore-pattern .react-router --ignore-pattern build --ignore-pattern node_modules",
     "prettier": "prettier \"**/*.{js,jsx,ts,tsx,json,css,md}\" --ignore-path ../.prettierignore --write",
     "prettier:check": "prettier \"**/*.{js,jsx,ts,tsx,json,css,md}\" --ignore-path ../.prettierignore --list-different",
-    "typecheck": "react-router typegen && tsc"
+    "typecheck": "react-router typegen && tsc",
+    "test": "mocha -r ts-node/register tests/**/*.ts",
+    "coverage": "nyc mocha -r ts-node/register tests/**/*.ts"
   },
   "dependencies": {
     "@react-router/node": "7.12.0",
     "@react-router/serve": "7.12.0",
     "@reduxjs/toolkit": "^2.11.2",
+    "chai": "^6.2.2",
     "isbot": "^5.1.31",
+    "mocha": "^11.7.5",
+    "nyc": "^17.1.0",
     "prettier": "^3.8.1",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-redux": "^9.2.0",
     "react-router": "7.12.0",
-    "socket.io-client": "^4.8.3"
+    "socket.io-client": "^4.8.3",
+    "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "@react-router/dev": "7.12.0",
     "@tailwindcss/vite": "^4.1.13",
+    "@types/chai": "^5.2.3",
+    "@types/mocha": "^10.0.10",
     "@types/node": "^22",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
