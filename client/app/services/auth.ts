@@ -1,4 +1,5 @@
-const API_URL = (import.meta.env.VITE_SERVER_URL as string) || 'http://localhost:3002';
+const serverPort = import.meta.env.SERVER_PORT || '3002';
+const API_URL = (import.meta.env.VITE_SERVER_URL as string) || `http://localhost:${serverPort}`;
 
 export interface User {
   id: number;

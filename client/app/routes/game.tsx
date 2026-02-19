@@ -38,7 +38,8 @@ export default function GameRoute() {
 
   useEffect(() => {
     if (socketRef.current) return; // avoid duplicate sockets in StrictMode / HMR
-    const url = (import.meta.env.VITE_SERVER_URL as string) ?? 'http://localhost:3002';
+    const serverPort = import.meta.env.SERVER_PORT || '3002';
+    const url = (import.meta.env.VITE_SERVER_URL as string) ?? `http://localhost:${serverPort}`;
     const token = authService.getToken();
     const s = io(url, { autoConnect: false, auth: { token } }) as unknown as Socket;
     socketRef.current = s;
