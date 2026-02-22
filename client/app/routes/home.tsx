@@ -3,7 +3,7 @@ import { Welcome } from '../welcome/welcome';
 import { ProtectedRoute } from '../components/auth/ProtectedRoute';
 
 export function meta({}: Route.MetaArgs) {
-  return [{ title: 'New React Router App' }, { name: 'description', content: 'Welcome to React Router!' }];
+  return [{ title: 'Red Tetris - Home' }, { name: 'description', content: 'Play Red Tetris - The Ultimate Multiplayer Tetris Experience!' }];
 }
 
 export default function Home() {

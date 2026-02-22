@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Navigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { fetchProfile } from '../../store/authSlice';
+import { LoadingOverlay } from '../LoadingOverlay';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -17,14 +18,6 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     }
   }, [dispatch, isAuthenticated, user]);
 
-  if (isLoading || (isAuthenticated && !user)) {
-    return (
-      <div className='flex items-center justify-center min-h-screen'>
-        <div className='text-lg'>Loading...</div>
-      </div>
-    );
-  }
-
   if (!isAuthenticated) {
     return (
       <Navigate
@@ -34,5 +27,10 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     );
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+      {(isLoading || (isAuthenticated && !user)) && <LoadingOverlay />}
+    </>
+  );
 }

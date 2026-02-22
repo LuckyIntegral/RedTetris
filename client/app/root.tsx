@@ -1,9 +1,10 @@
-import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
+import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration, useNavigation } from 'react-router';
 import { Provider } from 'react-redux';
 
 import type { Route } from './+types/routes';
 import './app.css';
 import { store } from './store/store';
+import { LoadingOverlay } from './components/LoadingOverlay';
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -36,9 +37,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  const navigation = useNavigation();
+  const isNavigating = navigation.state === 'loading';
+
   return (
     <Provider store={store}>
       <Outlet />
+      {isNavigating && <LoadingOverlay />}
     </Provider>
   );
 }

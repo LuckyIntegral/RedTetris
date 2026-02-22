@@ -1,24 +1,30 @@
 import { useEffect, useMemo, useRef, useState, type JSX } from 'react';
+import { Link } from 'react-router';
 import { io } from 'socket.io-client';
+import type { Route } from './+types/game';
+import { ProtectedRoute } from '../components/auth/ProtectedRoute';
+import { LoadingOverlay } from '../components/LoadingOverlay';
+import { useAppSelector } from '../store/hooks';
 import { authService } from '../services/auth';
 import type { GameState, Intent, PlayerState, Socket } from '../types/socket';
 
 const WIDTH = 10;
 const HEIGHT = 20;
-const CELL = 16; // smaller cell size for falling pieces
+const CELL = 28;
 
-export function meta() {
-  return [{ title: 'Red Tetris — Play' }];
+export function meta({}: Route.MetaArgs) {
+  return [{ title: 'Red Tetris — Play' }, { name: 'description', content: 'Play Red Tetris - The Ultimate Multiplayer Tetris Experience!' }];
 }
 
-export default function GameRoute() {
-  const [room, setRoom] = useState('test-room');
-  const [name, setName] = useState('alice');
+function GameComponent() {
+  const { user } = useAppSelector((state) => state.auth);
+  const [room, setRoom] = useState('');
   const [playerId, setPlayerId] = useState<string | null>(null);
   const [state, setState] = useState<GameState | null>(null);
   const [hostId, setHostId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [actionLoading, setActionLoading] = useState(false);
   const socketRef = useRef<Socket | null>(null);
 
   const computeSpectrumFromBoard = (board: number[][]): number[] => {
@@ -48,6 +54,7 @@ export default function GameRoute() {
 
     // server may emit either a raw state object or { state, hostId } historically.
     s.on('state', (payload: GameState | { state: GameState; hostId?: string }) => {
+      setActionLoading(false);
       // normalize payload to `state` object
       const incoming: GameState = 'state' in payload ? payload.state : payload;
       setState(incoming);
@@ -57,6 +64,7 @@ export default function GameRoute() {
     });
 
     s.on('joined', async (info: { roomId?: string }) => {
+      setActionLoading(false);
       setRoom(info.roomId ?? room);
       try {
         const profile = await authService.getProfile();
@@ -67,6 +75,7 @@ export default function GameRoute() {
       setError(null);
     });
     s.on('created', async (info: { roomId?: string }) => {
+      setActionLoading(false);
       setRoom(info.roomId ?? room);
       try {
         const profile = await authService.getProfile();
@@ -81,9 +90,11 @@ export default function GameRoute() {
       if (info?.message) setMessage(info.message);
     });
     s.on('restarted', (info: { message?: string }) => {
+      setActionLoading(false);
       if (info?.message) setMessage(info.message);
     });
     s.on('restart_failed', (info: { code?: string; message?: string; reason?: string }) => {
+      setActionLoading(false);
       setError(info?.message ?? info?.reason ?? 'RESTART_FAILED');
     });
     s.on('game_over', (info: { message?: string }) => {
@@ -95,15 +106,19 @@ export default function GameRoute() {
       setMessage(info?.message ?? 'YOU WIN');
     });
     s.on('create_failed', (info: { code?: string; message?: string }) => {
+      setActionLoading(false);
       setError(info?.message ?? info?.code ?? 'CREATE_FAILED');
     });
     s.on('join_failed', (info: { code?: string; message?: string }) => {
+      setActionLoading(false);
       setError(info?.message ?? info?.code ?? 'JOIN_FAILED');
     });
     s.on('start_failed', (info: { code?: string; message?: string }) => {
+      setActionLoading(false);
       setError(info?.message ?? info?.code ?? 'START_FAILED');
     });
     s.on('connect_error', (err: Error | string) => {
+      setActionLoading(false);
       if (typeof err === 'string') setError(err);
       else setError(err?.message ?? String(err));
     });
@@ -119,10 +134,22 @@ export default function GameRoute() {
     const onKey = (e: KeyboardEvent) => {
       if (!playerId || !socketRef.current) return;
       const s = socketRef.current;
-      if (e.key === 'ArrowLeft') s.emit('intent', { roomId: room, intent: { type: 'move', dir: 'left' } });
-      if (e.key === 'ArrowRight') s.emit('intent', { roomId: room, intent: { type: 'move', dir: 'right' } });
-      if (e.key === 'ArrowUp') s.emit('intent', { roomId: room, intent: { type: 'rotate' } });
-      if (e.key === 'ArrowDown') s.emit('intent', { roomId: room, intent: { type: 'soft' } });
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        s.emit('intent', { roomId: room, intent: { type: 'move', dir: 'left' } });
+      }
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        s.emit('intent', { roomId: room, intent: { type: 'move', dir: 'right' } });
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        s.emit('intent', { roomId: room, intent: { type: 'rotate' } });
+      }
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        s.emit('intent', { roomId: room, intent: { type: 'soft' } });
+      }
       if (e.key === 'Shift') s.emit('intent', { roomId: room, intent: { type: 'hold' } });
       if (e.code === 'Space') {
         e.preventDefault();
@@ -137,6 +164,7 @@ export default function GameRoute() {
     const s = socketRef.current;
     if (!s) return;
     if (!s.connected) s.connect();
+    setActionLoading(true);
     s.emit('join', { roomId: room });
   };
 
@@ -144,6 +172,7 @@ export default function GameRoute() {
     const s = socketRef.current;
     if (!s) return;
     if (!s.connected) s.connect();
+    setActionLoading(true);
     // server uses authenticated user for creation
     s.emit('create');
     setError(null);
@@ -156,6 +185,7 @@ export default function GameRoute() {
       setError('ONLY_HOST_CAN_START');
       return;
     }
+    setActionLoading(true);
     s.emit('start', { roomId: room });
   };
 
@@ -194,29 +224,58 @@ export default function GameRoute() {
 
   const renderCell = (x: number, y: number) => {
     const val = myView?.board?.[y]?.[x] ?? 0;
-    const color =
-      val == 0
-        ? 'bg-transparent'
-        : val == -2
-          ? 'bg-[rgba(255,255,255,0.06)]'
-          : val == -1
-            ? 'bg-gray-800'
-            : [
-                'bg-red-200',
-                'bg-green-200',
-                'bg-blue-200',
-                'bg-yellow-200',
-                'bg-purple-200',
-                'bg-pink-200',
-                'bg-orange-200',
-                'bg-gray-200',
-                'bg-white-200',
-              ][val - 1];
+    if (val === 0) {
+      return (
+        <div
+          key={`${x}-${y}`}
+          style={{ width: CELL, height: CELL, boxSizing: 'border-box', outline: '1px solid rgba(255,255,255,0.03)' }}
+        />
+      );
+    }
+    if (val === -2) {
+      return (
+        <div
+          key={`${x}-${y}`}
+          style={{ width: CELL, height: CELL, boxSizing: 'border-box', background: 'rgba(255,255,255,0.06)', outline: '1px solid rgba(255,255,255,0.03)' }}
+        />
+      );
+    }
+    if (val === -1) {
+      const penalty = '#4b5563';
+      return (
+        <div
+          key={`${x}-${y}`}
+          style={{
+            width: CELL,
+            height: CELL,
+            boxSizing: 'border-box',
+            borderRadius: 3,
+            background: `linear-gradient(135deg, rgba(255,255,255,0.25) 0%, ${penalty} 40%, ${penalty} 60%, rgba(0,0,0,0.35) 100%)`,
+            borderTop: '2px solid rgba(255,255,255,0.3)',
+            borderLeft: '2px solid rgba(255,255,255,0.2)',
+            borderBottom: '2px solid rgba(0,0,0,0.4)',
+            borderRight: '2px solid rgba(0,0,0,0.25)',
+            boxShadow: `inset 0 0 6px rgba(255,255,255,0.1), 0 0 4px ${penalty}55`,
+          }}
+        />
+      );
+    }
+    const color = PIECE_ID_COLORS[val] ?? '#999';
     return (
       <div
         key={`${x}-${y}`}
-        style={{ width: CELL, height: CELL, boxSizing: 'border-box', border: '1px solid #222' }}
-        className={color}
+        style={{
+          width: CELL,
+          height: CELL,
+          boxSizing: 'border-box',
+          borderRadius: 3,
+          background: `linear-gradient(135deg, rgba(255,255,255,0.35) 0%, ${color} 40%, ${color} 60%, rgba(0,0,0,0.35) 100%)`,
+          borderTop: '2px solid rgba(255,255,255,0.4)',
+          borderLeft: '2px solid rgba(255,255,255,0.25)',
+          borderBottom: '2px solid rgba(0,0,0,0.4)',
+          borderRight: '2px solid rgba(0,0,0,0.25)',
+          boxShadow: `inset 0 0 6px rgba(255,255,255,0.15), 0 0 4px ${color}55`,
+        }}
       />
     );
   };
@@ -316,11 +375,26 @@ export default function GameRoute() {
         else if (val === -1) bg = isAlive ? '#111' : '#444';
         else bg = isAlive ? (PIECE_ID_COLORS[val] ?? '#999') : '#777';
 
+        const isPiece = val > 0;
         cells.push(
-          <div
-            key={`op-${x}-${y}`}
-            style={{ width: cell, height: cell, boxSizing: 'border-box', border: '1px solid #222', background: bg }}
-          />
+          isPiece && isAlive ? (
+            <div
+              key={`op-${x}-${y}`}
+              style={{
+                width: cell,
+                height: cell,
+                boxSizing: 'border-box',
+                borderRadius: 1,
+                background: `linear-gradient(135deg, rgba(255,255,255,0.3) 0%, ${bg} 50%, rgba(0,0,0,0.3) 100%)`,
+                boxShadow: `0 0 2px ${bg}55`,
+              }}
+            />
+          ) : (
+            <div
+              key={`op-${x}-${y}`}
+              style={{ width: cell, height: cell, boxSizing: 'border-box', background: bg }}
+            />
+          )
         );
       }
     }
@@ -340,12 +414,29 @@ export default function GameRoute() {
     for (let r = 0; r < gridSize; r++) {
       for (let c = 0; c < gridSize; c++) {
         const inMat = Boolean(mat && r < mat.length && c < mat[0].length && mat[r][c]);
-        const bg = inMat ? color : 'transparent';
         cells.push(
-          <div
-            key={`n-${r}-${c}`}
-            style={{ width: size, height: size, boxSizing: 'border-box', border: '1px solid #222', background: bg }}
-          />
+          inMat ? (
+            <div
+              key={`n-${r}-${c}`}
+              style={{
+                width: size,
+                height: size,
+                boxSizing: 'border-box',
+                borderRadius: 2,
+                background: `linear-gradient(135deg, rgba(255,255,255,0.35) 0%, ${color} 40%, ${color} 60%, rgba(0,0,0,0.35) 100%)`,
+                borderTop: '2px solid rgba(255,255,255,0.4)',
+                borderLeft: '2px solid rgba(255,255,255,0.25)',
+                borderBottom: '2px solid rgba(0,0,0,0.4)',
+                borderRight: '2px solid rgba(0,0,0,0.25)',
+                boxShadow: `inset 0 0 4px rgba(255,255,255,0.15), 0 0 3px ${color}55`,
+              }}
+            />
+          ) : (
+            <div
+              key={`n-${r}-${c}`}
+              style={{ width: size, height: size, boxSizing: 'border-box' }}
+            />
+          )
         );
       }
     }
@@ -355,144 +446,279 @@ export default function GameRoute() {
   };
 
   return (
-    <main
-      className='p-6'
-      style={{ pointerEvents: 'auto' }}
-    >
-      <h1 className='text-2xl mb-4'>Red Tetris — Client</h1>
-
-      <div className='mb-4 space-y-2'>
-        <div>
-          <label className='mr-2'>Room</label>
-          <input
-            value={room}
-            onChange={(e) => setRoom(e.target.value)}
-          />
-        </div>
-        <div>
-          <label className='mr-2'>Name</label>
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-        <div className='space-x-2 mt-2'>
-          <button onClick={create}>Create</button>
-          <button onClick={join}>Join</button>
-          <button
-            onClick={start}
-            disabled={!playerId || (hostId ? playerId !== hostId : false)}
+    <main className='min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-6' style={{ pointerEvents: 'auto' }}>
+      <div className='container mx-auto max-w-7xl'>
+        <header className='flex items-center justify-center mb-8 relative'>
+          <Link
+            to='/'
+            className='absolute left-0 z-10 px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-medium rounded-lg backdrop-blur-md transition-all duration-200 text-sm flex items-center gap-2'
           >
-            Start
-          </button>
-          {state?.status === 'finished' && playerId && hostId && playerId === hostId && (
-            <button onClick={() => socketRef.current?.emit('restart', { roomId: room })}>Restart</button>
-          )}
-        </div>
-        {hostId && playerId === hostId && (
-          <div className='mt-2'>
-            <strong>Passcode:</strong> {room}
+            ← Back
+          </Link>
+          <div className='text-center'>
+            <h1 className='text-4xl font-bold text-white mb-2 drop-shadow-lg'>
+              <span className='text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400'>
+                RED TETRIS
+              </span>
+            </h1>
+            <p className='text-gray-300'>Play Mode</p>
           </div>
-        )}
-        {hostName && (
-          <div className='mt-2'>
-            <strong>Host:</strong> {hostName} {hostId === playerId || state?.hostId === playerId ? '(you)' : ''}
-          </div>
-        )}
-        {error && <div className='mt-2 text-red-600'>Error: {error}</div>}
-        {message && <div className='mt-2 text-green-600'>Message: {message}</div>}
-      </div>
+        </header>
 
-      <div style={{ display: 'flex', gap: 24 }}>
-        <div>
-          <div style={{ width: 220 }}>
-            <div style={{ width: '100%', display: 'grid', gridTemplateColumns: `repeat(${WIDTH}, 20px)` }}>
-              {(function rows() {
-                const cells: JSX.Element[] = [];
-                for (let y = 0; y < HEIGHT; y++) {
-                  for (let x = 0; x < WIDTH; x++) cells.push(renderCell(x, y));
-                }
-                return cells;
-              })()}
+        {/* Room Controls */}
+        <div className='bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl mb-6 max-w-lg mx-auto lg:hidden'>
+          <h2 className='text-lg font-semibold text-white mb-3 text-center'>Room Settings</h2>
+          
+          <div className='space-y-3'>
+            <div>
+              <label className='block text-xs font-medium text-gray-300 mb-1'>Room Code</label>
+              <input
+                value={room}
+                onChange={(e) => setRoom(e.target.value)}
+                className='w-full px-3 py-2 text-sm bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent'
+                placeholder='Room code'
+              />
             </div>
-          </div>
-          <div style={{ marginTop: 8 }}>
-            <strong>Score:</strong> {myView?.score ?? 0}
-          </div>
-          <div className='mt-2'>
-            <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+            
+            <div className='flex flex-wrap justify-center gap-2'>
               <button
-                style={{ zIndex: 20, pointerEvents: 'auto', cursor: 'pointer' }}
-                onClick={() => sendIntent({ type: 'move', dir: 'left' })}
+                onClick={create}
+                className='px-4 py-2 text-sm bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-white font-semibold rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200'
               >
-                Left
+                🚀 Create
               </button>
               <button
-                style={{ zIndex: 20, pointerEvents: 'auto', cursor: 'pointer' }}
-                onClick={() => sendIntent({ type: 'move', dir: 'right' })}
+                onClick={join}
+                className='px-4 py-2 text-sm bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-400 hover:to-cyan-400 text-white font-semibold rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200'
               >
-                Right
+                🎯 Join
               </button>
               <button
-                style={{ zIndex: 20, pointerEvents: 'auto', cursor: 'pointer' }}
-                onClick={() => sendIntent({ type: 'rotate' })}
+                onClick={start}
+                disabled={!playerId || (hostId ? playerId !== hostId : false)}
+                className='px-4 py-2 text-sm bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 disabled:from-gray-500 disabled:to-gray-600 disabled:cursor-not-allowed text-white font-semibold rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200 disabled:transform-none disabled:opacity-50'
               >
-                Rotate
+                ⚡ Start
               </button>
-              <button
-                style={{ zIndex: 20, pointerEvents: 'auto', cursor: 'pointer' }}
-                onClick={() => sendIntent({ type: 'soft' })}
-              >
-                Soft
-              </button>
-              <button
-                style={{ zIndex: 20, pointerEvents: 'auto', cursor: 'pointer' }}
-                onClick={() => sendIntent({ type: 'hard' })}
-              >
-                Hard
-              </button>
+              {state?.status === 'finished' && playerId && hostId && playerId === hostId && (
+                <button
+                  onClick={() => { setActionLoading(true); socketRef.current?.emit('restart', { roomId: room }); }}
+                  className='px-4 py-2 text-sm bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-400 hover:to-red-400 text-white font-semibold rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200'
+                >
+                  🔄 Restart
+                </button>
+              )}
             </div>
-            <div style={{ display: 'flex', gap: 12, marginTop: 12, alignItems: 'center' }}>
-              <div>
-                <strong>Hold</strong>
-                <div style={{ marginTop: 6 }}>{renderNextPreview(myView?.holdPiece ?? null, 14)}</div>
-              </div>
-              <div>
-                <strong>Next</strong>
-                <div style={{ marginTop: 6 }}>{renderNextPreview(myView?.nextPiece ?? null, 14)}</div>
-              </div>
+
+            {/* Status Messages */}
+            <div className='space-y-2'>
+              {hostId && playerId === hostId && (
+                <div className='bg-green-500/20 border border-green-400/30 rounded-lg p-2 text-center'>
+                  <span className='text-green-300 text-sm font-medium'>🔑 Room: </span>
+                  <span className='text-white text-sm font-bold'>{room}</span>
+                </div>
+              )}
+              {hostName && (
+                <div className='bg-blue-500/20 border border-blue-400/30 rounded-lg p-2 text-center'>
+                  <span className='text-blue-300 text-sm font-medium'>👑 Host: </span>
+                  <span className='text-white text-sm font-semibold'>{hostName}</span>
+                  {hostId === playerId || state?.hostId === playerId ? (
+                    <span className='text-cyan-300 text-sm font-medium'> (you)</span>
+                  ) : null}
+                </div>
+              )}
+              {error && (
+                <div className='bg-red-500/20 border border-red-400/30 rounded-lg p-2 text-center'>
+                  <span className='text-red-300 text-sm font-medium'>❌ </span>
+                  <span className='text-red-200 text-sm'>{error}</span>
+                </div>
+              )}
+              {message && (
+                <div className='bg-green-500/20 border border-green-400/30 rounded-lg p-2 text-center'>
+                  <span className='text-green-300 text-sm font-medium'>✅ </span>
+                  <span className='text-green-200 text-sm'>{message}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
 
-        <div>
-          <h3>Opponents</h3>
-          <div style={{ display: 'flex', gap: 12 }}>
-            {opponents.map((op) => (
-              <div
-                key={op.id}
-                style={{ width: 120 }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div>
-                    <div style={{ fontSize: 12 }}>{op.name}</div>
-                    <div style={{ fontSize: 11, color: '#333' }}>Score: {op.score}</div>
-                  </div>
-                  <div style={{ fontSize: 10, color: op.isAlive ? '#000' : '#777' }}>
-                    {op.isAlive ? 'alive' : 'dead'}
+        {/* Main Game Layout */}
+        <div className='flex gap-6 justify-center items-start min-h-[600px]'>
+          {/* Left Side: Room Controls (Desktop) */}
+          <div className='hidden lg:block w-64 space-y-4'>
+            <div className='bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl'>
+              <h2 className='text-lg font-semibold text-white mb-4 text-center'>Room Settings</h2>
+              
+              <div className='space-y-4'>
+                <div>
+                  <label className='block text-sm font-medium text-gray-300 mb-2'>Room Code</label>
+                  <input
+                    value={room}
+                    onChange={(e) => setRoom(e.target.value)}
+                    className='w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent'
+                    placeholder='Enter room code'
+                  />
+                </div>
+                
+                <div className='space-y-2'>
+                  <button
+                    onClick={create}
+                    className='w-full px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-white font-semibold rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200'
+                  >
+                    🚀 Create Room
+                  </button>
+                  <button
+                    onClick={join}
+                    className='w-full px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-400 hover:to-cyan-400 text-white font-semibold rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200'
+                  >
+                    🎯 Join Room
+                  </button>
+                  <button
+                    onClick={start}
+                    disabled={!playerId || (hostId ? playerId !== hostId : false)}
+                    className='w-full px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 disabled:from-gray-500 disabled:to-gray-600 disabled:cursor-not-allowed text-white font-semibold rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200 disabled:transform-none disabled:opacity-50'
+                  >
+                    ⚡ Start Game
+                  </button>
+                  {state?.status === 'finished' && playerId && hostId && playerId === hostId && (
+                    <button
+                      onClick={() => { setActionLoading(true); socketRef.current?.emit('restart', { roomId: room }); }}
+                      className='w-full px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-400 hover:to-red-400 text-white font-semibold rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200'
+                    >
+                      🔄 Restart
+                    </button>
+                  )}
+                </div>
+
+                {/* Status Messages */}
+                <div className='space-y-2'>
+                  {hostId && playerId === hostId && (
+                    <div className='bg-green-500/20 border border-green-400/30 rounded-lg p-3 text-center'>
+                      <span className='text-green-300 font-medium'>🔑 Room Code: </span>
+                      <span className='text-white font-bold'>{room}</span>
+                    </div>
+                  )}
+                  {hostName && (
+                    <div className='bg-blue-500/20 border border-blue-400/30 rounded-lg p-3 text-center'>
+                      <span className='text-blue-300 font-medium'>👑 Host: </span>
+                      <span className='text-white font-semibold'>{hostName}</span>
+                      {hostId === playerId || state?.hostId === playerId ? (
+                        <span className='text-cyan-300 font-medium'> (you)</span>
+                      ) : null}
+                    </div>
+                  )}
+                  {error && (
+                    <div className='bg-red-500/20 border border-red-400/30 rounded-lg p-3 text-center'>
+                      <span className='text-red-300 font-medium'>❌ Error: </span>
+                      <span className='text-red-200'>{error}</span>
+                    </div>
+                  )}
+                  {message && (
+                    <div className='bg-green-500/20 border border-green-400/30 rounded-lg p-3 text-center'>
+                      <span className='text-green-300 font-medium'>✅ </span>
+                      <span className='text-green-200'>{message}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Center: Game Area */}
+          <div className='flex items-start gap-6'>
+            {/* Hold Piece */}
+            <div className='bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl'>
+              <h3 className='text-sm font-semibold text-white mb-3 text-center'>Hold</h3>
+              <div className='bg-black/50 rounded-lg p-3 border-2 border-white/20 flex justify-center items-center' style={{ width: 96, height: 96 }}>
+                {renderNextPreview(myView?.holdPiece ?? null, 18)}
+              </div>
+            </div>
+
+            {/* Main Game Board */}
+            <div className='bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl'>
+              <h3 className='text-xl font-semibold text-white mb-4 text-center'>Your Board</h3>
+              
+              <div className='flex flex-col items-center'>
+                <div className='bg-black/50 rounded-lg p-4 border-2 border-white/20'>
+                  <div style={{ width: WIDTH * CELL, display: 'grid', gridTemplateColumns: `repeat(${WIDTH}, ${CELL}px)`, gap: 0 }}>
+                    {(function rows() {
+                      const cells: JSX.Element[] = [];
+                      for (let y = 0; y < HEIGHT; y++) {
+                        for (let x = 0; x < WIDTH; x++) cells.push(renderCell(x, y));
+                      }
+                      return cells;
+                    })()}
                   </div>
                 </div>
-                <div style={{ marginTop: 6 }}>{renderOpponentBoard(op.board ?? null, op.isAlive, 3)}</div>
+                
+                <div className='mt-4 bg-white/5 rounded-lg p-3 border border-white/10'>
+                  <div className='text-center text-white'>
+                    <span className='text-lg font-bold text-cyan-400'>{myView?.score ?? 0}</span>
+                    <div className='text-sm text-gray-300'>Score</div>
+                  </div>
+                </div>
               </div>
-            ))}
+            </div>
+
+            {/* Next Piece */}
+            <div className='bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl'>
+              <h3 className='text-sm font-semibold text-white mb-3 text-center'>Next</h3>
+              <div className='bg-black/50 rounded-lg p-3 border-2 border-white/20 flex justify-center items-center' style={{ width: 96, height: 96 }}>
+                {renderNextPreview(myView?.nextPiece ?? null, 18)}
+              </div>
+            </div>
           </div>
+
+          {/* Right Side: Opponents */}
+          {opponents.length > 0 && (
+            <div className='w-80 space-y-4'>
+              <div className='bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl'>
+                <h3 className='text-lg font-semibold text-white mb-4 text-center'>Opponents</h3>
+                <div className='space-y-3'>
+                  {opponents.map((op) => (
+                    <div key={op.id} className='bg-white/5 rounded-xl p-3 border border-white/10 flex gap-3 items-center justify-between'>
+                      {/* Left: Info */}
+                      <div className='flex-1 min-w-0 flex flex-col items-start justify-center'>
+                        <div className='flex items-center gap-1.5 mb-1'>
+                          <div className={`w-2 h-2 rounded-full ${op.isAlive ? 'bg-green-400 shadow-[0_0_6px_rgba(74,222,128,0.6)]' : 'bg-red-400 shadow-[0_0_6px_rgba(248,113,113,0.6)]'}`} />
+                          <span className='text-sm font-semibold text-white truncate'>{op.name}</span>
+                        </div>
+                        {op.isHost && (
+                          <span className='text-[10px] text-yellow-400 font-medium mb-1'>👑 Host</span>
+                        )}
+                        <div className='text-xs text-gray-400 mb-2'>
+                          Score: <span className='text-cyan-400 font-semibold'>{op.score}</span>
+                        </div>
+                        <div className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                          op.isAlive
+                            ? 'bg-green-500/20 text-green-300 border border-green-400/30'
+                            : 'bg-red-500/20 text-red-300 border border-red-400/30'
+                        }`}>
+                          {op.isAlive ? 'ALIVE' : 'DEAD'}
+                        </div>
+                      </div>
+                      {/* Right: Board */}
+                      <div className='shrink-0 bg-black/40 rounded-lg p-1.5 border border-white/10 flex justify-center'>
+                        {renderOpponentBoard(op.board ?? null, op.isAlive, 5)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
-
-      <details className='mt-4'>
-        <summary>Raw state</summary>
-        <pre style={{ maxHeight: 400, overflow: 'auto' }}>{JSON.stringify(state, null, 2)}</pre>
-      </details>
+      {actionLoading && <LoadingOverlay />}
     </main>
+  );
+}
+
+export default function GameRoute() {
+  return (
+    <ProtectedRoute>
+      <GameComponent />
+    </ProtectedRoute>
   );
 }

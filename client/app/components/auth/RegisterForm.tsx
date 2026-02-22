@@ -40,124 +40,141 @@ export function RegisterForm() {
   };
 
   return (
-    <div className='flex min-h-screen items-center justify-center bg-white dark:bg-gray-950 px-4 py-12 sm:px-6 lg:px-8'>
-      <div className='w-full max-w-md space-y-8'>
-        <div>
-          <h2 className='mt-6 text-center text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100'>
-            Red Tetris
-          </h2>
-          <p className='mt-2 text-center text-sm text-gray-600 dark:text-gray-400'>Create your account</p>
+    <main className='min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center px-4 py-12'>
+      <div className='w-full max-w-md'>
+        {/* Header */}
+        <div className='text-center mb-8'>
+          <h1 className='text-5xl font-bold text-white mb-4 drop-shadow-lg'>
+            <span className='text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400'>
+              RED TETRIS
+            </span>
+          </h1>
+          <p className='text-xl text-gray-300'>Join the Game!</p>
+          <p className='text-gray-400 mt-2'>Create your account to start playing</p>
         </div>
 
-        <form
-          className='mt-8 space-y-6'
-          onSubmit={(e) => {
-            void handleSubmit(e);
-          }}
-        >
-          {error && (
-            <div className='rounded-md bg-red-50 dark:bg-red-900/20 p-4'>
-              <div className='text-sm text-red-800 dark:text-red-300'>{error}</div>
-            </div>
-          )}
+        {/* Register Form */}
+        <div className='bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20 shadow-xl'>
+          <form
+            className='space-y-6'
+            onSubmit={(e) => {
+              void handleSubmit(e);
+            }}
+          >
+            {error && (
+              <div className='bg-red-500/20 backdrop-blur-sm border border-red-400/30 rounded-lg p-4'>
+                <div className='text-red-200 text-sm text-center'>{error}</div>
+              </div>
+            )}
 
-          <div className='space-y-4 rounded-md shadow-sm'>
-            <div>
-              <label
-                htmlFor='username'
-                className='sr-only'
-              >
-                Username
-              </label>
-              <input
-                id='username'
-                name='username'
-                type='text'
-                required
-                minLength={3}
-                maxLength={50}
-                pattern='[a-zA-Z0-9_-]+'
-                className='relative block w-full appearance-none rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:z-10 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-400 sm:text-sm'
-                placeholder='Username (3-50 characters, alphanumeric)'
-                disabled={isLoading}
-              />
+            <div className='space-y-4'>
+              <div>
+                <label
+                  htmlFor='username'
+                  className='block text-sm font-medium text-gray-300 mb-2'
+                >
+                  Username
+                </label>
+                <input
+                  id='username'
+                  name='username'
+                  type='text'
+                  required
+                  minLength={3}
+                  maxLength={50}
+                  pattern='[a-zA-Z0-9_-]+'
+                  className='w-full bg-white/5 border border-white/20 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400/50 transition-all duration-200 backdrop-blur-sm'
+                  placeholder='Choose a unique username (3-50 chars)'
+                  disabled={isLoading}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor='email'
+                  className='block text-sm font-medium text-gray-300 mb-2'
+                >
+                  Email Address
+                </label>
+                <input
+                  id='email'
+                  name='email'
+                  type='email'
+                  required
+                  className='w-full bg-white/5 border border-white/20 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400/50 transition-all duration-200 backdrop-blur-sm'
+                  placeholder='Enter your email address'
+                  disabled={isLoading}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor='password'
+                  className='block text-sm font-medium text-gray-300 mb-2'
+                >
+                  Password
+                </label>
+                <input
+                  id='password'
+                  name='password'
+                  type='password'
+                  required
+                  minLength={6}
+                  className='w-full bg-white/5 border border-white/20 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400/50 transition-all duration-200 backdrop-blur-sm'
+                  placeholder='Create a strong password (6+ chars)'
+                  disabled={isLoading}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor='confirmPassword'
+                  className='block text-sm font-medium text-gray-300 mb-2'
+                >
+                  Confirm Password
+                </label>
+                <input
+                  id='confirmPassword'
+                  name='confirmPassword'
+                  type='password'
+                  required
+                  minLength={6}
+                  className='w-full bg-white/5 border border-white/20 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400/50 transition-all duration-200 backdrop-blur-sm'
+                  placeholder='Confirm your password'
+                  disabled={isLoading}
+                />
+              </div>
             </div>
-            <div>
-              <label
-                htmlFor='email'
-                className='sr-only'
-              >
-                Email address
-              </label>
-              <input
-                id='email'
-                name='email'
-                type='email'
-                required
-                className='relative block w-full appearance-none rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:z-10 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-400 sm:text-sm'
-                placeholder='Email address'
-                disabled={isLoading}
-              />
-            </div>
-            <div>
-              <label
-                htmlFor='password'
-                className='sr-only'
-              >
-                Password
-              </label>
-              <input
-                id='password'
-                name='password'
-                type='password'
-                required
-                minLength={6}
-                className='relative block w-full appearance-none rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:z-10 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-400 sm:text-sm'
-                placeholder='Password (minimum 6 characters)'
-                disabled={isLoading}
-              />
-            </div>
-            <div>
-              <label
-                htmlFor='confirmPassword'
-                className='sr-only'
-              >
-                Confirm Password
-              </label>
-              <input
-                id='confirmPassword'
-                name='confirmPassword'
-                type='password'
-                required
-                minLength={6}
-                className='relative block w-full appearance-none rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:z-10 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-400 sm:text-sm'
-                placeholder='Confirm password'
-                disabled={isLoading}
-              />
-            </div>
-          </div>
 
-          <div>
             <button
               type='submit'
               disabled={isLoading}
-              className='group relative flex w-full justify-center rounded-md border border-transparent bg-blue-600 dark:bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-950 disabled:opacity-50'
+              className='w-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-400 hover:to-purple-400 disabled:from-gray-500 disabled:to-gray-600 text-white font-bold py-4 px-6 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-300 disabled:transform-none disabled:opacity-70'
             >
-              {isLoading ? 'Creating account...' : 'Create account'}
+              {isLoading ? (
+                <span className='flex items-center justify-center'>
+                  <svg className='animate-spin -ml-1 mr-3 h-5 w-5 text-white' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24'>
+                    <circle className='opacity-25' cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='4'></circle>
+                    <path className='opacity-75' fill='currentColor' d='m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'></path>
+                  </svg>
+                  Creating account...
+                </span>
+              ) : (
+                '🚀 Create Account'
+              )}
             </button>
-          </div>
 
-          <div className='text-center text-sm'>
-            <span className='text-gray-600 dark:text-gray-400'>Already have an account? </span>
-            <Link
-              to='/login'
-              className='font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300'
-            >
-              Sign in here
-            </Link>
-          </div>
-        </form>
+            <div className='text-center pt-4 border-t border-white/10'>
+              <p className='text-gray-400 text-sm'>
+                Already have an account?{' '}
+                <Link
+                  to='/login'
+                  className='text-cyan-400 hover:text-cyan-300 font-medium hover:underline transition-colors duration-200'
+                >
+                  Sign in here
+                </Link>
+              </p>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </main>
   );
 }
