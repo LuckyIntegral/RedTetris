@@ -13,6 +13,7 @@ import { GameManager } from './core/GameManager';
 import db, { runMigrations, testConnection } from './db';
 import { registerSocketHandlers } from './net/socketHandlers';
 import authRoutes from './routes/auth';
+import gamesRoutes from './routes/games';
 import { ClientToServerEvents, ServerToClientEvents, SocketData } from './types/socketEvents';
 
 import { verifyToken } from './utils/jwt';
@@ -131,6 +132,8 @@ app.get('/health', async (req: Request, res: Response) => {
 
 // Auth routes
 app.use('/api/auth', authRoutes);
+// Games routes
+app.use('/api/games', gamesRoutes);
 
 // Example database query endpoint
 app.get('/api/test-db', async (req: Request, res: Response) => {
