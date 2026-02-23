@@ -1,8 +1,6 @@
 import dotenv from 'dotenv';
 import path from 'path';
 
-dotenv.config({ path: path.resolve(process.cwd(), '..', '.env') });
-
 import cors from 'cors';
 import express, { Request, Response } from 'express';
 import http from 'http';
@@ -18,6 +16,8 @@ import { ClientToServerEvents, ServerToClientEvents, SocketData } from './types/
 
 import { verifyToken } from './utils/jwt';
 import { logDbError, logger } from './utils/logger';
+
+dotenv.config({ path: path.resolve(process.cwd(), '..', '.env') });
 
 const app = express();
 const server = http.createServer(app);

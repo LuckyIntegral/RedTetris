@@ -1,7 +1,11 @@
+import dotenv from 'dotenv';
+import path from 'path';
+
 import fs from 'fs/promises';
 import mysql from 'mysql2/promise';
-import path from 'path'; // use platform path, not path/posix
 import { logger } from './utils/logger';
+
+dotenv.config({ path: path.resolve(process.cwd(), '..', '.env') });
 
 const dbPortRaw = process.env.DB_PORT ?? '3306';
 const dbPort = Number.parseInt(dbPortRaw, 10);
