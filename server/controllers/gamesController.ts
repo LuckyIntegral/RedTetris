@@ -2,7 +2,10 @@ import { Response } from 'express';
 import db from '../db';
 import { AuthRequest } from '../middleware/auth';
 import { GameDTO, GameRow } from '../models/Game';
+import { paginate } from '../routes/pagination';
 import { logDbError } from '../utils/logger';
+
+const DEFAULT_PAGE_SIZE = 10;
 
 export const getUserGames = async (req: AuthRequest, res: Response): Promise<void> => {
   const userId = req.user?.userId;
@@ -12,6 +15,22 @@ export const getUserGames = async (req: AuthRequest, res: Response): Promise<voi
   }
 
   try {
+    const pageParam = req.query.page;
+    const sizeParam = req.query.size;
+
+    let page = 0;
+    let size = DEFAULT_PAGE_SIZE;
+
+    if (typeof pageParam === 'string' && pageParam.trim() !== '') {
+      const p = Number.parseInt(pageParam);
+      if (!Number.isNaN(p) && p >= 0) page = p;
+    }
+
+    if (typeof sizeParam === 'string' && sizeParam.trim() !== '') {
+      const s = Number.parseInt(sizeParam);
+      if (!Number.isNaN(s) && s > 0) size = s;
+    }
+
     const [rows] = await db.query<GameRow[]>(
       `SELECT g.id AS game_id,
               g.started_at AS started_at,
@@ -48,7 +67,7 @@ export const getUserGames = async (req: AuthRequest, res: Response): Promise<voi
         players: [
           ...record.players,
           {
-            player: { id: r.player_id, username: r.username as string, email: r.email as string },
+            player: { id: r.player_id, username: r.player_username, email: r.player_email },
             score: r.score,
             place: r.place,
           },
@@ -56,9 +75,9 @@ export const getUserGames = async (req: AuthRequest, res: Response): Promise<voi
       });
     }
 
-    const games = Array.from(gamesMap.values());
+    const games = Array.from(gamesMap.values()).sort((a, b) => b.game_id - a.game_id);
 
-    res.json({ success: true, data: games });
+    res.json({ success: true, data: paginate(games, page, size) });
   } catch (err: unknown) {
     logDbError('GET /api/games', err);
     res.status(500).json({ success: false, error: { code: 'GAMES_FETCH_FAILED', message: 'Failed to fetch games' } });
