@@ -5,13 +5,12 @@ export interface GameRow extends RowDataPacket {
   finished_at: Date;
   player_id: number;
   player_username: string;
-  player_email: string;
   score: number;
   place: number;
 }
 
 export interface GameRecordDto {
-  player: { id: number; username: string; email: string };
+  player: { id: number; username: string };
   score: number;
   place: number;
 }

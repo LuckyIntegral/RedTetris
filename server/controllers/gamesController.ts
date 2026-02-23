@@ -36,7 +36,6 @@ export const getUserGames = async (req: AuthRequest, res: Response): Promise<voi
               g.finished_at AS finished_at,
               gr.player_id AS player_id,
               u.username AS player_username,
-              u.email AS player_email,
               gr.score AS score,
               gr.place AS place
        FROM games g
@@ -51,11 +50,7 @@ export const getUserGames = async (req: AuthRequest, res: Response): Promise<voi
 
     for (const r of rows) {
       if (!gamesMap.has(r.game_id)) {
-        gamesMap.set(r.game_id, {
-          game_id: r.game_id,
-          finished_at: r.finished_at,
-          players: [],
-        });
+        gamesMap.set(r.game_id, { game_id: r.game_id, finished_at: r.finished_at, players: [] });
       }
 
       const record: GameDTO = gamesMap.get(r.game_id)!;
@@ -64,11 +59,7 @@ export const getUserGames = async (req: AuthRequest, res: Response): Promise<voi
         ...record,
         players: [
           ...record.players,
-          {
-            player: { id: r.player_id, username: r.player_username, email: r.player_email },
-            score: r.score,
-            place: r.place,
-          },
+          { player: { id: r.player_id, username: r.player_username }, score: r.score, place: r.place },
         ],
       });
     }

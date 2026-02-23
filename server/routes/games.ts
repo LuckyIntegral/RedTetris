@@ -73,8 +73,6 @@ const router = Router();
  *                                       type: integer
  *                                     username:
  *                                       type: string
- *                                     email:
- *                                       type: string
  *                                 score:
  *                                   type: integer
  *                                 place:
