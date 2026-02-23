@@ -7,22 +7,41 @@ import { logger } from './utils/logger';
 
 dotenv.config({ path: path.resolve(process.cwd(), '..', '.env') });
 
+logger.info('ENV used:', process.env.NODE_ENV);
+
 const dbPortRaw = process.env.DB_PORT ?? '3306';
 const dbPort = Number.parseInt(dbPortRaw, 10);
 if (Number.isNaN(dbPort)) {
   throw new Error(`Invalid DB_PORT value "${dbPortRaw}". It must be a valid integer.`);
 }
 
-const dbPassword = process.env.DB_PASSWORD;
+let dbPassword;
+if (process.env.NODE_ENV === 'test') {
+  dbPassword = process.env.DB_PASSWORD_TEST;
+} else {
+  dbPassword = process.env.DB_PASSWORD;
+}
+
 if (!dbPassword) {
   throw new Error('DB_PASSWORD environment variable is required for database connection');
+}
+
+let dbName;
+if (process.env.NODE_ENV === 'test') {
+  dbName = process.env.DB_NAME_TEST;
+} else {
+  dbName = process.env.DB_NAME;
+}
+
+if (!dbName) {
+  throw new Error('DB_NAME environment variable is required for database connection');
 }
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST ?? 'localhost',
   user: process.env.DB_USER ?? 'app',
   password: dbPassword,
-  database: process.env.DB_NAME ?? 'red_tetris',
+  database: dbName,
   port: dbPort,
   waitForConnections: true,
   connectionLimit: 10,

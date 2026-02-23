@@ -11,7 +11,7 @@
     "prettier": "prettier \"**/*.{js,jsx,ts,tsx,json,css,md}\" --ignore-path ../.prettierignore --write",
     "prettier:check": "prettier \"**/*.{js,jsx,ts,tsx,json,css,md}\" --ignore-path ../.prettierignore --list-different",
     "start": "node dist/app.js",
-    "test": "mocha -r ts-node/register tests/**/*.ts",
+    "test": "mocha --file tests/setup.test.ts -r ts-node/register tests/**/*.ts",
     "coverage": "nyc mocha -r ts-node/register tests/**/*.ts"
   },
   "keywords": [],

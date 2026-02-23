@@ -1,7 +1,6 @@
 import { ResultSetHeader } from 'mysql2';
 import db from '../db';
 import { Game } from '../game/Game';
-import { logger } from '../utils/logger';
 
 export class GameService {
   async saveFinishedGame(game: Game): Promise<number> {
@@ -11,7 +10,6 @@ export class GameService {
 
       const finishedAt = new Date();
       const [res] = await conn.query<ResultSetHeader>('INSERT INTO games (finished_at) VALUES (?)', [finishedAt]);
-      logger.info('Inserted game with info on insert:', res);
 
       const gameId = res.insertId;
 
