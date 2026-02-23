@@ -2,7 +2,6 @@ import { RowDataPacket } from 'mysql2';
 
 export interface GameRow extends RowDataPacket {
   game_id: number;
-  started_at: Date;
   finished_at: Date;
   player_id: number;
   player_username: string;
@@ -19,7 +18,6 @@ export interface GameRecordDto {
 
 export interface GameDTO {
   game_id: number;
-  started_at: Date;
   finished_at: Date;
   players: GameRecordDto[];
 }

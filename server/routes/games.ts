@@ -58,9 +58,6 @@ const router = Router();
  *                         properties:
  *                           game_id:
  *                             type: integer
- *                           started_at:
- *                             type: string
- *                             format: date-time
  *                           finished_at:
  *                             type: string
  *                             format: date-time

@@ -33,7 +33,6 @@ export const getUserGames = async (req: AuthRequest, res: Response): Promise<voi
 
     const [rows] = await db.query<GameRow[]>(
       `SELECT g.id AS game_id,
-              g.started_at AS started_at,
               g.finished_at AS finished_at,
               gr.player_id AS player_id,
               u.username AS player_username,
@@ -54,7 +53,6 @@ export const getUserGames = async (req: AuthRequest, res: Response): Promise<voi
       if (!gamesMap.has(r.game_id)) {
         gamesMap.set(r.game_id, {
           game_id: r.game_id,
-          started_at: r.started_at,
           finished_at: r.finished_at,
           players: [],
         });
