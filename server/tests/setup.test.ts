@@ -10,7 +10,11 @@ import { logger } from '../utils/logger';
 
 before(async function () {
   logger.debug('Setting up test database connection and running migrations');
-  await testConnection();
+  const connectionOk = await testConnection();
+  if (connectionOk === false) {
+    logger.error('Test database connection failed');
+    throw new Error('Failed to connect to test database');
+  }
   await runMigrations();
 });
 
@@ -29,6 +33,8 @@ afterEach(async () => {
 after(async () => {
   logger.debug('All tests done, closing database connection pool');
   try {
+    const conn = await db.getConnection();
+    await conn.query('SET FOREIGN_KEY_CHECKS = 1');
     await db.end();
   } catch (err) {
     logger.warn('Error closing database connection pool:', err);
