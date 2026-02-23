@@ -54,14 +54,7 @@ export const getUserGames = async (req: AuthRequest, res: Response): Promise<voi
       }
 
       const record: GameDTO = gamesMap.get(r.game_id)!;
-
-      gamesMap.set(r.game_id, {
-        ...record,
-        players: [
-          ...record.players,
-          { player: { id: r.player_id, username: r.player_username }, score: r.score, place: r.place },
-        ],
-      });
+      record.players.push({ player: { id: r.player_id, username: r.player_username }, score: r.score, place: r.place });
     }
 
     const games = Array.from(gamesMap.values()).sort((a, b) => b.game_id - a.game_id);
