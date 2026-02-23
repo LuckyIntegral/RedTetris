@@ -5,11 +5,12 @@ import path from 'path';
 process.env.NODE_ENV = process.env.NODE_ENV ?? 'test';
 dotenv.config({ path: path.resolve(process.cwd(), '.env.test') });
 
-import db, { runMigrations } from '../db';
+import db, { runMigrations, testConnection } from '../db';
 import { logger } from '../utils/logger';
 
 before(async function () {
   logger.debug('Setting up test database connection and running migrations');
+  await testConnection();
   await runMigrations();
 });
 

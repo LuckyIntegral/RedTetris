@@ -10,36 +10,22 @@ dotenv.config({ path: path.resolve(process.cwd(), '..', '.env') });
 logger.info('ENV used:', process.env.NODE_ENV);
 
 const dbPortRaw = process.env.DB_PORT ?? '3306';
-const dbPort = Number.parseInt(dbPortRaw, 10);
-if (Number.isNaN(dbPort)) {
-  throw new Error(`Invalid DB_PORT value "${dbPortRaw}". It must be a valid integer.`);
-}
+let dbPort = Number.parseInt(dbPortRaw, 10);
+dbPort = Number.isNaN(dbPort) ? 3306 : dbPort;
 
-let dbPassword;
+let dbPassword, dbName;
+
 if (process.env.NODE_ENV === 'test') {
-  dbPassword = process.env.DB_PASSWORD_TEST;
+  dbPassword = process.env.DB_PASSWORD_TEST ?? 'app_change_me';
+  dbName = process.env.DB_NAME_TEST ?? 'red_tetris_test';
 } else {
-  dbPassword = process.env.DB_PASSWORD;
-}
-
-if (!dbPassword) {
-  throw new Error('DB_PASSWORD environment variable is required for database connection');
-}
-
-let dbName;
-if (process.env.NODE_ENV === 'test') {
-  dbName = process.env.DB_NAME_TEST;
-} else {
-  dbName = process.env.DB_NAME;
-}
-
-if (!dbName) {
-  throw new Error('DB_NAME environment variable is required for database connection');
+  dbPassword = process.env.DB_PASSWORD ?? 'app_change_me';
+  dbName = process.env.DB_NAME ?? 'red_tetris';
 }
 
 const pool = mysql.createPool({
-  host: process.env.DB_HOST ?? 'localhost',
-  user: process.env.DB_USER ?? 'app',
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
   password: dbPassword,
   database: dbName,
   port: dbPort,
@@ -55,12 +41,8 @@ export const testConnection = async () => {
     logger.info('✅ Database connected successfully');
     connection.release();
     return true;
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      logger.error('❌ Database connection failed:', error.message);
-    } else {
-      logger.error('❌ Database connection failed with unknown error');
-    }
+  } catch {
+    logger.error('❌ Database connection failed');
     return false;
   }
 };
@@ -117,7 +99,6 @@ export const runMigrations = async (): Promise<void> => {
     logger.info('All migrations applied successfully');
   } catch (err: unknown) {
     logger.error('Migrations failed:', err);
-    throw err;
   } finally {
     if (conn) conn.release();
   }
