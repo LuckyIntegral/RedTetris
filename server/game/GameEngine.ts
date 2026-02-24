@@ -1,5 +1,5 @@
 import { logger } from '../utils/logger';
-import { BSP_SCORES, PLAYGROUND_HEIGHT, PLAYGROUND_WIDTH, TETROMINOS, STANDARD_FIRST_SPEED } from './contstants';
+import { BSP_SCORES, PLAYGROUND_HEIGHT, PLAYGROUND_WIDTH, STANDARD_FIRST_SPEED, TETROMINOS } from './contstants';
 import { PieceGenerator } from './PieceGenerator';
 import { GameState, Intent, Piece, PlayerState } from './types';
 
@@ -52,6 +52,7 @@ export class GameEngine {
           holdLocked: false,
           score: 0,
           isAlive: true,
+          diedAt: null,
           name: '',
         },
       ])
@@ -78,6 +79,7 @@ export class GameEngine {
       holdLocked: false,
       score: 0,
       isAlive: true,
+      diedAt: null,
       name: '',
     };
     return newState;
@@ -239,6 +241,7 @@ export class GameEngine {
         if (this.collides(player.board, spawn)) {
           // spawn collision -> player dies
           player.isAlive = false;
+          player.diedAt = new Date();
           player.activePiece = null;
         } else {
           player.activePiece = spawn;
@@ -351,6 +354,7 @@ export class GameEngine {
         if (this.collides(playerState.board, piece)) {
           logger.info(`player ${playerId} collided on spawn and dies`);
           playerState.isAlive = false;
+          playerState.diedAt = new Date();
           continue;
         }
       }

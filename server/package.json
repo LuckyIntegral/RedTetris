@@ -11,7 +11,7 @@
     "prettier": "prettier \"**/*.{js,jsx,ts,tsx,json,css,md}\" --ignore-path ../.prettierignore --write",
     "prettier:check": "prettier \"**/*.{js,jsx,ts,tsx,json,css,md}\" --ignore-path ../.prettierignore --list-different",
     "start": "node dist/app.js",
-    "test": "mocha -r ts-node/register tests/**/*.ts",
+    "test": "mocha --file tests/setup.test.ts -r ts-node/register tests/**/*.ts",
     "coverage": "nyc mocha -r ts-node/register tests/**/*.ts"
   },
   "keywords": [],
@@ -27,15 +27,17 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/mocha": "^10.0.10",
     "@types/node": "^25.0.10",
+    "@types/proxyquire": "^1.3.31",
     "@types/sinon": "^21.0.0",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
-    "nodemon": "^3.1.11",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.9.3",
     "mocha": "^11.7.5",
+    "nodemon": "^3.1.11",
     "nyc": "^17.1.0",
-    "sinon": "^21.0.1"
+    "proxyquire": "^2.1.3",
+    "sinon": "^21.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

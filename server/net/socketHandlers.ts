@@ -1,12 +1,13 @@
 import { Server, Socket } from 'socket.io';
 import { GameManager } from '../core/GameManager';
+import GameService from '../core/GameService';
 import { Player } from '../core/Player';
+import { TICK_INTERVAL_MS } from '../game/contstants';
 import { Game } from '../game/Game';
 import { GameEngine } from '../game/GameEngine';
 import type { Intent, PlayerState } from '../game/types';
 import { ClientToServerEvents, ServerToClientEvents, SocketData } from '../types/socketEvents';
 import { logger } from '../utils/logger';
-import { TICK_INTERVAL_MS } from '../game/contstants';
 
 export function registerSocketHandlers(
   io: Server<ClientToServerEvents, ServerToClientEvents, ServerToClientEvents, SocketData>,
@@ -39,6 +40,7 @@ export function registerSocketHandlers(
             piecesPlaced: playerState.piecesPlaced,
             score: playerState.score,
             isAlive: playerState.isAlive,
+            diedAt: playerState.diedAt,
             name: playerMeta?.name ?? playerState.name,
           };
         }
@@ -230,6 +232,11 @@ export function registerSocketHandlers(
                 gameIntervals.delete(game.id);
               }
               emitSanitizedState(game);
+
+              // persist finished game and records (fire-and-forget with logging)
+              GameService.saveFinishedGame(game)
+                .then((gid) => logger.info(`Persisted finished game id=${gid} for room ${game.id}`))
+                .catch((err) => logger.error('Failed to persist finished game', err));
             }
           } catch (err) {
             logger.error('game tick error', err);
