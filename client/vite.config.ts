@@ -7,7 +7,7 @@ import os from 'os';
 // Helper function to get the first network IP
 function getNetworkIP() {
   const interfaces = os.networkInterfaces();
-  
+
   for (const name of Object.keys(interfaces)) {
     for (const networkInterface of interfaces[name]) {
       if (networkInterface.family === 'IPv4' && !networkInterface.internal) {
@@ -19,20 +19,19 @@ function getNetworkIP() {
 }
 
 // Dynamic server URL based on environment
-const serverPort = process.env.SERVER_PORT || '3002';
-const clientPort = parseInt(process.env.CLIENT_PORT || '3001', 10);
-const serverUrl = process.env.VITE_SERVER_URL === 'auto' 
-  ? `http://${getNetworkIP()}:${serverPort}`
-  : process.env.VITE_SERVER_URL || `http://localhost:${serverPort}`;
+const serverPort = process.env.SERVER_PORT ?? '3002';
+const clientPort = parseInt(process.env.CLIENT_PORT ?? '3001', 10);
+const serverUrl =
+  process.env.VITE_SERVER_URL === 'auto'
+    ? `http://${getNetworkIP()}:${serverPort}`
+    : (process.env.VITE_SERVER_URL ?? `http://localhost:${serverPort}`);
 
-export default defineConfig({ 
-  plugins: [tailwindcss(), reactRouter(), tsconfigPaths()], 
+export default defineConfig({
+  plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
   envDir: '..',
   server: {
     host: '0.0.0.0', // Allow external connections
-    port: clientPort
+    port: clientPort,
   },
-  define: {
-    'import.meta.env.VITE_SERVER_URL': JSON.stringify(serverUrl)
-  }
+  define: { 'import.meta.env.VITE_SERVER_URL': JSON.stringify(serverUrl) },
 });

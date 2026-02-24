@@ -4,20 +4,21 @@ import { io } from 'socket.io-client';
 import type { Route } from './+types/game';
 import { ProtectedRoute } from '../components/auth/ProtectedRoute';
 import { LoadingOverlay } from '../components/LoadingOverlay';
-import { useAppSelector } from '../store/hooks';
 import { authService } from '../services/auth';
-import type { GameState, Intent, PlayerState, Socket } from '../types/socket';
+import type { GameState, PlayerState, Socket } from '../types/socket';
 
 const WIDTH = 10;
 const HEIGHT = 20;
 const CELL = 28;
 
 export function meta({}: Route.MetaArgs) {
-  return [{ title: 'Red Tetris — Play' }, { name: 'description', content: 'Play Red Tetris - The Ultimate Multiplayer Tetris Experience!' }];
+  return [
+    { title: 'Red Tetris — Play' },
+    { name: 'description', content: 'Play Red Tetris - The Ultimate Multiplayer Tetris Experience!' },
+  ];
 }
 
 function GameComponent() {
-  const { user } = useAppSelector((state) => state.auth);
   const [room, setRoom] = useState('');
   const [playerId, setPlayerId] = useState<string | null>(null);
   const [state, setState] = useState<GameState | null>(null);
@@ -188,13 +189,6 @@ function GameComponent() {
     s.emit('start', { roomId: room });
   };
 
-  const sendIntent = (intent: Intent) => {
-    const s = socketRef.current;
-    if (!s || !playerId) return;
-    if (state?.status === 'finished' || message) return;
-    s.emit('intent', { roomId: room, intent });
-  };
-
   const myView = useMemo<PlayerState | null>(() => {
     if (!state || !playerId) return null;
     return (state.players?.[playerId] ?? null) as PlayerState | null;
@@ -235,7 +229,13 @@ function GameComponent() {
       return (
         <div
           key={`${x}-${y}`}
-          style={{ width: CELL, height: CELL, boxSizing: 'border-box', background: 'rgba(255,255,255,0.06)', outline: '1px solid rgba(255,255,255,0.03)' }}
+          style={{
+            width: CELL,
+            height: CELL,
+            boxSizing: 'border-box',
+            background: 'rgba(255,255,255,0.06)',
+            outline: '1px solid rgba(255,255,255,0.03)',
+          }}
         />
       );
     }
@@ -445,7 +445,10 @@ function GameComponent() {
   };
 
   return (
-    <main className='min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-6' style={{ pointerEvents: 'auto' }}>
+    <main
+      className='min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-6'
+      style={{ pointerEvents: 'auto' }}
+    >
       <div className='container mx-auto max-w-7xl'>
         <header className='flex items-center justify-center mb-8 relative'>
           <Link
@@ -467,7 +470,7 @@ function GameComponent() {
         {/* Room Controls */}
         <div className='bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl mb-6 max-w-lg mx-auto lg:hidden'>
           <h2 className='text-lg font-semibold text-white mb-3 text-center'>Room Settings</h2>
-          
+
           <div className='space-y-3'>
             <div>
               <label className='block text-xs font-medium text-gray-300 mb-1'>Room Code</label>
@@ -478,7 +481,7 @@ function GameComponent() {
                 placeholder='Room code'
               />
             </div>
-            
+
             <div className='flex flex-wrap justify-center gap-2'>
               <button
                 onClick={create}
@@ -501,7 +504,10 @@ function GameComponent() {
               </button>
               {state?.status === 'finished' && playerId && hostId && playerId === hostId && (
                 <button
-                  onClick={() => { setActionLoading(true); socketRef.current?.emit('restart', { roomId: room }); }}
+                  onClick={() => {
+                    setActionLoading(true);
+                    socketRef.current?.emit('restart', { roomId: room });
+                  }}
                   className='px-4 py-2 text-sm bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-400 hover:to-red-400 text-white font-semibold rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200'
                 >
                   🔄 Restart
@@ -548,7 +554,7 @@ function GameComponent() {
           <div className='hidden lg:block w-64 space-y-4'>
             <div className='bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl'>
               <h2 className='text-lg font-semibold text-white mb-4 text-center'>Room Settings</h2>
-              
+
               <div className='space-y-4'>
                 <div>
                   <label className='block text-sm font-medium text-gray-300 mb-2'>Room Code</label>
@@ -559,7 +565,7 @@ function GameComponent() {
                     placeholder='Enter room code'
                   />
                 </div>
-                
+
                 <div className='space-y-2'>
                   <button
                     onClick={create}
@@ -582,7 +588,10 @@ function GameComponent() {
                   </button>
                   {state?.status === 'finished' && playerId && hostId && playerId === hostId && (
                     <button
-                      onClick={() => { setActionLoading(true); socketRef.current?.emit('restart', { roomId: room }); }}
+                      onClick={() => {
+                        setActionLoading(true);
+                        socketRef.current?.emit('restart', { roomId: room });
+                      }}
                       className='w-full px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-400 hover:to-red-400 text-white font-semibold rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200'
                     >
                       🔄 Restart
@@ -629,7 +638,10 @@ function GameComponent() {
             {/* Hold Piece */}
             <div className='bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl'>
               <h3 className='text-sm font-semibold text-white mb-3 text-center'>Hold</h3>
-              <div className='bg-black/50 rounded-lg p-3 border-2 border-white/20 flex justify-center items-center' style={{ width: 96, height: 96 }}>
+              <div
+                className='bg-black/50 rounded-lg p-3 border-2 border-white/20 flex justify-center items-center'
+                style={{ width: 96, height: 96 }}
+              >
                 {renderNextPreview(myView?.holdPiece ?? null, 18)}
               </div>
             </div>
@@ -637,10 +649,17 @@ function GameComponent() {
             {/* Main Game Board */}
             <div className='bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl'>
               <h3 className='text-xl font-semibold text-white mb-4 text-center'>Your Board</h3>
-              
+
               <div className='flex flex-col items-center'>
                 <div className='bg-black/50 rounded-lg p-4 border-2 border-white/20'>
-                  <div style={{ width: WIDTH * CELL, display: 'grid', gridTemplateColumns: `repeat(${WIDTH}, ${CELL}px)`, gap: 0 }}>
+                  <div
+                    style={{
+                      width: WIDTH * CELL,
+                      display: 'grid',
+                      gridTemplateColumns: `repeat(${WIDTH}, ${CELL}px)`,
+                      gap: 0,
+                    }}
+                  >
                     {(function rows() {
                       const cells: JSX.Element[] = [];
                       for (let y = 0; y < HEIGHT; y++) {
@@ -650,7 +669,7 @@ function GameComponent() {
                     })()}
                   </div>
                 </div>
-                
+
                 <div className='mt-4 bg-white/5 rounded-lg p-3 border border-white/10'>
                   <div className='text-center text-white'>
                     <span className='text-lg font-bold text-cyan-400'>{myView?.score ?? 0}</span>
@@ -663,7 +682,10 @@ function GameComponent() {
             {/* Next Piece */}
             <div className='bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl'>
               <h3 className='text-sm font-semibold text-white mb-3 text-center'>Next</h3>
-              <div className='bg-black/50 rounded-lg p-3 border-2 border-white/20 flex justify-center items-center' style={{ width: 96, height: 96 }}>
+              <div
+                className='bg-black/50 rounded-lg p-3 border-2 border-white/20 flex justify-center items-center'
+                style={{ width: 96, height: 96 }}
+              >
                 {renderNextPreview(myView?.nextPiece ?? null, 18)}
               </div>
             </div>
@@ -676,24 +698,29 @@ function GameComponent() {
                 <h3 className='text-lg font-semibold text-white mb-4 text-center'>Opponents</h3>
                 <div className='space-y-3'>
                   {opponents.map((op) => (
-                    <div key={op.id} className='bg-white/5 rounded-xl p-3 border border-white/10 flex gap-3 items-center justify-between'>
+                    <div
+                      key={op.id}
+                      className='bg-white/5 rounded-xl p-3 border border-white/10 flex gap-3 items-center justify-between'
+                    >
                       {/* Left: Info */}
                       <div className='flex-1 min-w-0 flex flex-col items-start justify-center'>
                         <div className='flex items-center gap-1.5 mb-1'>
-                          <div className={`w-2 h-2 rounded-full ${op.isAlive ? 'bg-green-400 shadow-[0_0_6px_rgba(74,222,128,0.6)]' : 'bg-red-400 shadow-[0_0_6px_rgba(248,113,113,0.6)]'}`} />
+                          <div
+                            className={`w-2 h-2 rounded-full ${op.isAlive ? 'bg-green-400 shadow-[0_0_6px_rgba(74,222,128,0.6)]' : 'bg-red-400 shadow-[0_0_6px_rgba(248,113,113,0.6)]'}`}
+                          />
                           <span className='text-sm font-semibold text-white truncate'>{op.name}</span>
                         </div>
-                        {op.isHost && (
-                          <span className='text-[10px] text-yellow-400 font-medium mb-1'>👑 Host</span>
-                        )}
+                        {op.isHost && <span className='text-[10px] text-yellow-400 font-medium mb-1'>👑 Host</span>}
                         <div className='text-xs text-gray-400 mb-2'>
                           Score: <span className='text-cyan-400 font-semibold'>{op.score}</span>
                         </div>
-                        <div className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
-                          op.isAlive
-                            ? 'bg-green-500/20 text-green-300 border border-green-400/30'
-                            : 'bg-red-500/20 text-red-300 border border-red-400/30'
-                        }`}>
+                        <div
+                          className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                            op.isAlive
+                              ? 'bg-green-500/20 text-green-300 border border-green-400/30'
+                              : 'bg-red-500/20 text-red-300 border border-red-400/30'
+                          }`}
+                        >
                           {op.isAlive ? 'ALIVE' : 'DEAD'}
                         </div>
                       </div>

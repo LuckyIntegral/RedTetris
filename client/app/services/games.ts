@@ -40,12 +40,12 @@ const createGamesService = () => {
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    const result = await response.json();
+    const result = (await response.json()) as { data: PaginatedGames; error?: { message: string } };
     if (!response.ok) {
       throw new Error(result.error?.message ?? 'Failed to fetch games');
     }
 
-    return result.data as PaginatedGames;
+    return result.data;
   };
 
   const getAllGames = async (): Promise<Game[]> => {
