@@ -3,6 +3,7 @@ export class Player {
   name: string;
   socketId: string;
   isAlive = true;
+  diedAt: Date | null = null;
 
   constructor(id: string, name: string, socketId: string) {
     this.id = id;

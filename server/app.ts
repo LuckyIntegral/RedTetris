@@ -1,8 +1,6 @@
 import dotenv from 'dotenv';
 import path from 'path';
 
-dotenv.config({ path: path.resolve(process.cwd(), '..', '.env') });
-
 import cors from 'cors';
 import express, { Request, Response } from 'express';
 import http from 'http';
@@ -13,10 +11,13 @@ import { GameManager } from './core/GameManager';
 import db, { runMigrations, testConnection } from './db';
 import { registerSocketHandlers } from './net/socketHandlers';
 import authRoutes from './routes/auth';
+import gamesRoutes from './routes/games';
 import { ClientToServerEvents, ServerToClientEvents, SocketData } from './types/socketEvents';
 
 import { verifyToken } from './utils/jwt';
 import { logDbError, logger } from './utils/logger';
+
+dotenv.config({ path: path.resolve(process.cwd(), '..', '.env') });
 
 const app = express();
 const server = http.createServer(app);
@@ -154,6 +155,8 @@ app.get('/health', async (req: Request, res: Response) => {
 
 // Auth routes
 app.use('/api/auth', authRoutes);
+// Games routes
+app.use('/api/games', gamesRoutes);
 
 // Example database query endpoint
 app.get('/api/test-db', async (req: Request, res: Response) => {

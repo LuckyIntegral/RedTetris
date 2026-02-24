@@ -22,6 +22,7 @@ export interface PlayerState {
   holdLocked: boolean;
   score: number;
   isAlive: boolean;
+  diedAt: Date | null;
   name: string;
 }
 
