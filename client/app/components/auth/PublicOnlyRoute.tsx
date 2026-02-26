@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Navigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { fetchProfile } from '../../store/authSlice';
+import { fetchProfile, hydrateAuth } from '../../store/authSlice';
 import { LoadingOverlay } from '../LoadingOverlay';
 
 interface PublicOnlyRouteProps {
@@ -10,13 +10,23 @@ interface PublicOnlyRouteProps {
 
 export function PublicOnlyRoute({ children }: PublicOnlyRouteProps) {
   const dispatch = useAppDispatch();
-  const { isAuthenticated, isLoading, user } = useAppSelector((state) => state.auth);
+  const { isAuthenticated, isLoading, user, hydrated } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    if (isAuthenticated && !user) {
+    if (!hydrated) {
+      dispatch(hydrateAuth());
+    }
+  }, [dispatch, hydrated]);
+
+  useEffect(() => {
+    if (hydrated && isAuthenticated && !user) {
       void dispatch(fetchProfile());
     }
-  }, [dispatch, isAuthenticated, user]);
+  }, [dispatch, hydrated, isAuthenticated, user]);
+
+  if (!hydrated) {
+    return <LoadingOverlay />;
+  }
 
   if (isAuthenticated) {
     return (

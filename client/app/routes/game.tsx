@@ -50,7 +50,9 @@ function GameComponent() {
     const s = io(url, { autoConnect: false, auth: { token } }) as unknown as Socket;
     socketRef.current = s;
 
-    s.on('connect', () => console.log('connected to server'));
+    s.on('connect', () => {
+      // connection established
+    });
 
     // server may emit either a raw state object or { state, hostId } historically.
     s.on('state', (payload: GameState | { state: GameState; hostId?: string }) => {
@@ -98,7 +100,6 @@ function GameComponent() {
       setError(info?.message ?? info?.reason ?? 'RESTART_FAILED');
     });
     s.on('game_over', (info: { message?: string }) => {
-      console.log('client: received game_over', info);
       setMessage(info?.message ?? 'game over');
     });
     s.on('winner', (info: { message?: string }) => {
@@ -139,8 +140,7 @@ function GameComponent() {
       const s = socketRef.current;
       if (!s) return;
       if (key === 'ArrowLeft') s.emit('intent', { roomId: room, intent: { type: 'move', dir: 'left' } });
-      else if (key === 'ArrowRight')
-        s.emit('intent', { roomId: room, intent: { type: 'move', dir: 'right' } });
+      else if (key === 'ArrowRight') s.emit('intent', { roomId: room, intent: { type: 'move', dir: 'right' } });
       else if (key === 'ArrowDown') s.emit('intent', { roomId: room, intent: { type: 'soft' } });
     };
 

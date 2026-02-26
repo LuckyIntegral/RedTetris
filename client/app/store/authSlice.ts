@@ -7,14 +7,16 @@ export interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
+  hydrated: boolean;
 }
 
 const initialState: AuthState = {
   user: null,
-  token: authService.getToken(),
-  isAuthenticated: !!authService.getToken(),
+  token: null,
+  isAuthenticated: false,
   isLoading: false,
   error: null,
+  hydrated: false,
 };
 
 // Async thunks
@@ -57,6 +59,12 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    hydrateAuth: (state) => {
+      const token = authService.getToken();
+      state.token = token;
+      state.isAuthenticated = !!token;
+      state.hydrated = true;
+    },
     clearError: (state) => {
       state.error = null;
     },
@@ -142,5 +150,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { clearError, setCredentials } = authSlice.actions;
+export const { hydrateAuth, clearError, setCredentials } = authSlice.actions;
 export default authSlice.reducer;
