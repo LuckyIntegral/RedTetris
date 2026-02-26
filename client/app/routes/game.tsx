@@ -131,24 +131,48 @@ function GameComponent() {
   }, []);
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
+    const DAS_DELAY = 170; // ms before auto-repeat kicks in
+    const REPEAT_INTERVAL = 50; // ms between repeated moves
+    const held = new Map<string, ReturnType<typeof setTimeout>>();
+
+    const fireIntent = (key: string) => {
+      const s = socketRef.current;
+      if (!s) return;
+      if (key === 'ArrowLeft') s.emit('intent', { roomId: room, intent: { type: 'move', dir: 'left' } });
+      else if (key === 'ArrowRight')
+        s.emit('intent', { roomId: room, intent: { type: 'move', dir: 'right' } });
+      else if (key === 'ArrowDown') s.emit('intent', { roomId: room, intent: { type: 'soft' } });
+    };
+
+    const clearKey = (key: string) => {
+      const timer = held.get(key);
+      if (timer != null) {
+        clearTimeout(timer);
+        held.delete(key);
+      }
+    };
+
+    const repeatableKeys = new Set(['ArrowLeft', 'ArrowRight', 'ArrowDown']);
+
+    const onKeyDown = (e: KeyboardEvent) => {
       if (!playerId || !socketRef.current) return;
       const s = socketRef.current;
-      if (e.key === 'ArrowLeft') {
+
+      if (repeatableKeys.has(e.key)) {
         e.preventDefault();
-        s.emit('intent', { roomId: room, intent: { type: 'move', dir: 'left' } });
-      }
-      if (e.key === 'ArrowRight') {
-        e.preventDefault();
-        s.emit('intent', { roomId: room, intent: { type: 'move', dir: 'right' } });
+        if (held.has(e.key)) return; // already held
+        fireIntent(e.key); // fire once immediately
+        // after DAS_DELAY, start rapid repeat
+        const dasTimer = setTimeout(() => {
+          const interval = setInterval(() => fireIntent(e.key), REPEAT_INTERVAL);
+          held.set(e.key, interval as unknown as ReturnType<typeof setTimeout>);
+        }, DAS_DELAY);
+        held.set(e.key, dasTimer);
+        return;
       }
       if (e.key === 'ArrowUp') {
         e.preventDefault();
         s.emit('intent', { roomId: room, intent: { type: 'rotate' } });
-      }
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        s.emit('intent', { roomId: room, intent: { type: 'soft' } });
       }
       if (e.key === 'Shift') s.emit('intent', { roomId: room, intent: { type: 'hold' } });
       if (e.code === 'Space') {
@@ -156,8 +180,22 @@ function GameComponent() {
         s.emit('intent', { roomId: room, intent: { type: 'hard' } });
       }
     };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+
+    const onKeyUp = (e: KeyboardEvent) => {
+      clearKey(e.key);
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('keyup', onKeyUp);
+    return () => {
+      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener('keyup', onKeyUp);
+      held.forEach((t) => {
+        clearTimeout(t);
+        clearInterval(t);
+      });
+      held.clear();
+    };
   }, [playerId, room]);
 
   const join = () => {
@@ -189,6 +227,18 @@ function GameComponent() {
     s.emit('start', { roomId: room });
   };
 
+  const leave = () => {
+    const s = socketRef.current;
+    if (!s) return;
+    s.disconnect();
+    setPlayerId(null);
+    setState(null);
+    setHostId(null);
+    setMessage(null);
+    setError(null);
+    setRoom('');
+  };
+
   const myView = useMemo<PlayerState | null>(() => {
     if (!state || !playerId) return null;
     return (state.players?.[playerId] ?? null) as PlayerState | null;
@@ -209,7 +259,7 @@ function GameComponent() {
     if (prev === true && alive === false) {
       setMessage('You lost');
     }
-    if ((state.status === 'finished' || state.winnerId) && state.winnerId === playerId) {
+    if (state.status === 'finished' && state.winnerId === playerId) {
       setMessage('You win');
     }
     prevAliveRef.current = alive;
@@ -221,7 +271,7 @@ function GameComponent() {
       return (
         <div
           key={`${x}-${y}`}
-          style={{ width: CELL, height: CELL, boxSizing: 'border-box', outline: '1px solid rgba(255,255,255,0.03)' }}
+          style={{ width: CELL, height: CELL, boxSizing: 'border-box', outline: '1px solid rgba(255,255,255,0.12)' }}
         />
       );
     }
@@ -233,14 +283,17 @@ function GameComponent() {
             width: CELL,
             height: CELL,
             boxSizing: 'border-box',
-            background: 'rgba(255,255,255,0.06)',
-            outline: '1px solid rgba(255,255,255,0.03)',
+            borderRadius: 2,
+            background: 'rgba(255,255,255,0.12)',
+            borderTop: '1px solid rgba(255,255,255,0.15)',
+            borderLeft: '1px solid rgba(255,255,255,0.1)',
+            borderBottom: '1px solid rgba(0,0,0,0.3)',
+            borderRight: '1px solid rgba(0,0,0,0.2)',
           }}
         />
       );
     }
     if (val === -1) {
-      const penalty = '#4b5563';
       return (
         <div
           key={`${x}-${y}`}
@@ -248,13 +301,12 @@ function GameComponent() {
             width: CELL,
             height: CELL,
             boxSizing: 'border-box',
-            borderRadius: 3,
-            background: `linear-gradient(135deg, rgba(255,255,255,0.25) 0%, ${penalty} 40%, ${penalty} 60%, rgba(0,0,0,0.35) 100%)`,
-            borderTop: '2px solid rgba(255,255,255,0.3)',
-            borderLeft: '2px solid rgba(255,255,255,0.2)',
-            borderBottom: '2px solid rgba(0,0,0,0.4)',
-            borderRight: '2px solid rgba(0,0,0,0.25)',
-            boxShadow: `inset 0 0 6px rgba(255,255,255,0.1), 0 0 4px ${penalty}55`,
+            borderRadius: 2,
+            background: '#374151',
+            borderTop: '1px solid rgba(255,255,255,0.08)',
+            borderLeft: '1px solid rgba(255,255,255,0.05)',
+            borderBottom: '1px solid rgba(0,0,0,0.3)',
+            borderRight: '1px solid rgba(0,0,0,0.2)',
           }}
         />
       );
@@ -267,13 +319,12 @@ function GameComponent() {
           width: CELL,
           height: CELL,
           boxSizing: 'border-box',
-          borderRadius: 3,
-          background: `linear-gradient(135deg, rgba(255,255,255,0.35) 0%, ${color} 40%, ${color} 60%, rgba(0,0,0,0.35) 100%)`,
-          borderTop: '2px solid rgba(255,255,255,0.4)',
-          borderLeft: '2px solid rgba(255,255,255,0.25)',
-          borderBottom: '2px solid rgba(0,0,0,0.4)',
-          borderRight: '2px solid rgba(0,0,0,0.25)',
-          boxShadow: `inset 0 0 6px rgba(255,255,255,0.15), 0 0 4px ${color}55`,
+          borderRadius: 2,
+          background: color,
+          borderTop: '1px solid rgba(255,255,255,0.15)',
+          borderLeft: '1px solid rgba(255,255,255,0.1)',
+          borderBottom: '1px solid rgba(0,0,0,0.3)',
+          borderRight: '1px solid rgba(0,0,0,0.2)',
         }}
       />
     );
@@ -343,13 +394,13 @@ function GameComponent() {
     ],
   };
   const PIECE_COLORS: Record<string, string> = {
-    I: '#06b6d4',
-    O: '#f59e0b',
-    T: '#8b5cf6',
-    S: '#10b981',
-    Z: '#ef4444',
-    J: '#3b82f6',
-    L: '#f97316',
+    I: '#0d9488',
+    O: '#ca8a04',
+    T: '#9333ea',
+    S: '#16a34a',
+    Z: '#dc2626',
+    J: '#2563eb',
+    L: '#c2410c',
   };
 
   const PIECE_ID_COLORS: string[] = [
@@ -376,24 +427,16 @@ function GameComponent() {
 
         const isPiece = val > 0;
         cells.push(
-          isPiece && isAlive ? (
-            <div
-              key={`op-${x}-${y}`}
-              style={{
-                width: cell,
-                height: cell,
-                boxSizing: 'border-box',
-                borderRadius: 1,
-                background: `linear-gradient(135deg, rgba(255,255,255,0.3) 0%, ${bg} 50%, rgba(0,0,0,0.3) 100%)`,
-                boxShadow: `0 0 2px ${bg}55`,
-              }}
-            />
-          ) : (
-            <div
-              key={`op-${x}-${y}`}
-              style={{ width: cell, height: cell, boxSizing: 'border-box', background: bg }}
-            />
-          )
+          <div
+            key={`op-${x}-${y}`}
+            style={{
+              width: cell,
+              height: cell,
+              boxSizing: 'border-box',
+              borderRadius: isPiece && isAlive ? 1 : 0,
+              background: bg,
+            }}
+          />
         );
       }
     }
@@ -409,10 +452,19 @@ function GameComponent() {
     const mat = type && PIECE_SHAPES[type] ? PIECE_SHAPES[type] : null;
     const gridSize = 4;
     const color = (type && PIECE_COLORS[type]) ?? '#60a5fa';
+
+    // center the piece matrix within the 4x4 grid
+    const matRows = mat ? mat.length : 0;
+    const matCols = mat ? mat[0].length : 0;
+    const rowOffset = Math.floor((gridSize - matRows) / 2);
+    const colOffset = Math.floor((gridSize - matCols) / 2);
+
     const cells: JSX.Element[] = [];
     for (let r = 0; r < gridSize; r++) {
       for (let c = 0; c < gridSize; c++) {
-        const inMat = Boolean(mat && r < mat.length && c < mat[0].length && mat[r][c]);
+        const mr = r - rowOffset;
+        const mc = c - colOffset;
+        const inMat = Boolean(mat && mr >= 0 && mr < matRows && mc >= 0 && mc < matCols && mat[mr][mc]);
         cells.push(
           inMat ? (
             <div
@@ -422,12 +474,11 @@ function GameComponent() {
                 height: size,
                 boxSizing: 'border-box',
                 borderRadius: 2,
-                background: `linear-gradient(135deg, rgba(255,255,255,0.35) 0%, ${color} 40%, ${color} 60%, rgba(0,0,0,0.35) 100%)`,
-                borderTop: '2px solid rgba(255,255,255,0.4)',
-                borderLeft: '2px solid rgba(255,255,255,0.25)',
-                borderBottom: '2px solid rgba(0,0,0,0.4)',
-                borderRight: '2px solid rgba(0,0,0,0.25)',
-                boxShadow: `inset 0 0 4px rgba(255,255,255,0.15), 0 0 3px ${color}55`,
+                background: color,
+                borderTop: '1px solid rgba(255,255,255,0.15)',
+                borderLeft: '1px solid rgba(255,255,255,0.1)',
+                borderBottom: '1px solid rgba(0,0,0,0.3)',
+                borderRight: '1px solid rgba(0,0,0,0.2)',
               }}
             />
           ) : (
@@ -446,38 +497,35 @@ function GameComponent() {
 
   return (
     <main
-      className='min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-6'
+      className='min-h-screen bg-slate-900 p-6'
       style={{ pointerEvents: 'auto' }}
     >
       <div className='container mx-auto max-w-7xl'>
         <header className='flex items-center justify-center mb-8 relative'>
           <Link
             to='/'
-            className='absolute left-0 z-10 px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-medium rounded-lg backdrop-blur-md transition-all duration-200 text-sm flex items-center gap-2'
+            className='absolute left-0 z-10 px-4 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-gray-300 hover:text-white font-medium rounded-lg transition-colors text-sm flex items-center gap-2'
           >
-            ← Back
+            Back
           </Link>
           <div className='text-center'>
-            <h1 className='text-4xl font-bold text-white mb-2 drop-shadow-lg'>
-              <span className='text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400'>
-                RED TETRIS
-              </span>
-            </h1>
-            <p className='text-gray-300'>Play Mode</p>
+            <h1 className='text-4xl font-bold text-red-500 mb-2'>RED TETRIS</h1>
+            <p className='text-gray-400'>Play Mode</p>
           </div>
         </header>
 
         {/* Room Controls */}
-        <div className='bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl mb-6 max-w-lg mx-auto lg:hidden'>
+        <div className='bg-gray-900 rounded-xl p-4 border border-gray-600 mb-6 max-w-lg mx-auto lg:hidden'>
           <h2 className='text-lg font-semibold text-white mb-3 text-center'>Room Settings</h2>
 
           <div className='space-y-3'>
             <div>
-              <label className='block text-xs font-medium text-gray-300 mb-1'>Room Code</label>
+              <label className='block text-xs font-medium text-gray-400 mb-1'>Room Code</label>
               <input
                 value={room}
                 onChange={(e) => setRoom(e.target.value)}
-                className='w-full px-3 py-2 text-sm bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent'
+                disabled={!!playerId}
+                className='w-full px-3 py-2 text-sm bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 disabled:opacity-50 disabled:cursor-not-allowed'
                 placeholder='Room code'
               />
             </div>
@@ -485,22 +533,24 @@ function GameComponent() {
             <div className='flex flex-wrap justify-center gap-2'>
               <button
                 onClick={create}
-                className='px-4 py-2 text-sm bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-white font-semibold rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200'
+                disabled={!!playerId}
+                className='px-4 py-2 text-sm bg-green-600 hover:bg-green-500 disabled:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50 text-white font-semibold rounded-lg transition-colors'
               >
-                🚀 Create
+                Create
               </button>
               <button
                 onClick={join}
-                className='px-4 py-2 text-sm bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-400 hover:to-cyan-400 text-white font-semibold rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200'
+                disabled={!!playerId || !room}
+                className='px-4 py-2 text-sm bg-blue-600 hover:bg-blue-500 disabled:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50 text-white font-semibold rounded-lg transition-colors'
               >
-                🎯 Join
+                Join
               </button>
               <button
                 onClick={start}
                 disabled={!playerId || (hostId ? playerId !== hostId : false)}
-                className='px-4 py-2 text-sm bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 disabled:from-gray-500 disabled:to-gray-600 disabled:cursor-not-allowed text-white font-semibold rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200 disabled:transform-none disabled:opacity-50'
+                className='px-4 py-2 text-sm bg-red-600 hover:bg-red-500 disabled:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50 text-white font-semibold rounded-lg transition-colors'
               >
-                ⚡ Start
+                Start
               </button>
               {state?.status === 'finished' && playerId && hostId && playerId === hostId && (
                 <button
@@ -508,9 +558,17 @@ function GameComponent() {
                     setActionLoading(true);
                     socketRef.current?.emit('restart', { roomId: room });
                   }}
-                  className='px-4 py-2 text-sm bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-400 hover:to-red-400 text-white font-semibold rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200'
+                  className='px-4 py-2 text-sm bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-lg transition-colors'
                 >
-                  🔄 Restart
+                  Restart
+                </button>
+              )}
+              {playerId && (
+                <button
+                  onClick={leave}
+                  className='px-4 py-2 text-sm bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white font-semibold rounded-lg transition-colors'
+                >
+                  Leave
                 </button>
               )}
             </div>
@@ -518,30 +576,28 @@ function GameComponent() {
             {/* Status Messages */}
             <div className='space-y-2'>
               {hostId && playerId === hostId && (
-                <div className='bg-green-500/20 border border-green-400/30 rounded-lg p-2 text-center'>
-                  <span className='text-green-300 text-sm font-medium'>🔑 Room: </span>
+                <div className='bg-green-900/30 border border-green-800 rounded-lg p-2 text-center'>
+                  <span className='text-green-400 text-sm font-medium'>Room: </span>
                   <span className='text-white text-sm font-bold'>{room}</span>
                 </div>
               )}
               {hostName && (
-                <div className='bg-blue-500/20 border border-blue-400/30 rounded-lg p-2 text-center'>
-                  <span className='text-blue-300 text-sm font-medium'>👑 Host: </span>
+                <div className='bg-gray-800 border border-gray-600 rounded-lg p-2 text-center'>
+                  <span className='text-gray-400 text-sm font-medium'>Host: </span>
                   <span className='text-white text-sm font-semibold'>{hostName}</span>
                   {hostId === playerId || state?.hostId === playerId ? (
-                    <span className='text-cyan-300 text-sm font-medium'> (you)</span>
+                    <span className='text-gray-400 text-sm font-medium'> (you)</span>
                   ) : null}
                 </div>
               )}
               {error && (
-                <div className='bg-red-500/20 border border-red-400/30 rounded-lg p-2 text-center'>
-                  <span className='text-red-300 text-sm font-medium'>❌ </span>
-                  <span className='text-red-200 text-sm'>{error}</span>
+                <div className='bg-red-900/30 border border-red-800 rounded-lg p-2 text-center'>
+                  <span className='text-red-300 text-sm'>{error}</span>
                 </div>
               )}
               {message && (
-                <div className='bg-green-500/20 border border-green-400/30 rounded-lg p-2 text-center'>
-                  <span className='text-green-300 text-sm font-medium'>✅ </span>
-                  <span className='text-green-200 text-sm'>{message}</span>
+                <div className='bg-green-900/30 border border-green-800 rounded-lg p-2 text-center'>
+                  <span className='text-green-300 text-sm'>{message}</span>
                 </div>
               )}
             </div>
@@ -552,39 +608,45 @@ function GameComponent() {
         <div className='flex gap-6 justify-center items-start min-h-[600px]'>
           {/* Left Side: Room Controls (Desktop) */}
           <div className='hidden lg:block w-64 space-y-4'>
-            <div className='bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl'>
+            <div className='bg-gray-900 rounded-xl p-4 border border-gray-600'>
               <h2 className='text-lg font-semibold text-white mb-4 text-center'>Room Settings</h2>
 
               <div className='space-y-4'>
                 <div>
-                  <label className='block text-sm font-medium text-gray-300 mb-2'>Room Code</label>
+                  <label className='block text-sm font-medium text-gray-400 mb-2'>Room Code</label>
                   <input
                     value={room}
                     onChange={(e) => setRoom(e.target.value)}
-                    className='w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent'
+                    disabled={!!playerId}
+                    className='w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 disabled:opacity-50 disabled:cursor-not-allowed'
                     placeholder='Enter room code'
                   />
                 </div>
 
                 <div className='space-y-2'>
-                  <button
-                    onClick={create}
-                    className='w-full px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-white font-semibold rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200'
-                  >
-                    🚀 Create Room
-                  </button>
-                  <button
-                    onClick={join}
-                    className='w-full px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-400 hover:to-cyan-400 text-white font-semibold rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200'
-                  >
-                    🎯 Join Room
-                  </button>
+                  {!playerId && (
+                    <button
+                      onClick={create}
+                      className='w-full px-4 py-2 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-lg transition-colors'
+                    >
+                      Create Room
+                    </button>
+                  )}
+                  {!playerId && (
+                    <button
+                      onClick={join}
+                      disabled={!room}
+                      className='w-full px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50 text-white font-semibold rounded-lg transition-colors'
+                    >
+                      Join Room
+                    </button>
+                  )}
                   <button
                     onClick={start}
                     disabled={!playerId || (hostId ? playerId !== hostId : false)}
-                    className='w-full px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 disabled:from-gray-500 disabled:to-gray-600 disabled:cursor-not-allowed text-white font-semibold rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200 disabled:transform-none disabled:opacity-50'
+                    className='w-full px-4 py-2 bg-red-600 hover:bg-red-500 disabled:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50 text-white font-semibold rounded-lg transition-colors'
                   >
-                    ⚡ Start Game
+                    Start Game
                   </button>
                   {state?.status === 'finished' && playerId && hostId && playerId === hostId && (
                     <button
@@ -592,9 +654,17 @@ function GameComponent() {
                         setActionLoading(true);
                         socketRef.current?.emit('restart', { roomId: room });
                       }}
-                      className='w-full px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-400 hover:to-red-400 text-white font-semibold rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200'
+                      className='w-full px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-lg transition-colors'
                     >
-                      🔄 Restart
+                      Restart
+                    </button>
+                  )}
+                  {playerId && (
+                    <button
+                      onClick={leave}
+                      className='w-full px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white font-semibold rounded-lg transition-colors'
+                    >
+                      Leave Room
                     </button>
                   )}
                 </div>
@@ -602,30 +672,28 @@ function GameComponent() {
                 {/* Status Messages */}
                 <div className='space-y-2'>
                   {hostId && playerId === hostId && (
-                    <div className='bg-green-500/20 border border-green-400/30 rounded-lg p-3 text-center'>
-                      <span className='text-green-300 font-medium'>🔑 Room Code: </span>
+                    <div className='bg-green-900/30 border border-green-800 rounded-lg p-3 text-center'>
+                      <span className='text-green-400 font-medium'>Room Code: </span>
                       <span className='text-white font-bold'>{room}</span>
                     </div>
                   )}
                   {hostName && (
-                    <div className='bg-blue-500/20 border border-blue-400/30 rounded-lg p-3 text-center'>
-                      <span className='text-blue-300 font-medium'>👑 Host: </span>
+                    <div className='bg-gray-800 border border-gray-600 rounded-lg p-3 text-center'>
+                      <span className='text-gray-400 font-medium'>Host: </span>
                       <span className='text-white font-semibold'>{hostName}</span>
                       {hostId === playerId || state?.hostId === playerId ? (
-                        <span className='text-cyan-300 font-medium'> (you)</span>
+                        <span className='text-gray-400 font-medium'> (you)</span>
                       ) : null}
                     </div>
                   )}
                   {error && (
-                    <div className='bg-red-500/20 border border-red-400/30 rounded-lg p-3 text-center'>
-                      <span className='text-red-300 font-medium'>❌ Error: </span>
-                      <span className='text-red-200'>{error}</span>
+                    <div className='bg-red-900/30 border border-red-800 rounded-lg p-3 text-center'>
+                      <span className='text-red-300'>{error}</span>
                     </div>
                   )}
                   {message && (
-                    <div className='bg-green-500/20 border border-green-400/30 rounded-lg p-3 text-center'>
-                      <span className='text-green-300 font-medium'>✅ </span>
-                      <span className='text-green-200'>{message}</span>
+                    <div className='bg-green-900/30 border border-green-800 rounded-lg p-3 text-center'>
+                      <span className='text-green-300'>{message}</span>
                     </div>
                   )}
                 </div>
@@ -636,22 +704,22 @@ function GameComponent() {
           {/* Center: Game Area */}
           <div className='flex items-start gap-6'>
             {/* Hold Piece */}
-            <div className='bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl'>
+            <div className='bg-gray-900 rounded-xl p-4 border border-gray-600'>
               <h3 className='text-sm font-semibold text-white mb-3 text-center'>Hold</h3>
               <div
-                className='bg-black/50 rounded-lg p-3 border-2 border-white/20 flex justify-center items-center'
-                style={{ width: 96, height: 96 }}
+                className='bg-gray-900 rounded-lg p-3 border border-gray-600 flex justify-center items-center'
+                style={{ width: 4 * CELL + 24, height: 4 * CELL + 24 }}
               >
-                {renderNextPreview(myView?.holdPiece ?? null, 18)}
+                {renderNextPreview(myView?.holdPiece ?? null, CELL)}
               </div>
             </div>
 
             {/* Main Game Board */}
-            <div className='bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl'>
+            <div className='bg-gray-900 rounded-xl p-6 border border-gray-600'>
               <h3 className='text-xl font-semibold text-white mb-4 text-center'>Your Board</h3>
 
               <div className='flex flex-col items-center'>
-                <div className='bg-black/50 rounded-lg p-4 border-2 border-white/20'>
+                <div className='bg-gray-900 rounded-lg p-3 border border-gray-600'>
                   <div
                     style={{
                       width: WIDTH * CELL,
@@ -670,23 +738,23 @@ function GameComponent() {
                   </div>
                 </div>
 
-                <div className='mt-4 bg-white/5 rounded-lg p-3 border border-white/10'>
+                <div className='mt-4 bg-gray-800 rounded-lg p-3 border border-gray-600'>
                   <div className='text-center text-white'>
-                    <span className='text-lg font-bold text-cyan-400'>{myView?.score ?? 0}</span>
-                    <div className='text-sm text-gray-300'>Score</div>
+                    <span className='text-lg font-bold text-white'>{myView?.score ?? 0}</span>
+                    <div className='text-sm text-gray-400'>Score</div>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Next Piece */}
-            <div className='bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl'>
+            <div className='bg-gray-900 rounded-xl p-4 border border-gray-600'>
               <h3 className='text-sm font-semibold text-white mb-3 text-center'>Next</h3>
               <div
-                className='bg-black/50 rounded-lg p-3 border-2 border-white/20 flex justify-center items-center'
-                style={{ width: 96, height: 96 }}
+                className='bg-gray-900 rounded-lg p-3 border border-gray-600 flex justify-center items-center'
+                style={{ width: 4 * CELL + 24, height: 4 * CELL + 24 }}
               >
-                {renderNextPreview(myView?.nextPiece ?? null, 18)}
+                {renderNextPreview(myView?.nextPiece ?? null, CELL)}
               </div>
             </div>
           </div>
@@ -694,13 +762,13 @@ function GameComponent() {
           {/* Right Side: Opponents */}
           {opponents.length > 0 && (
             <div className='w-80 space-y-4'>
-              <div className='bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl'>
+              <div className='bg-gray-900 rounded-xl p-4 border border-gray-600'>
                 <h3 className='text-lg font-semibold text-white mb-4 text-center'>Opponents</h3>
                 <div className='space-y-3'>
                   {opponents.map((op) => (
                     <div
                       key={op.id}
-                      className='bg-white/5 rounded-xl p-3 border border-white/10 flex gap-3 items-center justify-between'
+                      className='bg-gray-800 rounded-lg p-3 border border-gray-600 flex gap-3 items-center justify-between'
                     >
                       {/* Left: Info */}
                       <div className='flex-1 min-w-0 flex flex-col items-start justify-center'>
@@ -710,9 +778,9 @@ function GameComponent() {
                           />
                           <span className='text-sm font-semibold text-white truncate'>{op.name}</span>
                         </div>
-                        {op.isHost && <span className='text-[10px] text-yellow-400 font-medium mb-1'>👑 Host</span>}
+                        {op.isHost && <span className='text-[10px] text-yellow-400 font-medium mb-1'>Host</span>}
                         <div className='text-xs text-gray-400 mb-2'>
-                          Score: <span className='text-cyan-400 font-semibold'>{op.score}</span>
+                          Score: <span className='text-white font-semibold'>{op.score}</span>
                         </div>
                         <div
                           className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
@@ -725,7 +793,7 @@ function GameComponent() {
                         </div>
                       </div>
                       {/* Right: Board */}
-                      <div className='shrink-0 bg-black/40 rounded-lg p-1.5 border border-white/10 flex justify-center'>
+                      <div className='shrink-0 bg-black rounded-lg p-1.5 border border-gray-600 flex justify-center'>
                         {renderOpponentBoard(op.board ?? null, op.isAlive, 5)}
                       </div>
                     </div>

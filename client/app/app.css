@@ -7,7 +7,7 @@
 
 html,
 body {
-  background: linear-gradient(to bottom right, #581c87, #1e3a8a, #312e81);
+  background: #0f172a;
   min-height: 100vh;
 
   @media (prefers-color-scheme: dark) {

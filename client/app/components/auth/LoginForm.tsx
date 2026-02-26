@@ -28,21 +28,17 @@ export function LoginForm() {
   };
 
   return (
-    <main className='min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center px-4 py-12'>
+    <main className='min-h-screen bg-slate-900 flex items-center justify-center px-4 py-12'>
       <div className='w-full max-w-md'>
         {/* Header */}
         <div className='text-center mb-8'>
-          <h1 className='text-5xl font-bold text-white mb-4 drop-shadow-lg'>
-            <span className='text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400'>
-              RED TETRIS
-            </span>
-          </h1>
+          <h1 className='text-5xl font-bold text-red-500 mb-4'>RED TETRIS</h1>
           <p className='text-xl text-gray-300'>Welcome Back!</p>
           <p className='text-gray-400 mt-2'>Sign in to continue your game</p>
         </div>
 
         {/* Login Form */}
-        <div className='bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20 shadow-xl'>
+        <div className='bg-gray-900 rounded-xl p-8 border border-gray-600'>
           <form
             className='space-y-6'
             onSubmit={(e) => {
@@ -68,7 +64,7 @@ export function LoginForm() {
                   name='username'
                   type='text'
                   required
-                  className='w-full bg-white/5 border border-white/20 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400/50 transition-all duration-200 backdrop-blur-sm'
+                  className='w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 transition-colors'
                   placeholder='Enter your username'
                   disabled={isLoading}
                 />
@@ -76,7 +72,7 @@ export function LoginForm() {
               <div>
                 <label
                   htmlFor='password'
-                  className='block text-sm font-medium text-gray-300 mb-2'
+                  className='block text-sm font-medium text-gray-400 mb-2'
                 >
                   Password
                 </label>
@@ -85,7 +81,7 @@ export function LoginForm() {
                   name='password'
                   type='password'
                   required
-                  className='w-full bg-white/5 border border-white/20 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400/50 transition-all duration-200 backdrop-blur-sm'
+                  className='w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 transition-colors'
                   placeholder='Enter your password'
                   disabled={isLoading}
                 />
@@ -95,7 +91,7 @@ export function LoginForm() {
             <button
               type='submit'
               disabled={isLoading}
-              className='w-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-400 hover:to-purple-400 disabled:from-gray-500 disabled:to-gray-600 text-white font-bold py-4 px-6 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-300 disabled:transform-none disabled:opacity-70'
+              className='w-full bg-red-600 hover:bg-red-500 disabled:bg-gray-700 disabled:opacity-70 text-white font-bold py-4 px-6 rounded-lg transition-colors'
             >
               {isLoading ? (
                 <span className='flex items-center justify-center'>
@@ -122,7 +118,7 @@ export function LoginForm() {
                   Signing in...
                 </span>
               ) : (
-                '🎮 Sign In'
+                'Sign In'
               )}
             </button>
 
@@ -131,7 +127,7 @@ export function LoginForm() {
                 Don't have an account?{' '}
                 <Link
                   to='/register'
-                  className='text-cyan-400 hover:text-cyan-300 font-medium hover:underline transition-colors duration-200'
+                  className='text-red-400 hover:text-red-300 font-medium hover:underline transition-colors'
                 >
                   Create one here
                 </Link>

@@ -23,8 +23,10 @@ export function registerSocketHandlers(
 
       function emitSanitizedState(game: Game) {
         const state = game.getState();
-        const alivePlayers = game.getPlayers().filter((p) => p.isAlive);
-        const winnerId = alivePlayers.length === 1 ? alivePlayers[0].id : null;
+        const alivePlayerIds = Object.entries(state.playerStates)
+          .filter(([, ps]) => ps.isAlive)
+          .map(([id]) => id);
+        const winnerId = state.status === 'finished' && alivePlayerIds.length === 1 ? alivePlayerIds[0] : null;
 
         const playersObj: Record<string, PlayerState> = {};
 
@@ -195,6 +197,9 @@ export function registerSocketHandlers(
               (initialPlayerCount === 1 && aliveIds.length === 0);
 
             if (shouldEnd) {
+              // ensure status is marked finished so clients see it
+              game.state.status = 'finished';
+
               if (initialPlayerCount > 1 && aliveIds.length === 1) {
                 const winnerId = aliveIds[0];
                 logger.info(`server: winner detected: ${winnerId}`);
