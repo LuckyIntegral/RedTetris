@@ -1,9 +1,10 @@
-import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
+import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration, useNavigation } from 'react-router';
 import { Provider } from 'react-redux';
 
 import type { Route } from './+types/routes';
 import './app.css';
 import { store } from './store/store';
+import { LoadingOverlay } from './components/LoadingOverlay';
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -36,9 +37,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  const navigation = useNavigation();
+  const isNavigating = navigation.state === 'loading';
+
   return (
     <Provider store={store}>
       <Outlet />
+      {isNavigating && <LoadingOverlay />}
     </Provider>
   );
 }
@@ -57,14 +62,22 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className='pt-16 p-4 container mx-auto'>
-      <h1>{message}</h1>
-      <p>{details}</p>
-      {stack && (
-        <pre className='w-full p-4 overflow-x-auto'>
-          <code>{stack}</code>
-        </pre>
-      )}
+    <main className='min-h-screen bg-slate-900 flex items-center justify-center p-6'>
+      <div className='text-center max-w-md'>
+        <h1 className='text-8xl font-bold text-red-500 mb-4'>{message}</h1>
+        <p className='text-xl text-gray-300 mb-8'>{details}</p>
+        {stack && (
+          <pre className='w-full p-4 overflow-x-auto bg-gray-800 border border-gray-600 rounded-lg text-left text-sm text-gray-400 mb-8'>
+            <code>{stack}</code>
+          </pre>
+        )}
+        <a
+          href='/'
+          className='inline-block px-6 py-3 bg-red-600 hover:bg-red-500 text-white font-semibold rounded-lg transition-colors'
+        >
+          Back to Home
+        </a>
+      </div>
     </main>
   );
 }

@@ -277,8 +277,19 @@ export class GameEngine {
       if (!this.collides(player.board, rotated)) {
         player.activePiece = rotated;
       } else {
-        for (const dy of [-1, -2]) {
-          const candidate: Piece = { ...rotated, y: base.y + dy };
+        // Wall kick offsets: try shifting horizontally, then vertically, then combos
+        const kicks = [
+          [1, 0],
+          [-1, 0],
+          [2, 0],
+          [-2, 0],
+          [0, -1],
+          [1, -1],
+          [-1, -1],
+          [0, -2],
+        ];
+        for (const [dx, dy] of kicks) {
+          const candidate: Piece = { ...rotated, x: base.x + dx, y: base.y + dy };
           if (!this.collides(player.board, candidate)) {
             player.activePiece = candidate;
             break;

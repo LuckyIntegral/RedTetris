@@ -1,9 +1,9 @@
 {
   "name": "client",
   "private": true,
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
-    "dev": "react-router dev --port 3001 --host 127.0.0.1",
+    "dev": "sh -c 'react-router dev --port ${CLIENT_PORT:-3001} --host 0.0.0.0'",
     "build": "react-router build",
     "start": "react-router-serve build/server/index.js",
     "lint": "eslint . --ext js,jsx,ts,tsx --ignore-pattern .react-router --ignore-pattern build --ignore-pattern node_modules --fix",

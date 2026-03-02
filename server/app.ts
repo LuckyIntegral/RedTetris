@@ -19,14 +19,38 @@ import { logDbError, logger } from './utils/logger';
 
 dotenv.config({ path: path.resolve(process.cwd(), '..', '.env') });
 
+import os from 'os';
+
 const app = express();
 const server = http.createServer(app);
 
-const clientUrlsRaw = process.env.CLIENT_URL ?? 'http://localhost:3001';
-const allowedOrigins = clientUrlsRaw
+// Helper function to get network IPs
+function getNetworkIPs(): string[] {
+  const interfaces = os.networkInterfaces();
+  const ips: string[] = [];
+
+  for (const name of Object.keys(interfaces)) {
+    for (const networkInterface of interfaces[name] ?? []) {
+      if (networkInterface.family === 'IPv4' && !networkInterface.internal) {
+        ips.push(networkInterface.address);
+      }
+    }
+  }
+  return ips;
+}
+
+// Dynamic CORS origins - include current network IPs
+const clientPort = process.env.CLIENT_PORT ?? '3001';
+const clientUrlsRaw = process.env.CLIENT_URL ?? `http://localhost:${clientPort}`;
+const baseOrigins = clientUrlsRaw
   .split(',')
   .map((s) => s.trim())
   .filter(Boolean);
+
+// Add current network IPs dynamically
+const networkIPs = getNetworkIPs();
+const dynamicOrigins = networkIPs.map((ip) => `http://${ip}:${clientPort}`);
+const allowedOrigins = [...baseOrigins, ...dynamicOrigins];
 
 const io = new IOServer<ClientToServerEvents, ServerToClientEvents, ServerToClientEvents, SocketData>(server, {
   cors: { origin: allowedOrigins, credentials: true },
@@ -170,7 +194,7 @@ const startServer = async () => {
     process.exit(1);
   }
 
-  server.listen(SERVER_PORT, () => {
+  server.listen(SERVER_PORT, '0.0.0.0', () => {
     logger.info(`Server (HTTP + Socket.IO) is running on port ${SERVER_PORT}`);
   });
 };

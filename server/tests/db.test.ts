@@ -12,7 +12,7 @@ describe('db migrations branches', () => {
     const fakePool = { getConnection: () => Promise.resolve(fakeConn) };
     const fakeMysql = { createPool: () => fakePool };
 
-    const db = proxyquire('../../server/db', { 'fs/promises': fakeFs, 'mysql2/promise': fakeMysql }) as DBModule;
+    const db = proxyquire<DBModule>('../../server/db', { 'fs/promises': fakeFs, 'mysql2/promise': fakeMysql });
     await db.runMigrations();
     sinon.assert.calledOnce(fakeFs.stat);
   });
@@ -37,7 +37,7 @@ describe('db migrations branches', () => {
     const fakePool = { getConnection: () => Promise.resolve(fakeConn) };
     const fakeMysql = { createPool: () => fakePool };
 
-    const db = proxyquire('../../server/db', { 'fs/promises': fakeFs, 'mysql2/promise': fakeMysql }) as DBModule;
+    const db = proxyquire<DBModule>('../../server/db', { 'fs/promises': fakeFs, 'mysql2/promise': fakeMysql });
     await db.runMigrations();
     sinon.assert.called(fakeConn.query);
   });
