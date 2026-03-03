@@ -522,7 +522,7 @@ function GameComponent() {
               <label className='block text-xs font-medium text-gray-400 mb-1'>Game Mode</label>
               <select
                 value={selectedMode}
-                onChange={(e) => setSelectedMode(e.target.value)}
+                onChange={(e) => setSelectedMode(e.target.value as GameMode)}
                 disabled={!!playerId}
                 className='w-full px-3 py-2 text-sm bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 disabled:opacity-50 disabled:cursor-not-allowed'
               >
@@ -635,7 +635,7 @@ function GameComponent() {
                   <label className='block text-sm font-medium text-gray-400 mb-2'>Game Mode</label>
                   <select
                     value={selectedMode}
-                    onChange={(e) => setSelectedMode(e.target.value)}
+                    onChange={(e) => setSelectedMode(e.target.value as GameMode)}
                     disabled={!!playerId}
                     className='w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 disabled:opacity-50 disabled:cursor-not-allowed'
                   >
