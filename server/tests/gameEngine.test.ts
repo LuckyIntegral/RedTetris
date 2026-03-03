@@ -1,13 +1,15 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { expect } from 'chai';
+import { BSP_SCORES, GAME_SETUP } from '../constants';
 import { GameEngine } from '../game/GameEngine';
-import { BSP_SCORES, PLAYGROUND_HEIGHT, PLAYGROUND_WIDTH } from '../game/contstants';
 import { Piece } from '../game/types';
 
 describe('GameEngine additional coverage', () => {
   it('collides does not treat negative y as collision when inside x bounds', () => {
     const e = new GameEngine('c1');
-    const board = Array.from({ length: PLAYGROUND_HEIGHT }, () => Array.from({ length: PLAYGROUND_WIDTH }, () => 0));
+    const board = Array.from({ length: GAME_SETUP.classic.height }, () =>
+      Array.from({ length: GAME_SETUP.classic.width }, () => 0)
+    );
     const piece = { type: 'O', x: 4, y: -2, rotation: 0 } as Piece;
     const coll = e.collides(board, piece);
     expect(coll).to.equal(false);
@@ -18,7 +20,9 @@ describe('GameEngine additional coverage', () => {
     const orig = e.collides;
     try {
       e.collides = () => false;
-      const board = Array.from({ length: PLAYGROUND_HEIGHT }, () => Array.from({ length: PLAYGROUND_WIDTH }, () => 0));
+      const board = Array.from({ length: GAME_SETUP.classic.height }, () =>
+        Array.from({ length: GAME_SETUP.classic.width }, () => 0)
+      );
       const piece = { type: 'O', x: 0, y: 0, rotation: 0 } as Piece;
       const out = e.renderBoardWithGhost(board, piece);
 
@@ -41,22 +45,22 @@ describe('GameEngine additional coverage', () => {
 
   it('clearLines returns correct cleared count and keeps board width', () => {
     const e = new GameEngine('c2');
-    const full = Array.from({ length: PLAYGROUND_WIDTH }, () => 1);
-    const board = Array.from({ length: PLAYGROUND_HEIGHT - 1 }, () =>
-      Array.from({ length: PLAYGROUND_WIDTH }, () => 0)
+    const full = Array.from({ length: GAME_SETUP.classic.width }, () => 1);
+    const board = Array.from({ length: GAME_SETUP.classic.height - 1 }, () =>
+      Array.from({ length: GAME_SETUP.classic.width }, () => 0)
     );
     board.push(full.slice());
     const res = e.clearLines(board);
     expect(res.cleared).to.equal(1);
-    expect(res.board.length).to.equal(PLAYGROUND_HEIGHT);
+    expect(res.board.length).to.equal(GAME_SETUP.classic.height);
   });
 
   it('computeLinesClearedReward gives drop bonus when isHard true', () => {
     const e = new GameEngine('c3');
     const s = e.createInitialState(['p1', 'p2']);
-    const full = Array.from({ length: PLAYGROUND_WIDTH }, () => 1);
-    s.playerStates.p1.board = Array.from({ length: PLAYGROUND_HEIGHT - 2 }, () =>
-      Array.from({ length: PLAYGROUND_WIDTH }, () => 0)
+    const full = Array.from({ length: GAME_SETUP.classic.width }, () => 1);
+    s.playerStates.p1.board = Array.from({ length: GAME_SETUP.classic.height - 2 }, () =>
+      Array.from({ length: GAME_SETUP.classic.width }, () => 0)
     );
     s.playerStates.p1.board.push(full.slice());
     s.playerStates.p1.board.push(full.slice());
@@ -77,7 +81,9 @@ describe('GameEngine (cleaned focused tests)', () => {
 
   it('renderBoardWithPiece places cells for active piece', () => {
     const e = new GameEngine('seed');
-    const board = Array.from({ length: PLAYGROUND_HEIGHT }, () => Array.from({ length: PLAYGROUND_WIDTH }, () => 0));
+    const board = Array.from({ length: GAME_SETUP.classic.height }, () =>
+      Array.from({ length: GAME_SETUP.classic.width }, () => 0)
+    );
     const piece = { type: 'O', x: 4, y: 0, rotation: 0 } as Piece;
     const out = e.renderBoardWithPiece(board, piece);
     expect(out[0][4]).to.be.greaterThan(0);
@@ -86,7 +92,9 @@ describe('GameEngine (cleaned focused tests)', () => {
 
   it('renderBoardWithGhost shows ghost and active piece color', () => {
     const e = new GameEngine('seed2');
-    const board = Array.from({ length: PLAYGROUND_HEIGHT }, () => Array.from({ length: PLAYGROUND_WIDTH }, () => 0));
+    const board = Array.from({ length: GAME_SETUP.classic.height }, () =>
+      Array.from({ length: GAME_SETUP.classic.width }, () => 0)
+    );
     const piece = { type: 'O', x: 4, y: 0, rotation: 0 } as Piece;
     const out = e.renderBoardWithGhost(board, piece);
     const hasGhost = out.some((row) => row.includes(-2));
@@ -97,7 +105,9 @@ describe('GameEngine (cleaned focused tests)', () => {
 
   it('collides allows negative y (spawn partial) without treating as collision', () => {
     const e = new GameEngine('c1');
-    const board = Array.from({ length: PLAYGROUND_HEIGHT }, () => Array.from({ length: PLAYGROUND_WIDTH }, () => 0));
+    const board = Array.from({ length: GAME_SETUP.classic.height }, () =>
+      Array.from({ length: GAME_SETUP.classic.width }, () => 0)
+    );
     const piece = { type: 'O', x: 4, y: -2, rotation: 0 } as Piece;
     const coll = e.collides(board, piece);
     expect(coll).to.equal(false);
@@ -160,22 +170,22 @@ describe('GameEngine (cleaned focused tests)', () => {
 
   it('clearLines returns cleared count and preserves board height', () => {
     const e = new GameEngine('c2');
-    const full = Array.from({ length: PLAYGROUND_WIDTH }, () => 1);
-    const board = Array.from({ length: PLAYGROUND_HEIGHT - 1 }, () =>
-      Array.from({ length: PLAYGROUND_WIDTH }, () => 0)
+    const full = Array.from({ length: GAME_SETUP.classic.width }, () => 1);
+    const board = Array.from({ length: GAME_SETUP.classic.height - 1 }, () =>
+      Array.from({ length: GAME_SETUP.classic.width }, () => 0)
     );
     board.push(full.slice());
     const res = e.clearLines(board);
     expect(res.cleared).to.equal(1);
-    expect(res.board.length).to.equal(PLAYGROUND_HEIGHT);
+    expect(res.board.length).to.equal(GAME_SETUP.classic.height);
   });
 
   it('computeLinesClearedReward gives drop bonus when isHard true and propagates to alive players', () => {
     const e = new GameEngine('c3');
     const s = e.createInitialState(['p1', 'p2']);
-    const full = Array.from({ length: PLAYGROUND_WIDTH }, () => 1);
-    s.playerStates.p1.board = Array.from({ length: PLAYGROUND_HEIGHT - 2 }, () =>
-      Array.from({ length: PLAYGROUND_WIDTH }, () => 0)
+    const full = Array.from({ length: GAME_SETUP.classic.width }, () => 1);
+    s.playerStates.p1.board = Array.from({ length: GAME_SETUP.classic.height - 2 }, () =>
+      Array.from({ length: GAME_SETUP.classic.width }, () => 0)
     );
     s.playerStates.p1.board.push(full.slice());
     s.playerStates.p1.board.push(full.slice());
@@ -188,7 +198,9 @@ describe('GameEngine (cleaned focused tests)', () => {
 describe('GameEngine focused extras', () => {
   it('collides does not treat negative y as collision when inside x bounds', () => {
     const e = new GameEngine('c1');
-    const board = Array.from({ length: PLAYGROUND_HEIGHT }, () => Array.from({ length: PLAYGROUND_WIDTH }, () => 0));
+    const board = Array.from({ length: GAME_SETUP.classic.height }, () =>
+      Array.from({ length: GAME_SETUP.classic.width }, () => 0)
+    );
     const piece = { type: 'O', x: 4, y: -2, rotation: 0 } as Piece;
     const coll = e.collides(board, piece);
     expect(coll).to.equal(false);
@@ -199,7 +211,9 @@ describe('GameEngine focused extras', () => {
     const orig = e.collides.bind(e);
     try {
       e.collides = () => false;
-      const board = Array.from({ length: PLAYGROUND_HEIGHT }, () => Array.from({ length: PLAYGROUND_WIDTH }, () => 0));
+      const board = Array.from({ length: GAME_SETUP.classic.height }, () =>
+        Array.from({ length: GAME_SETUP.classic.width }, () => 0)
+      );
       const piece = { type: 'O', x: 0, y: 0, rotation: 0 } as Piece;
       const out = e.renderBoardWithGhost(board, piece);
       const hasGhost = out.some((row) => row.includes(-2));
@@ -221,22 +235,22 @@ describe('GameEngine focused extras', () => {
 
   it('clearLines returns correct cleared count and keeps board width', () => {
     const e = new GameEngine('c2');
-    const full = Array.from({ length: PLAYGROUND_WIDTH }, () => 1);
-    const board = Array.from({ length: PLAYGROUND_HEIGHT - 1 }, () =>
-      Array.from({ length: PLAYGROUND_WIDTH }, () => 0)
+    const full = Array.from({ length: GAME_SETUP.classic.width }, () => 1);
+    const board = Array.from({ length: GAME_SETUP.classic.height - 1 }, () =>
+      Array.from({ length: GAME_SETUP.classic.width }, () => 0)
     );
     board.push(full.slice());
     const res = e.clearLines(board);
     expect(res.cleared).to.equal(1);
-    expect(res.board.length).to.equal(PLAYGROUND_HEIGHT);
+    expect(res.board.length).to.equal(GAME_SETUP.classic.height);
   });
 
   it('computeLinesClearedReward gives drop bonus when isHard true', () => {
     const e = new GameEngine('c3');
     const s = e.createInitialState(['p1', 'p2']);
-    const full = Array.from({ length: PLAYGROUND_WIDTH }, () => 1);
-    s.playerStates.p1.board = Array.from({ length: PLAYGROUND_HEIGHT - 2 }, () =>
-      Array.from({ length: PLAYGROUND_WIDTH }, () => 0)
+    const full = Array.from({ length: GAME_SETUP.classic.width }, () => 1);
+    s.playerStates.p1.board = Array.from({ length: GAME_SETUP.classic.height - 2 }, () =>
+      Array.from({ length: GAME_SETUP.classic.width }, () => 0)
     );
     s.playerStates.p1.board.push(full.slice());
     s.playerStates.p1.board.push(full.slice());
@@ -267,7 +281,9 @@ describe('GameEngine', () => {
 
     it('collides returns true when board cells block piece', () => {
       const e = new GameEngine('block-collide');
-      const b = Array.from({ length: PLAYGROUND_HEIGHT }, () => Array.from({ length: PLAYGROUND_WIDTH }, () => 0));
+      const b = Array.from({ length: GAME_SETUP.classic.height }, () =>
+        Array.from({ length: GAME_SETUP.classic.width }, () => 0)
+      );
       // place a block under spawn
       b[1][4] = 1;
       const c = e.collides(b, { type: 'O', x: 4, y: 0, rotation: 0 } as Piece);
@@ -278,9 +294,9 @@ describe('GameEngine', () => {
       const e = new GameEngine('garbage-target');
       const s = e.createInitialState(['a', 'b', 'c']);
       // make 'a' clear two lines
-      const full = Array.from({ length: PLAYGROUND_WIDTH }, () => 1);
-      s.playerStates.a.board = Array.from({ length: PLAYGROUND_HEIGHT - 2 }, () =>
-        Array.from({ length: PLAYGROUND_WIDTH }, () => 0)
+      const full = Array.from({ length: GAME_SETUP.classic.width }, () => 1);
+      s.playerStates.a.board = Array.from({ length: GAME_SETUP.classic.height - 2 }, () =>
+        Array.from({ length: GAME_SETUP.classic.width }, () => 0)
       );
       s.playerStates.a.board.push(full.slice());
       s.playerStates.a.board.push(full.slice());
@@ -309,9 +325,9 @@ describe('GameEngine', () => {
   it('computeLinesClearedReward handles isHard dropBonus and multiple other players dead', () => {
     const e = new GameEngine('cb');
     const s = e.createInitialState(['p1', 'p2', 'p3']);
-    const full = Array.from({ length: PLAYGROUND_WIDTH }, () => 1);
-    s.playerStates.p1.board = Array.from({ length: PLAYGROUND_HEIGHT - 4 }, () =>
-      Array.from({ length: PLAYGROUND_WIDTH }, () => 0)
+    const full = Array.from({ length: GAME_SETUP.classic.width }, () => 1);
+    s.playerStates.p1.board = Array.from({ length: GAME_SETUP.classic.height - 4 }, () =>
+      Array.from({ length: GAME_SETUP.classic.width }, () => 0)
     );
     for (let i = 0; i < 4; i++) {
       s.playerStates.p1.board.push(full.slice());

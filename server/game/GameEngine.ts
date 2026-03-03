@@ -1,5 +1,5 @@
+import { GAME_MODES, GAME_SETUP, BSP_SCORES, STANDARD_FIRST_SPEED } from '../constants';
 import { logger } from '../utils/logger';
-import { BSP_SCORES, PLAYGROUND_HEIGHT, PLAYGROUND_WIDTH, STANDARD_FIRST_SPEED, TETROMINOS } from './contstants';
 import { PieceGenerator } from './PieceGenerator';
 import { GameState, Intent, Piece, PlayerState } from './types';
 
@@ -22,12 +22,12 @@ export class GameEngine {
   private width: number;
   private height: number;
 
-  constructor(seed = 'default') {
+  constructor(seed = 'default', mode: GAME_MODES = 'classic') {
     this.seed = seed;
     const h = hashStringToSeed(seed);
-    this.width = PLAYGROUND_WIDTH;
-    this.height = PLAYGROUND_HEIGHT;
-    this.pieceGenerator = new PieceGenerator(h, TETROMINOS);
+    this.width = GAME_SETUP[mode].width;
+    this.height = GAME_SETUP[mode].height;
+    this.pieceGenerator = new PieceGenerator(h, GAME_SETUP[mode].tetrominos);
   }
 
   private cloneState<T>(obj: T): T {
