@@ -1,4 +1,4 @@
-import { GAME_MODES, GAME_SETUP, BSP_SCORES, STANDARD_FIRST_SPEED } from '../constants';
+import { BSP_SCORES, GAME_SETUP, GameMode, STANDARD_FIRST_SPEED } from '../constants';
 import { logger } from '../utils/logger';
 import { PieceGenerator } from './PieceGenerator';
 import { GameState, Intent, Piece, PlayerState } from './types';
@@ -22,7 +22,7 @@ export class GameEngine {
   private width: number;
   private height: number;
 
-  constructor(seed = 'default', mode: GAME_MODES = 'classic') {
+  constructor(seed = 'default', mode: GameMode = 'classic') {
     this.seed = seed;
     const h = hashStringToSeed(seed);
     this.width = GAME_SETUP[mode].width;

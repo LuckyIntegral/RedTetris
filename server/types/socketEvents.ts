@@ -1,9 +1,9 @@
-import { GAME_MODES } from '../constants';
+import { GameMode } from '../constants';
 import { GameState, Intent, PlayerState } from '../game/types';
 import { JwtPayload } from '../utils/jwt';
 
 export interface ClientToServerEvents {
-  create: (payload: { mode: GAME_MODES }) => Promise<void>;
+  create: (payload: { mode: GameMode }) => Promise<void>;
   join: (payload: { roomId: string }) => Promise<void>;
   start: (payload: { roomId: string }) => void;
   restart: (payload: { roomId: string }) => void;
@@ -19,7 +19,7 @@ export interface ServerToClientEvents {
     players: Record<string, PlayerState>;
     winnerId: string | null;
     hostId: string;
-    mode: GAME_MODES;
+    mode: GameMode;
   }) => void;
   game_over: (payload: { message: string }) => void;
   join_failed: (payload: { code: string; message: string }) => void;

@@ -1,4 +1,4 @@
-import { GAME_MODES } from '../constants';
+import { GameMode } from '../constants';
 import { Player } from '../core/Player';
 import { GameEngine } from './GameEngine';
 import { GameState, Intent } from './types';
@@ -9,9 +9,9 @@ export class Game {
   state: GameState;
   engine: GameEngine;
   hostId: string;
-  mode: GAME_MODES;
+  mode: GameMode;
 
-  constructor(id: string, host: Player, mode: GAME_MODES = 'classic') {
+  constructor(id: string, host: Player, mode: GameMode = 'classic') {
     this.id = id;
     this.hostId = host.id;
     this.players.set(host.id, host);

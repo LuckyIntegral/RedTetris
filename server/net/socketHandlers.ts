@@ -1,5 +1,6 @@
 import { Server, Socket } from 'socket.io';
-import { GAME_MODES, TICK_INTERVAL_MS } from '../constants';
+import type { GameMode } from '../constants';
+import { TICK_INTERVAL_MS } from '../constants';
 import { GameManager } from '../core/GameManager';
 import GameService from '../core/GameService';
 import { Player } from '../core/Player';
@@ -60,7 +61,7 @@ export function registerSocketHandlers(
         }
       }
 
-      socket.on('create', async (payload: { mode: GAME_MODES } = { mode: 'classic' }) => {
+      socket.on('create', async (payload: { mode: GameMode } = { mode: 'classic' }) => {
         const user = socket.data.user;
         if (!user) {
           socket.emit('create_failed', { code: 'NOT_AUTHENTICATED', message: 'Authentication required' });
