@@ -16,8 +16,8 @@ interface GAME_SETUP_ENTRY {
 const GAME_SETUP: Record<GameMode, GAME_SETUP_ENTRY> = {
   classic: { tetrominos: CLASSIC_TETROMINOS, width: 10, height: 20 },
   narrow: { tetrominos: CLASSIC_TETROMINOS, width: 6, height: 22 },
-  pentominoes: { tetrominos: PENTOMINOES, width: 10, height: 20 },
-  cyber: { tetrominos: CYBER_TETROMINOS, width: 6, height: 16 },
+  pentominoes: { tetrominos: PENTOMINOES, width: 12, height: 22 },
+  cyber: { tetrominos: CYBER_TETROMINOS, width: 8, height: 18 },
 };
 
 export { BSP_SCORES, GAME_MODES, GAME_SETUP, STANDARD_FIRST_SPEED, TICK_INTERVAL_MS };

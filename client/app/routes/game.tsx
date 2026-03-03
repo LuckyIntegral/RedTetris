@@ -1,14 +1,13 @@
 import { useEffect, useMemo, useRef, useState, type JSX } from 'react';
 import { Link } from 'react-router';
 import { io } from 'socket.io-client';
-import type { Route } from './+types/game';
 import { ProtectedRoute } from '../components/auth/ProtectedRoute';
 import { LoadingOverlay } from '../components/LoadingOverlay';
+import { GAME_MODES, GAME_SETUP, type GameMode } from '../constants';
 import { authService } from '../services/auth';
 import type { GameState, PlayerState, Socket } from '../types/socket';
+import type { Route } from './+types/game';
 
-const WIDTH = 10;
-const HEIGHT = 20;
 const CELL = 28;
 
 export function meta({}: Route.MetaArgs) {
@@ -21,12 +20,19 @@ export function meta({}: Route.MetaArgs) {
 function GameComponent() {
   const [room, setRoom] = useState('');
   const [playerId, setPlayerId] = useState<string | null>(null);
+  const [selectedMode, setSelectedMode] = useState<GameMode>('classic');
   const [state, setState] = useState<GameState | null>(null);
   const [hostId, setHostId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
   const socketRef = useRef<Socket | null>(null);
+
+  const modes = useMemo(() => Array.from(GAME_MODES), []);
+
+  const setup = GAME_SETUP[selectedMode];
+  const WIDTH = setup.width;
+  const HEIGHT = setup.height;
 
   const computeSpectrumFromBoard = (board: number[][]): number[] => {
     const cols = Array.from({ length: WIDTH }, () => 0);
@@ -211,8 +217,8 @@ function GameComponent() {
     if (!s) return;
     if (!s.connected) s.connect();
     setActionLoading(true);
-    // server uses authenticated user for creation
-    s.emit('create');
+    // server uses authenticated user for creation; include selected game mode
+    s.emit('create', { mode: selectedMode });
     setError(null);
   };
 
@@ -366,34 +372,11 @@ function GameComponent() {
   }, [state, playerId]);
 
   // Next-piece shapes (rotation 0) for preview; pad to 4x4 for consistent rendering
-  const PIECE_SHAPES: Record<string, number[][]> = {
-    I: [[1, 1, 1, 1]],
-    O: [
-      [1, 1],
-      [1, 1],
-    ],
-    T: [
-      [0, 1, 0],
-      [1, 1, 1],
-    ],
-    S: [
-      [0, 1, 1],
-      [1, 1, 0],
-    ],
-    Z: [
-      [1, 1, 0],
-      [0, 1, 1],
-    ],
-    J: [
-      [1, 0, 0],
-      [1, 1, 1],
-    ],
-    L: [
-      [0, 0, 1],
-      [1, 1, 1],
-    ],
-  };
-  const PIECE_COLORS: Record<string, string> = {
+  // derive shapes/colors from selected mode's tetrominos when possible
+  const tetrominos = setup.tetrominos;
+  const pieceKeys = Object.keys(tetrominos);
+
+  const baseClassicColors: Record<string, string> = {
     I: '#0d9488',
     O: '#ca8a04',
     T: '#9333ea',
@@ -403,15 +386,20 @@ function GameComponent() {
     L: '#c2410c',
   };
 
+  const palette = ['#60a5fa', '#f97316', '#e11d48', '#7c3aed', '#059669', '#d946ef', '#facc15', '#06b6d4'];
+
+  const PIECE_SHAPES: Record<string, number[][]> = {};
+  const PIECE_COLORS: Record<string, string> = {};
+  pieceKeys.forEach((k, idx) => {
+    const mats = tetrominos[k];
+    PIECE_SHAPES[k] = mats && mats.length ? mats[0] : [[1]];
+    PIECE_COLORS[k] = baseClassicColors[k] ?? palette[idx % palette.length];
+  });
+
   const PIECE_ID_COLORS: string[] = [
-    '#000000', // index 0 unused
-    PIECE_COLORS.I,
-    PIECE_COLORS.O,
-    PIECE_COLORS.T,
-    PIECE_COLORS.S,
-    PIECE_COLORS.Z,
-    PIECE_COLORS.J,
-    PIECE_COLORS.L,
+    '#000000',
+    // numeric mapping fallback: map first few pieceKeys to indexes 1..n
+    ...pieceKeys.slice(0, 15).map((k) => PIECE_COLORS[k] ?? palette[0]),
   ];
 
   const renderOpponentBoard = (board: number[][] | null, isAlive: boolean, cell = 4) => {
@@ -530,6 +518,26 @@ function GameComponent() {
               />
             </div>
 
+            <div>
+              <label className='block text-xs font-medium text-gray-400 mb-1'>Game Mode</label>
+              <select
+                value={selectedMode}
+                onChange={(e) => setSelectedMode(e.target.value)}
+                disabled={!!playerId}
+                className='w-full px-3 py-2 text-sm bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 disabled:opacity-50 disabled:cursor-not-allowed'
+              >
+                {modes.map((m) => (
+                  <option
+                    key={m}
+                    value={m}
+                    className='text-black'
+                  >
+                    {m}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <div className='flex flex-wrap justify-center gap-2'>
               <button
                 onClick={create}
@@ -621,6 +629,26 @@ function GameComponent() {
                     className='w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 disabled:opacity-50 disabled:cursor-not-allowed'
                     placeholder='Enter room code'
                   />
+                </div>
+
+                <div>
+                  <label className='block text-sm font-medium text-gray-400 mb-2'>Game Mode</label>
+                  <select
+                    value={selectedMode}
+                    onChange={(e) => setSelectedMode(e.target.value)}
+                    disabled={!!playerId}
+                    className='w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 disabled:opacity-50 disabled:cursor-not-allowed'
+                  >
+                    {modes.map((m) => (
+                      <option
+                        key={m}
+                        value={m}
+                        className='text-black'
+                      >
+                        {m}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div className='space-y-2'>

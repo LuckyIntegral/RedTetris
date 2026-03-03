@@ -38,7 +38,7 @@ export interface GameState {
 }
 
 export interface ClientToServerEvents {
-  create: () => Promise<void> | void;
+  create: (payload: { mode: string }) => Promise<void> | void;
   join: (payload: { roomId: string }) => Promise<void> | void;
   start: (payload: { roomId: string }) => void;
   restart: (payload: { roomId: string }) => void;
