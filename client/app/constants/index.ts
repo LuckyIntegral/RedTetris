@@ -20,5 +20,59 @@ const GAME_SETUP: Record<GameMode, GAME_SETUP_ENTRY> = {
   cyber: { tetrominos: CYBER_TETROMINOS, width: 8, height: 18 },
 };
 
-export { BSP_SCORES, GAME_MODES, GAME_SETUP, STANDARD_FIRST_SPEED, TICK_INTERVAL_MS };
-export type { GameMode };
+interface GameModeInfo {
+  label: string;
+  description: string;
+  icon: string;
+  accentColor: string;
+  accentBg: string;
+  accentBorder: string;
+  boardLabel: string;
+  piecesLabel: string;
+}
+
+const GAME_MODE_INFO: Record<GameMode, GameModeInfo> = {
+  classic: {
+    label: 'Classic',
+    description: 'The original Tetris experience with standard pieces and a 10×20 board.',
+    icon: '',
+    accentColor: 'text-blue-400',
+    accentBg: 'bg-blue-500/15',
+    accentBorder: 'border-blue-500/40',
+    boardLabel: '10 × 20',
+    piecesLabel: '7 classic tetrominoes',
+  },
+  narrow: {
+    label: 'Narrow',
+    description: 'Classic pieces on a tight 6-wide board. Every move counts!',
+    icon: '',
+    accentColor: 'text-amber-400',
+    accentBg: 'bg-amber-500/15',
+    accentBorder: 'border-amber-500/40',
+    boardLabel: '6 × 22',
+    piecesLabel: '7 classic tetrominoes',
+  },
+  pentominoes: {
+    label: 'Pentominoes',
+    description: 'Five-cell pieces on a wider board. A whole new level of complexity.',
+    icon: '',
+    accentColor: 'text-purple-400',
+    accentBg: 'bg-purple-500/15',
+    accentBorder: 'border-purple-500/40',
+    boardLabel: '12 × 22',
+    piecesLabel: '18 pentomino shapes',
+  },
+  cyber: {
+    label: 'Cyber',
+    description: 'Futuristic custom shapes on a compact board. Expect the unexpected.',
+    icon: '',
+    accentColor: 'text-cyan-400',
+    accentBg: 'bg-cyan-500/15',
+    accentBorder: 'border-cyan-500/40',
+    boardLabel: '8 × 18',
+    piecesLabel: '6 cyber shapes',
+  },
+};
+
+export { BSP_SCORES, GAME_MODES, GAME_MODE_INFO, GAME_SETUP, STANDARD_FIRST_SPEED, TICK_INTERVAL_MS };
+export type { GameMode, GameModeInfo };
