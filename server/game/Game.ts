@@ -1,3 +1,4 @@
+import { GameMode } from '../constants';
 import { Player } from '../core/Player';
 import { GameEngine } from './GameEngine';
 import { GameState, Intent } from './types';
@@ -8,12 +9,14 @@ export class Game {
   state: GameState;
   engine: GameEngine;
   hostId: string;
+  mode: GameMode;
 
-  constructor(id: string, host: Player) {
+  constructor(id: string, host: Player, mode: GameMode = 'classic') {
     this.id = id;
     this.hostId = host.id;
     this.players.set(host.id, host);
-    this.engine = new GameEngine(id);
+    this.mode = mode;
+    this.engine = new GameEngine(id, mode);
     this.state = this.engine.createInitialState([host.id]);
     // ensure player name is present in state
     if (this.state.playerStates[host.id]) {

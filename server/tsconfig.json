@@ -24,6 +24,7 @@
     "game/**/*.ts",
     "net/**/*.ts",
     "types/**/*.ts",
+    "constants/**/*.ts",
     "tests/**/*.test.ts"
   ],
   "exclude": ["node_modules", "dist", "**/*.spec.ts"]

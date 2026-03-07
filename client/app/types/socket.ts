@@ -35,10 +35,11 @@ export interface GameState {
   players: Record<string, PlayerState>;
   winnerId?: string | null;
   hostId?: string | null;
+  mode?: string | null;
 }
 
 export interface ClientToServerEvents {
-  create: () => Promise<void> | void;
+  create: (payload: { mode: string }) => Promise<void> | void;
   join: (payload: { roomId: string }) => Promise<void> | void;
   start: (payload: { roomId: string }) => void;
   restart: (payload: { roomId: string }) => void;
@@ -47,7 +48,7 @@ export interface ClientToServerEvents {
 
 export interface ServerToClientEvents {
   created: (payload: { roomId: string }) => void;
-  state: (payload: GameState | { state: GameState; hostId?: string }) => void;
+  state: (payload: GameState) => void;
   game_over: (payload: { message: string }) => void;
   join_failed: (payload: { code: string; message: string }) => void;
   start_failed: (payload: { code: string; message: string }) => void;

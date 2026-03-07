@@ -1,13 +1,14 @@
 import { randomUUID } from 'crypto';
+import { GameMode } from '../constants';
 import { Game } from '../game/Game';
 import { Player } from './Player';
 
 export class GameManager {
   games = new Map<string, Game>();
 
-  createNewGame(host: Player): Game {
+  createNewGame(host: Player, mode: GameMode = 'classic'): Game {
     const roomId = this.generateRoomCode();
-    const game = new Game(roomId, host);
+    const game = new Game(roomId, host, mode);
     this.games.set(roomId, game);
     return game;
   }

@@ -1,8 +1,9 @@
 import { Server, Socket } from 'socket.io';
+import type { GameMode } from '../constants';
+import { TICK_INTERVAL_MS } from '../constants';
 import { GameManager } from '../core/GameManager';
 import GameService from '../core/GameService';
 import { Player } from '../core/Player';
-import { TICK_INTERVAL_MS } from '../game/contstants';
 import { Game } from '../game/Game';
 import { GameEngine } from '../game/GameEngine';
 import type { Intent, PlayerState } from '../game/types';
@@ -55,11 +56,12 @@ export function registerSocketHandlers(
             players: playersObj,
             winnerId,
             hostId: game.hostId,
+            mode: game.mode,
           });
         }
       }
 
-      socket.on('create', async () => {
+      socket.on('create', async (payload: { mode: GameMode } = { mode: 'classic' }) => {
         const user = socket.data.user;
         if (!user) {
           socket.emit('create_failed', { code: 'NOT_AUTHENTICATED', message: 'Authentication required' });
@@ -69,7 +71,7 @@ export function registerSocketHandlers(
 
         const playerId = String(user.userId);
         const player = new Player(playerId, user.username, socket.id);
-        const game = manager.createNewGame(player);
+        const game = manager.createNewGame(player, payload.mode);
 
         logger.info(`Game created: room=${game.id} host=${player.id}`);
 
@@ -284,7 +286,7 @@ export function registerSocketHandlers(
         }
         // reset engine and state while preserving players and host
         logger.info(`server: restarting game ${roomId} by host ${playerId}`);
-        game.engine = new GameEngine(game.id);
+        game.engine = new GameEngine(game.id, game.mode);
         const playerIds = game.getPlayers().map((p) => p.id);
         game.state = game.engine.createInitialState(playerIds);
         game.state.status = 'waiting';

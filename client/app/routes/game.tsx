@@ -1,15 +1,19 @@
 import { useEffect, useMemo, useRef, useState, type JSX } from 'react';
 import { Link } from 'react-router';
 import { io } from 'socket.io-client';
-import type { Route } from './+types/game';
 import { ProtectedRoute } from '../components/auth/ProtectedRoute';
+import { GameModeSelector } from '../components/GameModeSelector';
 import { LoadingOverlay } from '../components/LoadingOverlay';
+import { GAME_MODE_INFO, GAME_MODES, GAME_SETUP, type GameMode } from '../constants';
 import { authService } from '../services/auth';
 import type { GameState, PlayerState, Socket } from '../types/socket';
+import type { Route } from './+types/game';
 
-const WIDTH = 10;
-const HEIGHT = 20;
 const CELL = 28;
+
+// Fixed dimensions based on the widest/tallest mode so layout doesn't shift when switching modes
+const MAX_WIDTH = Math.max(...Object.values(GAME_SETUP).map((s) => s.width));
+const MAX_HEIGHT = Math.max(...Object.values(GAME_SETUP).map((s) => s.height));
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -21,12 +25,17 @@ export function meta({}: Route.MetaArgs) {
 function GameComponent() {
   const [room, setRoom] = useState('');
   const [playerId, setPlayerId] = useState<string | null>(null);
+  const [selectedMode, setSelectedMode] = useState<GameMode>('classic');
   const [state, setState] = useState<GameState | null>(null);
   const [hostId, setHostId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
   const socketRef = useRef<Socket | null>(null);
+
+  const setup = GAME_SETUP[selectedMode];
+  const WIDTH = setup.width;
+  const HEIGHT = setup.height;
 
   const computeSpectrumFromBoard = (board: number[][]): number[] => {
     const cols = Array.from({ length: WIDTH }, () => 0);
@@ -54,15 +63,16 @@ function GameComponent() {
       // connection established
     });
 
-    // server may emit either a raw state object or { state, hostId } historically.
-    s.on('state', (payload: GameState | { state: GameState; hostId?: string }) => {
+    // server sends a flat state object with mode & hostId
+    s.on('state', (payload: GameState) => {
       setActionLoading(false);
-      // normalize payload to `state` object
-      const incoming: GameState = 'state' in payload ? payload.state : payload;
-      setState(incoming);
-      // hostId may be attached at top-level of payload or inside incoming
-      const hid = 'hostId' in payload ? (payload.hostId ?? incoming?.hostId ?? null) : (incoming?.hostId ?? null);
-      setHostId(hid);
+      setState(payload);
+      setHostId(payload.hostId ?? null);
+      // sync selected mode with the room's actual mode
+      const m = payload.mode;
+      if (m && (GAME_MODES as readonly string[]).includes(m)) {
+        setSelectedMode(m as GameMode);
+      }
     });
 
     s.on('joined', async (info: { roomId?: string }) => {
@@ -211,8 +221,8 @@ function GameComponent() {
     if (!s) return;
     if (!s.connected) s.connect();
     setActionLoading(true);
-    // server uses authenticated user for creation
-    s.emit('create');
+    // server uses authenticated user for creation; include selected game mode
+    s.emit('create', { mode: selectedMode });
     setError(null);
   };
 
@@ -366,34 +376,11 @@ function GameComponent() {
   }, [state, playerId]);
 
   // Next-piece shapes (rotation 0) for preview; pad to 4x4 for consistent rendering
-  const PIECE_SHAPES: Record<string, number[][]> = {
-    I: [[1, 1, 1, 1]],
-    O: [
-      [1, 1],
-      [1, 1],
-    ],
-    T: [
-      [0, 1, 0],
-      [1, 1, 1],
-    ],
-    S: [
-      [0, 1, 1],
-      [1, 1, 0],
-    ],
-    Z: [
-      [1, 1, 0],
-      [0, 1, 1],
-    ],
-    J: [
-      [1, 0, 0],
-      [1, 1, 1],
-    ],
-    L: [
-      [0, 0, 1],
-      [1, 1, 1],
-    ],
-  };
-  const PIECE_COLORS: Record<string, string> = {
+  // derive shapes/colors from selected mode's tetrominos when possible
+  const tetrominos = setup.tetrominos;
+  const pieceKeys = Object.keys(tetrominos);
+
+  const baseClassicColors: Record<string, string> = {
     I: '#0d9488',
     O: '#ca8a04',
     T: '#9333ea',
@@ -403,15 +390,20 @@ function GameComponent() {
     L: '#c2410c',
   };
 
+  const palette = ['#60a5fa', '#f97316', '#e11d48', '#7c3aed', '#059669', '#d946ef', '#facc15', '#06b6d4'];
+
+  const PIECE_SHAPES: Record<string, number[][]> = {};
+  const PIECE_COLORS: Record<string, string> = {};
+  pieceKeys.forEach((k, idx) => {
+    const mats = tetrominos[k];
+    PIECE_SHAPES[k] = mats?.length ? mats[0] : [[1]];
+    PIECE_COLORS[k] = baseClassicColors[k] ?? palette[idx % palette.length];
+  });
+
   const PIECE_ID_COLORS: string[] = [
-    '#000000', // index 0 unused
-    PIECE_COLORS.I,
-    PIECE_COLORS.O,
-    PIECE_COLORS.T,
-    PIECE_COLORS.S,
-    PIECE_COLORS.Z,
-    PIECE_COLORS.J,
-    PIECE_COLORS.L,
+    '#000000',
+    // numeric mapping fallback: map first few pieceKeys to indexes 1..n
+    ...pieceKeys.slice(0, 15).map((k) => PIECE_COLORS[k] ?? palette[0]),
   ];
 
   const renderOpponentBoard = (board: number[][] | null, isAlive: boolean, cell = 4) => {
@@ -500,7 +492,7 @@ function GameComponent() {
       className='min-h-screen bg-slate-900 p-6'
       style={{ pointerEvents: 'auto' }}
     >
-      <div className='container mx-auto max-w-7xl'>
+      <div className='container mx-auto max-w-[1600px]'>
         <header className='flex items-center justify-center mb-8 relative'>
           <Link
             to='/'
@@ -515,7 +507,7 @@ function GameComponent() {
         </header>
 
         {/* Room Controls */}
-        <div className='bg-gray-900 rounded-xl p-4 border border-gray-600 mb-6 max-w-lg mx-auto lg:hidden'>
+        <div className='bg-gray-900 rounded-xl p-4 border border-gray-600 mb-6 max-w-xl mx-auto xl:hidden'>
           <h2 className='text-lg font-semibold text-white mb-3 text-center'>Room Settings</h2>
 
           <div className='space-y-3'>
@@ -527,6 +519,16 @@ function GameComponent() {
                 disabled={!!playerId}
                 className='w-full px-3 py-2 text-sm bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 disabled:opacity-50 disabled:cursor-not-allowed'
                 placeholder='Room code'
+              />
+            </div>
+
+            <div>
+              <label className='block text-xs font-medium text-gray-400 mb-1'>Game Mode</label>
+              <GameModeSelector
+                selected={selectedMode}
+                onChange={setSelectedMode}
+                disabled={!!playerId}
+                compact
               />
             </div>
 
@@ -605,9 +607,9 @@ function GameComponent() {
         </div>
 
         {/* Main Game Layout */}
-        <div className='flex gap-6 justify-center items-start min-h-[600px]'>
+        <div className='flex flex-wrap xl:flex-nowrap gap-6 justify-center items-start min-h-[600px]'>
           {/* Left Side: Room Controls (Desktop) */}
-          <div className='hidden lg:block w-64 space-y-4'>
+          <div className='hidden xl:block w-80 shrink-0 space-y-4'>
             <div className='bg-gray-900 rounded-xl p-4 border border-gray-600'>
               <h2 className='text-lg font-semibold text-white mb-4 text-center'>Room Settings</h2>
 
@@ -620,6 +622,15 @@ function GameComponent() {
                     disabled={!!playerId}
                     className='w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 disabled:opacity-50 disabled:cursor-not-allowed'
                     placeholder='Enter room code'
+                  />
+                </div>
+
+                <div>
+                  <label className='block text-sm font-medium text-gray-400 mb-2'>Game Mode</label>
+                  <GameModeSelector
+                    selected={selectedMode}
+                    onChange={setSelectedMode}
+                    disabled={!!playerId}
                   />
                 </div>
 
@@ -702,7 +713,7 @@ function GameComponent() {
           </div>
 
           {/* Center: Game Area */}
-          <div className='flex items-start gap-6'>
+          <div className='flex flex-wrap sm:flex-nowrap items-start gap-4 sm:gap-6 justify-center'>
             {/* Hold Piece */}
             <div className='bg-gray-900 rounded-xl p-4 border border-gray-600'>
               <h3 className='text-sm font-semibold text-white mb-3 text-center'>Hold</h3>
@@ -717,9 +728,19 @@ function GameComponent() {
             {/* Main Game Board */}
             <div className='bg-gray-900 rounded-xl p-6 border border-gray-600'>
               <h3 className='text-xl font-semibold text-white mb-4 text-center'>Your Board</h3>
+              <div className='flex items-center justify-center gap-2 mb-3'>
+                <span className='text-base'>{GAME_MODE_INFO[selectedMode].icon}</span>
+                <span className={`text-sm font-medium ${GAME_MODE_INFO[selectedMode].accentColor}`}>
+                  {GAME_MODE_INFO[selectedMode].label}
+                </span>
+                <span className='text-[10px] text-gray-500'>({GAME_MODE_INFO[selectedMode].boardLabel})</span>
+              </div>
 
               <div className='flex flex-col items-center'>
-                <div className='bg-gray-900 rounded-lg p-3 border border-gray-600'>
+                <div
+                  className='bg-gray-900 rounded-lg p-3 border border-gray-600 flex items-center justify-center'
+                  style={{ width: MAX_WIDTH * CELL + 24, height: MAX_HEIGHT * CELL + 24 }}
+                >
                   <div
                     style={{
                       width: WIDTH * CELL,
@@ -761,7 +782,7 @@ function GameComponent() {
 
           {/* Right Side: Opponents */}
           {opponents.length > 0 && (
-            <div className='w-80 space-y-4'>
+            <div className='w-full sm:w-72 xl:w-80 shrink-0 space-y-4'>
               <div className='bg-gray-900 rounded-xl p-4 border border-gray-600'>
                 <h3 className='text-lg font-semibold text-white mb-4 text-center'>Opponents</h3>
                 <div className='space-y-3'>
