@@ -7,9 +7,7 @@ import { useAppDispatch, useAppSelector } from '~/store/hooks';
 import type { ReactNode } from 'react';
 
 const createWrapper = () => {
-  const store = configureStore({
-    reducer: { auth: authReducer },
-  });
+  const store = configureStore({ reducer: { auth: authReducer } });
 
   return ({ children }: { children: ReactNode }) => <Provider store={store}>{children}</Provider>;
 };
@@ -26,9 +24,7 @@ describe('store/hooks', () => {
   describe('useAppSelector', () => {
     it('selects auth state', () => {
       const wrapper = createWrapper();
-      const { result } = renderHook(() => useAppSelector((state) => state.auth.isAuthenticated), {
-        wrapper,
-      });
+      const { result } = renderHook(() => useAppSelector((state) => state.auth.isAuthenticated), { wrapper });
       expect(result.current).toBe(false);
     });
 

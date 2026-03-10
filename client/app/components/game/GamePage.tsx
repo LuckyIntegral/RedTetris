@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router';
 import { LoadingOverlay } from '../LoadingOverlay';
-import { GAME_MODE_INFO, GAME_SETUP, type GameMode } from '../../constants';
+import { GAME_MODE_INFO, GAME_SETUP } from '../../constants';
 import { useGameSocket } from '../../hooks/useGameSocket';
 import { useKeyboardControls } from '../../hooks/useKeyboardControls';
 import { buildPieceMeta } from '../../utils/pieceHelpers';
@@ -69,7 +69,10 @@ export function GamePage() {
         </header>
 
         {/* Mobile Room Controls */}
-        <RoomControls {...roomControlProps} compact />
+        <RoomControls
+          {...roomControlProps}
+          compact
+        />
 
         {/* Main Game Layout */}
         <div className='flex flex-wrap xl:flex-nowrap gap-6 justify-center items-start min-h-[600px]'>
@@ -99,9 +102,7 @@ export function GamePage() {
               <h3 className='text-xl font-semibold text-white mb-4 text-center'>Your Board</h3>
               <div className='flex items-center justify-center gap-2 mb-3'>
                 <span className='text-base'>{modeInfo.icon}</span>
-                <span className={`text-sm font-medium ${modeInfo.accentColor}`}>
-                  {modeInfo.label}
-                </span>
+                <span className={`text-sm font-medium ${modeInfo.accentColor}`}>{modeInfo.label}</span>
                 <span className='text-[10px] text-gray-500'>({modeInfo.boardLabel})</span>
               </div>
 

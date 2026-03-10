@@ -15,13 +15,9 @@ vi.mock('~/services/auth', () => ({
     register: vi.fn(),
     login: vi.fn(),
     logout: vi.fn(),
-    getProfile: vi.fn().mockResolvedValue({
-      id: 42,
-      username: 'testplayer',
-      email: 'test@test.com',
-      created_at: '',
-      updated_at: '',
-    }),
+    getProfile: vi
+      .fn()
+      .mockResolvedValue({ id: 42, username: 'testplayer', email: 'test@test.com', created_at: '', updated_at: '' }),
   },
 }));
 
@@ -55,9 +51,7 @@ function createMockSocket() {
 
 let mockSocket: ReturnType<typeof createMockSocket>;
 
-vi.mock('socket.io-client', () => ({
-  io: vi.fn(() => mockSocket),
-}));
+vi.mock('socket.io-client', () => ({ io: vi.fn(() => mockSocket) }));
 
 import { authService } from '~/services/auth';
 
@@ -87,7 +81,7 @@ async function renderGame() {
       <MemoryRouter>
         <GameRoute />
       </MemoryRouter>
-    </Provider>,
+    </Provider>
   );
 
   return { ...result, store, meta };
@@ -117,9 +111,7 @@ describe('Game Route', () => {
     it('returns correct page title', async () => {
       const { meta } = await import('~/routes/game');
       const result = meta({} as any);
-      expect(result).toEqual(
-        expect.arrayContaining([expect.objectContaining({ title: 'Red Tetris — Play' })]),
-      );
+      expect(result).toEqual(expect.arrayContaining([expect.objectContaining({ title: 'Red Tetris — Play' })]));
     });
   });
 
@@ -436,7 +428,18 @@ describe('Game Route', () => {
         tick: 0,
         speed: 20,
         players: {
-          '42': { board: [], activePiece: null, nextPiece: null, piecesPlaced: 0, speed: 20, holdPiece: null, holdLocked: false, score: 0, isAlive: true, name: 'testplayer' },
+          '42': {
+            board: [],
+            activePiece: null,
+            nextPiece: null,
+            piecesPlaced: 0,
+            speed: 20,
+            holdPiece: null,
+            holdLocked: false,
+            score: 0,
+            isAlive: true,
+            name: 'testplayer',
+          },
         },
         hostId: '42',
         mode: 'classic',
@@ -587,10 +590,7 @@ describe('Game Route', () => {
       await triggerSocket('joined', { roomId: 'ROOM1' });
 
       fireEvent.keyDown(window, { key: 'ArrowUp' });
-      expect(mockSocket.emit).toHaveBeenCalledWith('intent', {
-        roomId: 'ROOM1',
-        intent: { type: 'rotate' },
-      });
+      expect(mockSocket.emit).toHaveBeenCalledWith('intent', { roomId: 'ROOM1', intent: { type: 'rotate' } });
     });
 
     it('sends intent on Space (hard drop)', async () => {
@@ -598,10 +598,7 @@ describe('Game Route', () => {
       await triggerSocket('joined', { roomId: 'ROOM1' });
 
       fireEvent.keyDown(window, { key: ' ', code: 'Space' });
-      expect(mockSocket.emit).toHaveBeenCalledWith('intent', {
-        roomId: 'ROOM1',
-        intent: { type: 'hard' },
-      });
+      expect(mockSocket.emit).toHaveBeenCalledWith('intent', { roomId: 'ROOM1', intent: { type: 'hard' } });
     });
 
     it('sends intent on Shift (hold)', async () => {
@@ -609,10 +606,7 @@ describe('Game Route', () => {
       await triggerSocket('joined', { roomId: 'ROOM1' });
 
       fireEvent.keyDown(window, { key: 'Shift' });
-      expect(mockSocket.emit).toHaveBeenCalledWith('intent', {
-        roomId: 'ROOM1',
-        intent: { type: 'hold' },
-      });
+      expect(mockSocket.emit).toHaveBeenCalledWith('intent', { roomId: 'ROOM1', intent: { type: 'hold' } });
     });
 
     it('sends move left on ArrowLeft', async () => {
@@ -644,10 +638,7 @@ describe('Game Route', () => {
       await triggerSocket('joined', { roomId: 'ROOM1' });
 
       fireEvent.keyDown(window, { key: 'ArrowDown' });
-      expect(mockSocket.emit).toHaveBeenCalledWith('intent', {
-        roomId: 'ROOM1',
-        intent: { type: 'soft' },
-      });
+      expect(mockSocket.emit).toHaveBeenCalledWith('intent', { roomId: 'ROOM1', intent: { type: 'soft' } });
       fireEvent.keyUp(window, { key: 'ArrowDown' });
     });
 
@@ -659,7 +650,7 @@ describe('Game Route', () => {
       fireEvent.keyDown(window, { key: 'ArrowLeft' });
       fireEvent.keyDown(window, { key: 'ArrowLeft' });
       const leftCalls = mockSocket.emit.mock.calls.filter(
-        ([ev, payload]: any) => ev === 'intent' && payload?.intent?.type === 'move' && payload?.intent?.dir === 'left',
+        ([ev, payload]: any) => ev === 'intent' && payload?.intent?.type === 'move' && payload?.intent?.dir === 'left'
       );
       expect(leftCalls).toHaveLength(1);
       fireEvent.keyUp(window, { key: 'ArrowLeft' });
@@ -686,8 +677,15 @@ describe('Game Route', () => {
         players: {
           '42': {
             board: Array.from({ length: 20 }, () => Array(10).fill(0)),
-            activePiece: null, nextPiece: null, piecesPlaced: 0, speed: 20,
-            holdPiece: null, holdLocked: false, score: 0, isAlive: true, name: 'testplayer',
+            activePiece: null,
+            nextPiece: null,
+            piecesPlaced: 0,
+            speed: 20,
+            holdPiece: null,
+            holdLocked: false,
+            score: 0,
+            isAlive: true,
+            name: 'testplayer',
           },
         },
         hostId: '42',
@@ -701,8 +699,15 @@ describe('Game Route', () => {
         players: {
           '42': {
             board: Array.from({ length: 20 }, () => Array(10).fill(0)),
-            activePiece: null, nextPiece: null, piecesPlaced: 0, speed: 20,
-            holdPiece: null, holdLocked: false, score: 0, isAlive: false, name: 'testplayer',
+            activePiece: null,
+            nextPiece: null,
+            piecesPlaced: 0,
+            speed: 20,
+            holdPiece: null,
+            holdLocked: false,
+            score: 0,
+            isAlive: false,
+            name: 'testplayer',
           },
         },
         hostId: '42',
@@ -723,8 +728,15 @@ describe('Game Route', () => {
         players: {
           '42': {
             board: Array.from({ length: 20 }, () => Array(10).fill(0)),
-            activePiece: null, nextPiece: null, piecesPlaced: 0, speed: 20,
-            holdPiece: null, holdLocked: false, score: 0, isAlive: true, name: 'testplayer',
+            activePiece: null,
+            nextPiece: null,
+            piecesPlaced: 0,
+            speed: 20,
+            holdPiece: null,
+            holdLocked: false,
+            score: 0,
+            isAlive: true,
+            name: 'testplayer',
           },
         },
         hostId: '42',
@@ -738,8 +750,15 @@ describe('Game Route', () => {
         players: {
           '42': {
             board: Array.from({ length: 20 }, () => Array(10).fill(0)),
-            activePiece: null, nextPiece: null, piecesPlaced: 0, speed: 20,
-            holdPiece: null, holdLocked: false, score: 500, isAlive: true, name: 'testplayer',
+            activePiece: null,
+            nextPiece: null,
+            piecesPlaced: 0,
+            speed: 20,
+            holdPiece: null,
+            holdLocked: false,
+            score: 500,
+            isAlive: true,
+            name: 'testplayer',
           },
         },
         hostId: '42',
@@ -763,8 +782,15 @@ describe('Game Route', () => {
         players: {
           '42': {
             board: Array.from({ length: 20 }, () => Array(10).fill(0)),
-            activePiece: null, nextPiece: null, piecesPlaced: 10, speed: 20,
-            holdPiece: null, holdLocked: false, score: 1000, isAlive: false, name: 'testplayer',
+            activePiece: null,
+            nextPiece: null,
+            piecesPlaced: 10,
+            speed: 20,
+            holdPiece: null,
+            holdLocked: false,
+            score: 1000,
+            isAlive: false,
+            name: 'testplayer',
           },
         },
         hostId: '42',
@@ -796,13 +822,27 @@ describe('Game Route', () => {
         players: {
           '42': {
             board: emptyBoard,
-            activePiece: null, nextPiece: null, piecesPlaced: 0, speed: 20,
-            holdPiece: null, holdLocked: false, score: 0, isAlive: true, name: 'testplayer',
+            activePiece: null,
+            nextPiece: null,
+            piecesPlaced: 0,
+            speed: 20,
+            holdPiece: null,
+            holdLocked: false,
+            score: 0,
+            isAlive: true,
+            name: 'testplayer',
           },
           '50': {
             board: emptyBoard,
-            activePiece: null, nextPiece: null, piecesPlaced: 3, speed: 20,
-            holdPiece: null, holdLocked: false, score: 500, isAlive: true, name: 'player2',
+            activePiece: null,
+            nextPiece: null,
+            piecesPlaced: 3,
+            speed: 20,
+            holdPiece: null,
+            holdLocked: false,
+            score: 500,
+            isAlive: true,
+            name: 'player2',
             spectrum: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
           },
         },
@@ -825,8 +865,16 @@ describe('Game Route', () => {
         speed: 20,
         players: {
           '42': {
-            board: [], activePiece: null, nextPiece: null, piecesPlaced: 0, speed: 20,
-            holdPiece: null, holdLocked: false, score: 0, isAlive: true, name: 'testplayer',
+            board: [],
+            activePiece: null,
+            nextPiece: null,
+            piecesPlaced: 0,
+            speed: 20,
+            holdPiece: null,
+            holdLocked: false,
+            score: 0,
+            isAlive: true,
+            name: 'testplayer',
           },
         },
         hostId: '42',

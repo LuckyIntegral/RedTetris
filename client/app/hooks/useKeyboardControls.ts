@@ -8,11 +8,7 @@ const REPEAT_INTERVAL = 50; // ms between repeated moves
  * Keyboard controls for the Tetris game.
  * Replicates the exact intent payloads the server expects.
  */
-export function useKeyboardControls(
-  socketRef: React.RefObject<Socket | null>,
-  room: string,
-  playerId: string | null,
-) {
+export function useKeyboardControls(socketRef: React.RefObject<Socket | null>, room: string, playerId: string | null) {
   useEffect(() => {
     const held = new Map<string, ReturnType<typeof setTimeout>>();
 

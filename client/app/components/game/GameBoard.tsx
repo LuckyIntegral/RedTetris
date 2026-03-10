@@ -58,7 +58,7 @@ function renderCell(
   y: number,
   board: number[][] | undefined,
   idColors: string[],
-  cellSize: number,
+  cellSize: number
 ): JSX.Element {
   const val = board?.[y]?.[x] ?? 0;
 
@@ -66,7 +66,12 @@ function renderCell(
     return (
       <div
         key={`${x}-${y}`}
-        style={{ width: cellSize, height: cellSize, boxSizing: 'border-box', outline: '1px solid rgba(255,255,255,0.12)' }}
+        style={{
+          width: cellSize,
+          height: cellSize,
+          boxSizing: 'border-box',
+          outline: '1px solid rgba(255,255,255,0.12)',
+        }}
       />
     );
   }

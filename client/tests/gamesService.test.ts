@@ -3,11 +3,7 @@ import { gamesService } from '~/services/games';
 
 // We need to mock authService.getToken inside the games module
 vi.mock('~/services/auth', () => ({
-  authService: {
-    getToken: vi.fn(() => 'mock-token'),
-    setToken: vi.fn(),
-    clearToken: vi.fn(),
-  },
+  authService: { getToken: vi.fn(() => 'mock-token'), setToken: vi.fn(), clearToken: vi.fn() },
 }));
 
 describe('gamesService', () => {
@@ -51,10 +47,7 @@ describe('gamesService', () => {
     });
 
     it('throws generic error when no message', async () => {
-      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({
-        ok: false,
-        json: async () => ({ error: {} }),
-      } as Response);
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({ ok: false, json: async () => ({ error: {} }) } as Response);
 
       await expect(gamesService.getGames()).rejects.toThrow('Failed to fetch games');
     });
@@ -67,33 +60,19 @@ describe('gamesService', () => {
         size: 100,
         totalItems: 150,
         totalPages: 2,
-        content: Array.from({ length: 100 }, (_, i) => ({
-          game_id: i,
-          finished_at: '2025-01-01',
-          players: [],
-        })),
+        content: Array.from({ length: 100 }, (_, i) => ({ game_id: i, finished_at: '2025-01-01', players: [] })),
       };
       const page1 = {
         page: 1,
         size: 100,
         totalItems: 150,
         totalPages: 2,
-        content: Array.from({ length: 50 }, (_, i) => ({
-          game_id: 100 + i,
-          finished_at: '2025-01-01',
-          players: [],
-        })),
+        content: Array.from({ length: 50 }, (_, i) => ({ game_id: 100 + i, finished_at: '2025-01-01', players: [] })),
       };
 
       vi.spyOn(globalThis, 'fetch')
-        .mockResolvedValueOnce({
-          ok: true,
-          json: async () => ({ data: page0 }),
-        } as Response)
-        .mockResolvedValueOnce({
-          ok: true,
-          json: async () => ({ data: page1 }),
-        } as Response);
+        .mockResolvedValueOnce({ ok: true, json: async () => ({ data: page0 }) } as Response)
+        .mockResolvedValueOnce({ ok: true, json: async () => ({ data: page1 }) } as Response);
 
       const result = await gamesService.getAllGames();
       expect(result).toHaveLength(150);
@@ -125,14 +104,7 @@ describe('gamesService', () => {
   describe('computeStats', () => {
     it('returns zeros for empty games array', () => {
       const stats = gamesService.computeStats([], 1);
-      expect(stats).toEqual({
-        gamesPlayed: 0,
-        wins: 0,
-        winRate: 0,
-        highScore: 0,
-        averageScore: 0,
-        bestPlace: 0,
-      });
+      expect(stats).toEqual({ gamesPlayed: 0, wins: 0, winRate: 0, highScore: 0, averageScore: 0, bestPlace: 0 });
     });
 
     it('computes stats correctly for a single game with a win', () => {

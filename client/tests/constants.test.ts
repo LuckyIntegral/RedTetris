@@ -35,13 +35,10 @@ describe('constants/index', () => {
       ['narrow', 6, 22],
       ['pentominoes', 12, 22],
       ['cyber', 8, 18],
-    ] as [GameMode, number, number][])(
-      '%s has width=%d and height=%d',
-      (mode, width, height) => {
-        expect(GAME_SETUP[mode].width).toBe(width);
-        expect(GAME_SETUP[mode].height).toBe(height);
-      },
-    );
+    ] as [GameMode, number, number][])('%s has width=%d and height=%d', (mode, width, height) => {
+      expect(GAME_SETUP[mode].width).toBe(width);
+      expect(GAME_SETUP[mode].height).toBe(height);
+    });
 
     it('each setup has tetrominos as a non-empty object', () => {
       for (const mode of GAME_MODES) {

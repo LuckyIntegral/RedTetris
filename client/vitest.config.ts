@@ -19,15 +19,8 @@ export default defineConfig({
         'app/app.css',
         'app/types/**',
       ],
-      thresholds: {
-        statements: 70,
-        functions: 70,
-        lines: 70,
-        branches: 50,
-      },
+      thresholds: { statements: 70, functions: 70, lines: 70, branches: 50 },
     },
   },
-  define: {
-    'import.meta.env.VITE_SERVER_URL': JSON.stringify('http://localhost:3002'),
-  },
+  define: { 'import.meta.env.VITE_SERVER_URL': JSON.stringify('http://localhost:3002') },
 });

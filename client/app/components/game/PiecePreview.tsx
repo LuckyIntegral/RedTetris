@@ -48,7 +48,7 @@ export function PiecePreview({ type, shapes, colors, cellSize }: PiecePreviewPro
             key={`n-${r}-${c}`}
             style={{ width: cellSize, height: cellSize, boxSizing: 'border-box' }}
           />
-        ),
+        )
       );
     }
   }

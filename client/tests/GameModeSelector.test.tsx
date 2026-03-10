@@ -1,13 +1,10 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { GameModeSelector } from '~/components/GameModeSelector';
-import { GAME_MODES, type GameMode } from '~/constants';
+import { type GameMode } from '~/constants';
 
 describe('GameModeSelector', () => {
-  const defaultProps = {
-    selected: 'classic' as GameMode,
-    onChange: vi.fn(),
-  };
+  const defaultProps = { selected: 'classic' as GameMode, onChange: vi.fn() };
 
   describe('full mode (non-compact)', () => {
     it('renders all game modes', () => {
@@ -32,7 +29,7 @@ describe('GameModeSelector', () => {
         <GameModeSelector
           {...defaultProps}
           onChange={onChange}
-        />,
+        />
       );
       fireEvent.click(screen.getByText('Narrow'));
       expect(onChange).toHaveBeenCalledWith('narrow');
@@ -58,7 +55,7 @@ describe('GameModeSelector', () => {
         <GameModeSelector
           {...defaultProps}
           compact
-        />,
+        />
       );
       const grid = container.firstElementChild;
       expect(grid?.className).toContain('grid-cols-2');
@@ -69,7 +66,7 @@ describe('GameModeSelector', () => {
         <GameModeSelector
           {...defaultProps}
           compact
-        />,
+        />
       );
       expect(screen.getByText('Classic')).toBeInTheDocument();
       expect(screen.getByText('Narrow')).toBeInTheDocument();
@@ -82,7 +79,7 @@ describe('GameModeSelector', () => {
           {...defaultProps}
           onChange={onChange}
           compact
-        />,
+        />
       );
       fireEvent.click(screen.getByText('Cyber'));
       expect(onChange).toHaveBeenCalledWith('cyber');
@@ -93,7 +90,7 @@ describe('GameModeSelector', () => {
         <GameModeSelector
           {...defaultProps}
           compact
-        />,
+        />
       );
       expect(screen.getByText('10 × 20')).toBeInTheDocument();
     });
@@ -106,7 +103,7 @@ describe('GameModeSelector', () => {
           selected='narrow'
           onChange={vi.fn()}
           disabled
-        />,
+        />
       );
       expect(screen.getByText('Narrow')).toBeInTheDocument();
       expect(screen.queryByText('Classic')).not.toBeInTheDocument();
@@ -119,7 +116,7 @@ describe('GameModeSelector', () => {
           selected='classic'
           onChange={vi.fn()}
           disabled
-        />,
+        />
       );
       const buttons = screen.getAllByRole('button');
       buttons.forEach((btn) => {
@@ -134,7 +131,7 @@ describe('GameModeSelector', () => {
           onChange={vi.fn()}
           disabled
           compact
-        />,
+        />
       );
       expect(screen.getByText('Cyber')).toBeInTheDocument();
       expect(screen.queryByText('Classic')).not.toBeInTheDocument();

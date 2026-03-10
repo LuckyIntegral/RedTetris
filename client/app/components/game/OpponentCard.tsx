@@ -40,7 +40,7 @@ export function OpponentCard({ name, board, isAlive, score, isHost, idColors, wi
               borderRadius: isPiece && isAlive ? 1 : 0,
               background: bg,
             }}
-          />,
+          />
         );
       }
     }

@@ -60,7 +60,9 @@ export function useGameSocket(): UseGameSocketReturn {
     const s = io(url, { autoConnect: false, auth: { token } }) as unknown as Socket;
     socketRef.current = s;
 
-    s.on('connect', () => {});
+    s.on('connect', () => {
+      /* connected */
+    });
 
     s.on('state', (payload: GameState) => {
       setActionLoading(false);

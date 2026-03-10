@@ -52,10 +52,7 @@ describe('authService', () => {
         },
       };
 
-      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockResponse,
-      } as Response);
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({ ok: true, json: async () => mockResponse } as Response);
 
       const result = await authService.register({ username: 'testuser', email: 'test@test.com', password: 'pass123' });
       expect(result.data.token).toBe('new-token');
@@ -69,9 +66,9 @@ describe('authService', () => {
         json: async () => ({ success: false, error: { code: 'ERR', message: 'Username taken' } }),
       } as Response);
 
-      await expect(
-        authService.register({ username: 'taken', email: 'a@b.com', password: '123456' }),
-      ).rejects.toThrow('Username taken');
+      await expect(authService.register({ username: 'taken', email: 'a@b.com', password: '123456' })).rejects.toThrow(
+        'Username taken'
+      );
     });
 
     it('throws generic error when no message provided', async () => {
@@ -80,9 +77,9 @@ describe('authService', () => {
         json: async () => ({ success: false, error: {} }),
       } as Response);
 
-      await expect(
-        authService.register({ username: 'test', email: 'a@b.com', password: '123456' }),
-      ).rejects.toThrow('Registration failed');
+      await expect(authService.register({ username: 'test', email: 'a@b.com', password: '123456' })).rejects.toThrow(
+        'Registration failed'
+      );
     });
   });
 
@@ -96,10 +93,7 @@ describe('authService', () => {
         },
       };
 
-      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockResponse,
-      } as Response);
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({ ok: true, json: async () => mockResponse } as Response);
 
       const result = await authService.login({ username: 'testuser', password: 'pass123' });
       expect(result.data.token).toBe('login-token');
@@ -112,9 +106,7 @@ describe('authService', () => {
         json: async () => ({ success: false, error: { code: 'ERR', message: 'Invalid credentials' } }),
       } as Response);
 
-      await expect(authService.login({ username: 'bad', password: 'wrong' })).rejects.toThrow(
-        'Invalid credentials',
-      );
+      await expect(authService.login({ username: 'bad', password: 'wrong' })).rejects.toThrow('Invalid credentials');
     });
 
     it('throws generic error when no message provided', async () => {
@@ -130,18 +122,14 @@ describe('authService', () => {
   describe('logout', () => {
     it('sends POST with token and clears localStorage', async () => {
       localStorage.setItem('auth_token', 'my-token');
-      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({}),
-      } as Response);
+      const fetchSpy = vi
+        .spyOn(globalThis, 'fetch')
+        .mockResolvedValueOnce({ ok: true, json: async () => ({}) } as Response);
 
       await authService.logout();
       expect(fetchSpy).toHaveBeenCalledWith(
         expect.stringContaining('/api/auth/logout'),
-        expect.objectContaining({
-          method: 'POST',
-          headers: { Authorization: 'Bearer my-token' },
-        }),
+        expect.objectContaining({ method: 'POST', headers: { Authorization: 'Bearer my-token' } })
       );
       expect(localStorage.removeItem).toHaveBeenCalledWith('auth_token');
     });
