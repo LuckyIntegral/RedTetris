@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { buildPieceMeta } from '~/utils/pieceHelpers';
-import { GAME_SETUP, GAME_MODES, type GameMode } from '~/constants';
+import { GAME_SETUP, GAME_MODES } from '~/constants';
 
 describe('buildPieceMeta', () => {
   it.each(GAME_MODES)('returns shapes, colors and idColors for "%s" mode', (mode) => {
@@ -31,13 +31,13 @@ describe('buildPieceMeta', () => {
   it('classic pieces get their well-known colours', () => {
     const meta = buildPieceMeta('classic');
 
-    expect(meta.colors['I']).toBe('#0d9488');
-    expect(meta.colors['O']).toBe('#ca8a04');
-    expect(meta.colors['T']).toBe('#9333ea');
-    expect(meta.colors['S']).toBe('#16a34a');
-    expect(meta.colors['Z']).toBe('#dc2626');
-    expect(meta.colors['J']).toBe('#2563eb');
-    expect(meta.colors['L']).toBe('#c2410c');
+    expect(meta.colors.I).toBe('#0d9488');
+    expect(meta.colors.O).toBe('#ca8a04');
+    expect(meta.colors.T).toBe('#9333ea');
+    expect(meta.colors.S).toBe('#16a34a');
+    expect(meta.colors.Z).toBe('#dc2626');
+    expect(meta.colors.J).toBe('#2563eb');
+    expect(meta.colors.L).toBe('#c2410c');
   });
 
   it('non-classic pieces fall back to the palette', () => {

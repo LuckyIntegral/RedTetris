@@ -18,12 +18,7 @@ vi.mock('~/services/auth', () => ({
   },
 }));
 
-vi.mock('~/services/games', () => ({
-  gamesService: {
-    getAllGames: vi.fn(),
-    computeStats: vi.fn(),
-  },
-}));
+vi.mock('~/services/games', () => ({ gamesService: { getAllGames: vi.fn(), computeStats: vi.fn() } }));
 
 import { authService } from '~/services/auth';
 import { gamesService } from '~/services/games';
@@ -59,7 +54,7 @@ const renderWelcome = (authState = {}) => {
         <MemoryRouter>
           <Welcome />
         </MemoryRouter>
-      </Provider>,
+      </Provider>
     ),
   };
 };
@@ -101,7 +96,7 @@ describe('Welcome', () => {
 
   it('renders logout button and dispatches logoutUser', () => {
     vi.mocked(authService.logout).mockResolvedValue(undefined);
-    const { store } = renderWelcome();
+    renderWelcome();
     const logoutBtn = screen.getByText('Logout');
     expect(logoutBtn).toBeInTheDocument();
     fireEvent.click(logoutBtn);

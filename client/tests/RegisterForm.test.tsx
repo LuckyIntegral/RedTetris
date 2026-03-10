@@ -9,10 +9,7 @@ import { RegisterForm } from '~/components/auth/RegisterForm';
 const mockNavigate = vi.fn();
 vi.mock('react-router', async () => {
   const actual = await vi.importActual('react-router');
-  return {
-    ...actual,
-    useNavigate: () => mockNavigate,
-  };
+  return { ...actual, useNavigate: () => mockNavigate };
 });
 
 vi.mock('~/services/auth', () => ({
@@ -52,7 +49,7 @@ const renderRegisterForm = (authState = {}) => {
         <MemoryRouter>
           <RegisterForm />
         </MemoryRouter>
-      </Provider>,
+      </Provider>
     ),
   };
 };

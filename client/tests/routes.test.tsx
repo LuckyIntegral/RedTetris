@@ -21,14 +21,9 @@ vi.mock('~/services/auth', () => ({
 vi.mock('~/services/games', () => ({
   gamesService: {
     getAllGames: vi.fn().mockResolvedValue([]),
-    computeStats: vi.fn().mockReturnValue({
-      gamesPlayed: 0,
-      wins: 0,
-      winRate: 0,
-      highScore: 0,
-      averageScore: 0,
-      bestPlace: 0,
-    }),
+    computeStats: vi
+      .fn()
+      .mockReturnValue({ gamesPlayed: 0, wins: 0, winRate: 0, highScore: 0, averageScore: 0, bestPlace: 0 }),
   },
 }));
 
@@ -58,7 +53,7 @@ describe('Route: Login', () => {
         <MemoryRouter>
           <Login />
         </MemoryRouter>
-      </Provider>,
+      </Provider>
     );
 
     expect(screen.getByText('Welcome Back!')).toBeInTheDocument();
@@ -75,7 +70,7 @@ describe('Route: Register', () => {
         <MemoryRouter>
           <Register />
         </MemoryRouter>
-      </Provider>,
+      </Provider>
     );
 
     expect(screen.getByText('Join the Game!')).toBeInTheDocument();
@@ -96,7 +91,7 @@ describe('Route: Home', () => {
         <MemoryRouter>
           <Home />
         </MemoryRouter>
-      </Provider>,
+      </Provider>
     );
 
     expect(screen.getByText('RED TETRIS')).toBeInTheDocument();
@@ -108,24 +103,18 @@ describe('Route meta functions', () => {
   it('login meta returns correct title', async () => {
     const { meta } = await import('~/routes/login');
     const result = meta({} as any);
-    expect(result).toEqual(
-      expect.arrayContaining([expect.objectContaining({ title: 'Login - Red Tetris' })]),
-    );
+    expect(result).toEqual(expect.arrayContaining([expect.objectContaining({ title: 'Login - Red Tetris' })]));
   });
 
   it('register meta returns correct title', async () => {
     const { meta } = await import('~/routes/register');
     const result = meta({} as any);
-    expect(result).toEqual(
-      expect.arrayContaining([expect.objectContaining({ title: 'Register - Red Tetris' })]),
-    );
+    expect(result).toEqual(expect.arrayContaining([expect.objectContaining({ title: 'Register - Red Tetris' })]));
   });
 
   it('home meta returns correct title', async () => {
     const { meta } = await import('~/routes/home');
     const result = meta({} as any);
-    expect(result).toEqual(
-      expect.arrayContaining([expect.objectContaining({ title: 'Red Tetris - Home' })]),
-    );
+    expect(result).toEqual(expect.arrayContaining([expect.objectContaining({ title: 'Red Tetris - Home' })]));
   });
 });

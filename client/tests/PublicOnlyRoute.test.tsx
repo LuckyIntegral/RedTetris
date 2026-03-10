@@ -43,7 +43,7 @@ const renderPublicOnlyRoute = (authState = {}) => {
           <div data-testid='public-content'>Public Content</div>
         </PublicOnlyRoute>
       </MemoryRouter>
-    </Provider>,
+    </Provider>
   );
 };
 
@@ -67,11 +67,7 @@ describe('PublicOnlyRoute', () => {
   });
 
   it('shows loading overlay when isLoading and not authenticated', () => {
-    renderPublicOnlyRoute({
-      hydrated: true,
-      isAuthenticated: false,
-      isLoading: true,
-    });
+    renderPublicOnlyRoute({ hydrated: true, isAuthenticated: false, isLoading: true });
     expect(screen.getByText('Loading...')).toBeInTheDocument();
     expect(screen.getByTestId('public-content')).toBeInTheDocument();
   });

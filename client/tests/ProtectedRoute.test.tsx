@@ -43,7 +43,7 @@ const renderProtectedRoute = (authState = {}) => {
           <div data-testid='protected-content'>Protected Content</div>
         </ProtectedRoute>
       </MemoryRouter>
-    </Provider>,
+    </Provider>
   );
 };
 
