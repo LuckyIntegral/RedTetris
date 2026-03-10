@@ -118,7 +118,6 @@ export function useGameSocket(): UseGameSocketReturn {
     });
 
     s.on('winner', (info: { message?: string }) => {
-      console.log('client: received winner', info);
       setMessage(info?.message ?? 'YOU WIN');
     });
 
