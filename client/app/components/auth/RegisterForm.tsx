@@ -40,17 +40,17 @@ export function RegisterForm() {
   };
 
   return (
-    <main className='min-h-screen bg-slate-900 flex items-center justify-center px-4 py-12'>
+    <main className='min-h-screen bg-page flex items-center justify-center px-4 py-12'>
       <div className='w-full max-w-md'>
         {/* Header */}
         <div className='text-center mb-8'>
           <h1 className='text-5xl font-bold text-red-500 mb-4'>RED TETRIS</h1>
-          <p className='text-xl text-gray-300'>Join the Game!</p>
-          <p className='text-gray-400 mt-2'>Create your account to start playing</p>
+          <p className='text-xl text-on-surface-variant'>Join the Game!</p>
+          <p className='text-on-surface-muted mt-2'>Create your account to start playing</p>
         </div>
 
         {/* Register Form */}
-        <div className='bg-gray-900 rounded-xl p-8 border border-gray-600'>
+        <div className='bg-surface rounded-xl p-8 border border-outline shadow-sm'>
           <form
             className='space-y-6'
             onSubmit={(e) => {
@@ -58,8 +58,8 @@ export function RegisterForm() {
             }}
           >
             {error && (
-              <div className='bg-red-500/20 backdrop-blur-sm border border-red-400/30 rounded-lg p-4'>
-                <div className='text-red-200 text-sm text-center'>{error}</div>
+              <div className='bg-status-error-bg border border-status-error-border rounded-lg p-4'>
+                <div className='text-status-error-text text-sm text-center'>{error}</div>
               </div>
             )}
 
@@ -67,7 +67,7 @@ export function RegisterForm() {
               <div>
                 <label
                   htmlFor='username'
-                  className='block text-sm font-medium text-gray-400 mb-2'
+                  className='block text-sm font-medium text-on-surface-muted mb-2'
                 >
                   Username
                 </label>
@@ -79,7 +79,7 @@ export function RegisterForm() {
                   minLength={3}
                   maxLength={50}
                   pattern='[a-zA-Z0-9_-]+'
-                  className='w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 transition-colors'
+                  className='w-full bg-surface-alt border border-outline rounded-lg px-4 py-3 text-on-surface placeholder-on-surface-faint focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 transition-colors'
                   placeholder='Choose a unique username (3-50 chars)'
                   disabled={isLoading}
                 />
@@ -87,7 +87,7 @@ export function RegisterForm() {
               <div>
                 <label
                   htmlFor='email'
-                  className='block text-sm font-medium text-gray-400 mb-2'
+                  className='block text-sm font-medium text-on-surface-muted mb-2'
                 >
                   Email Address
                 </label>
@@ -96,7 +96,7 @@ export function RegisterForm() {
                   name='email'
                   type='email'
                   required
-                  className='w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 transition-colors'
+                  className='w-full bg-surface-alt border border-outline rounded-lg px-4 py-3 text-on-surface placeholder-on-surface-faint focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 transition-colors'
                   placeholder='Enter your email address'
                   disabled={isLoading}
                 />
@@ -104,7 +104,7 @@ export function RegisterForm() {
               <div>
                 <label
                   htmlFor='password'
-                  className='block text-sm font-medium text-gray-400 mb-2'
+                  className='block text-sm font-medium text-on-surface-muted mb-2'
                 >
                   Password
                 </label>
@@ -114,7 +114,7 @@ export function RegisterForm() {
                   type='password'
                   required
                   minLength={6}
-                  className='w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 transition-colors'
+                  className='w-full bg-surface-alt border border-outline rounded-lg px-4 py-3 text-on-surface placeholder-on-surface-faint focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 transition-colors'
                   placeholder='Create a strong password (6+ chars)'
                   disabled={isLoading}
                 />
@@ -122,7 +122,7 @@ export function RegisterForm() {
               <div>
                 <label
                   htmlFor='confirmPassword'
-                  className='block text-sm font-medium text-gray-400 mb-2'
+                  className='block text-sm font-medium text-on-surface-muted mb-2'
                 >
                   Confirm Password
                 </label>
@@ -132,7 +132,7 @@ export function RegisterForm() {
                   type='password'
                   required
                   minLength={6}
-                  className='w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 transition-colors'
+                  className='w-full bg-surface-alt border border-outline rounded-lg px-4 py-3 text-on-surface placeholder-on-surface-faint focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 transition-colors'
                   placeholder='Confirm your password'
                   disabled={isLoading}
                 />
@@ -142,7 +142,7 @@ export function RegisterForm() {
             <button
               type='submit'
               disabled={isLoading}
-              className='w-full bg-red-600 hover:bg-red-500 disabled:bg-gray-700 disabled:opacity-70 text-white font-bold py-4 px-6 rounded-lg transition-colors'
+              className='w-full bg-red-600 hover:bg-red-500 disabled:bg-surface-hover disabled:opacity-70 text-white font-bold py-4 px-6 rounded-lg transition-colors'
             >
               {isLoading ? (
                 <span className='flex items-center justify-center'>
@@ -173,8 +173,8 @@ export function RegisterForm() {
               )}
             </button>
 
-            <div className='text-center pt-4 border-t border-white/10'>
-              <p className='text-gray-400 text-sm'>
+            <div className='text-center pt-4 border-t border-outline-variant'>
+              <p className='text-on-surface-muted text-sm'>
                 Already have an account?{' '}
                 <Link
                   to='/login'

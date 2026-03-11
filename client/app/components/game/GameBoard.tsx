@@ -28,7 +28,7 @@ export function GameBoard({ board, idColors, width, height, cellSize, maxWidth, 
   return (
     <div className='flex flex-col items-center'>
       <div
-        className='bg-gray-900 rounded-lg p-3 border border-gray-600 flex items-center justify-center'
+        className='bg-surface rounded-lg p-3 border border-outline flex items-center justify-center'
         style={{ width: maxWidth * cellSize + 24, height: maxHeight * cellSize + 24 }}
       >
         <div
@@ -43,10 +43,10 @@ export function GameBoard({ board, idColors, width, height, cellSize, maxWidth, 
         </div>
       </div>
 
-      <div className='mt-4 bg-gray-800 rounded-lg p-3 border border-gray-600'>
-        <div className='text-center text-white'>
-          <span className='text-lg font-bold text-white'>{score}</span>
-          <div className='text-sm text-gray-400'>Score</div>
+      <div className='mt-4 bg-surface-alt rounded-lg p-3 border border-outline'>
+        <div className='text-center text-on-surface'>
+          <span className='text-lg font-bold text-on-surface'>{score}</span>
+          <div className='text-sm text-on-surface-muted'>Score</div>
         </div>
       </div>
     </div>
@@ -70,7 +70,7 @@ function renderCell(
           width: cellSize,
           height: cellSize,
           boxSizing: 'border-box',
-          outline: '1px solid rgba(255,255,255,0.12)',
+          outline: '1px solid var(--cell-grid)',
         }}
       />
     );
@@ -85,11 +85,11 @@ function renderCell(
           height: cellSize,
           boxSizing: 'border-box',
           borderRadius: 2,
-          background: 'rgba(255,255,255,0.12)',
-          borderTop: '1px solid rgba(255,255,255,0.15)',
-          borderLeft: '1px solid rgba(255,255,255,0.1)',
-          borderBottom: '1px solid rgba(0,0,0,0.3)',
-          borderRight: '1px solid rgba(0,0,0,0.2)',
+          background: 'var(--cell-ghost-bg)',
+          borderTop: '1px solid var(--cell-ghost-border-light)',
+          borderLeft: '1px solid var(--cell-ghost-border-light)',
+          borderBottom: '1px solid var(--cell-ghost-border-dark)',
+          borderRight: '1px solid var(--cell-ghost-border-dark)',
         }}
       />
     );
@@ -104,11 +104,11 @@ function renderCell(
           height: cellSize,
           boxSizing: 'border-box',
           borderRadius: 2,
-          background: '#374151',
-          borderTop: '1px solid rgba(255,255,255,0.08)',
-          borderLeft: '1px solid rgba(255,255,255,0.05)',
-          borderBottom: '1px solid rgba(0,0,0,0.3)',
-          borderRight: '1px solid rgba(0,0,0,0.2)',
+          background: 'var(--cell-penalty-bg)',
+          borderTop: '1px solid var(--cell-penalty-border-light)',
+          borderLeft: '1px solid var(--cell-penalty-border-light)',
+          borderBottom: '1px solid var(--cell-penalty-border-dark)',
+          borderRight: '1px solid var(--cell-penalty-border-dark)',
         }}
       />
     );
@@ -124,10 +124,10 @@ function renderCell(
         boxSizing: 'border-box',
         borderRadius: 2,
         background: color,
-        borderTop: '1px solid rgba(255,255,255,0.15)',
-        borderLeft: '1px solid rgba(255,255,255,0.1)',
-        borderBottom: '1px solid rgba(0,0,0,0.3)',
-        borderRight: '1px solid rgba(0,0,0,0.2)',
+        borderTop: '1px solid var(--piece-border-light)',
+        borderLeft: '1px solid var(--piece-border-light)',
+        borderBottom: '1px solid var(--piece-border-dark)',
+        borderRight: '1px solid var(--piece-border-dark)',
       }}
     />
   );

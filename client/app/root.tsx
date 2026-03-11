@@ -5,6 +5,8 @@ import type { Route } from './+types/routes';
 import './app.css';
 import { store } from './store/store';
 import { LoadingOverlay } from './components/LoadingOverlay';
+import { ThemeToggle } from './components/ThemeToggle';
+import { useTheme } from './hooks/useTheme';
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -26,6 +28,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
         />
         <Meta />
         <Links />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('red-tetris-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})()`
+          }}
+        />
       </head>
       <body>
         {children}
@@ -39,9 +46,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   const navigation = useNavigation();
   const isNavigating = navigation.state === 'loading';
+  const { theme, toggle } = useTheme();
 
   return (
     <Provider store={store}>
+      <ThemeToggle theme={theme} toggle={toggle} />
       <Outlet />
       {isNavigating && <LoadingOverlay />}
     </Provider>
@@ -62,12 +71,12 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className='min-h-screen bg-slate-900 flex items-center justify-center p-6'>
+    <main className='min-h-screen bg-page flex items-center justify-center p-6'>
       <div className='text-center max-w-md'>
         <h1 className='text-8xl font-bold text-red-500 mb-4'>{message}</h1>
-        <p className='text-xl text-gray-300 mb-8'>{details}</p>
+        <p className='text-xl text-on-surface-variant mb-8'>{details}</p>
         {stack && (
-          <pre className='w-full p-4 overflow-x-auto bg-gray-800 border border-gray-600 rounded-lg text-left text-sm text-gray-400 mb-8'>
+          <pre className='w-full p-4 overflow-x-auto bg-surface-alt border border-outline rounded-lg text-left text-sm text-on-surface-muted mb-8'>
             <code>{stack}</code>
           </pre>
         )}
