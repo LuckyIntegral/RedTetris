@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { MemoryRouter } from 'react-router';
@@ -70,9 +70,11 @@ describe('ProtectedRoute', () => {
     expect(screen.getByTestId('protected-content')).toBeInTheDocument();
   });
 
-  it('shows loading overlay when authenticated but user is null', () => {
+  it('shows loading overlay when authenticated but user is null', async () => {
     renderProtectedRoute({ hydrated: true, isAuthenticated: true, user: null });
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Loading...')).toBeInTheDocument();
+    });
   });
 
   it('shows loading overlay when isLoading is true', () => {
@@ -86,7 +88,7 @@ describe('ProtectedRoute', () => {
     expect(screen.getByTestId('protected-content')).toBeInTheDocument();
   });
 
-  it('hydrates and shows content when token exists and not yet hydrated', () => {
+  it('hydrates and shows content when token exists and not yet hydrated', async () => {
     vi.mocked(authService.getToken).mockReturnValue('existing-token');
     vi.mocked(authService.getProfile).mockResolvedValue({
       id: 1,
@@ -98,10 +100,12 @@ describe('ProtectedRoute', () => {
     renderProtectedRoute({ hydrated: false });
     // hydrateAuth runs, finds token, sets isAuthenticated=true
     // Then fetchProfile is dispatched; meanwhile children + LoadingOverlay show
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Loading...')).toBeInTheDocument();
+    });
   });
 
-  it('fetches profile when authenticated but no user', () => {
+  it('fetches profile when authenticated but no user', async () => {
     vi.mocked(authService.getProfile).mockResolvedValue({
       id: 1,
       username: 'test',
@@ -111,6 +115,8 @@ describe('ProtectedRoute', () => {
     });
 
     renderProtectedRoute({ hydrated: true, isAuthenticated: true, user: null });
-    expect(authService.getProfile).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(authService.getProfile).toHaveBeenCalled();
+    });
   });
 });
