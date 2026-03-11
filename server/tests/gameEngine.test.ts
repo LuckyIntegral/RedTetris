@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import { expect } from 'chai';
 import { BSP_SCORES, GAME_SETUP } from '../constants';
 import { GameEngine } from '../game/GameEngine';
