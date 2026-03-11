@@ -63,6 +63,31 @@ jobs:
     runs-on: ubuntu-latest
     needs: lint-and-format
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: rootpw
+          MYSQL_DATABASE: red_tetris_test
+          MYSQL_USER: app
+          MYSQL_PASSWORD: app_pw_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      NODE_ENV: test
+      DB_HOST: 127.0.0.1
+      DB_USER: app
+      DB_PASSWORD_TEST: app_pw_test
+      DB_NAME_TEST: red_tetris_test
+      DB_PORT: 3306
+      JWT_SECRET: ci_test_secret_key_not_for_production
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
