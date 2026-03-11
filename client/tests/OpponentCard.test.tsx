@@ -24,45 +24,80 @@ describe('OpponentCard', () => {
     });
 
     it('renders score', () => {
-      render(<OpponentCard {...defaultProps} score={42} />);
+      render(
+        <OpponentCard
+          {...defaultProps}
+          score={42}
+        />
+      );
       expect(screen.getByText('42')).toBeInTheDocument();
     });
 
     it('shows Host label when isHost is true', () => {
-      render(<OpponentCard {...defaultProps} isHost={true} />);
+      render(
+        <OpponentCard
+          {...defaultProps}
+          isHost={true}
+        />
+      );
       expect(screen.getByText('Host')).toBeInTheDocument();
     });
 
     it('does not show Host label when isHost is false', () => {
-      render(<OpponentCard {...defaultProps} isHost={false} />);
+      render(
+        <OpponentCard
+          {...defaultProps}
+          isHost={false}
+        />
+      );
       expect(screen.queryByText('Host')).not.toBeInTheDocument();
     });
   });
 
   describe('alive/dead status', () => {
     it('shows ALIVE status and green indicator when alive', () => {
-      const { container } = render(<OpponentCard {...defaultProps} isAlive={true} />);
+      const { container } = render(
+        <OpponentCard
+          {...defaultProps}
+          isAlive={true}
+        />
+      );
       expect(screen.getByText('ALIVE')).toBeInTheDocument();
       const dot = container.querySelector('.bg-green-400');
       expect(dot).toBeInTheDocument();
     });
 
     it('shows DEAD status and red indicator when dead', () => {
-      const { container } = render(<OpponentCard {...defaultProps} isAlive={false} />);
+      const { container } = render(
+        <OpponentCard
+          {...defaultProps}
+          isAlive={false}
+        />
+      );
       expect(screen.getByText('DEAD')).toBeInTheDocument();
       const dot = container.querySelector('.bg-red-400');
       expect(dot).toBeInTheDocument();
     });
 
     it('applies green badge styling when alive', () => {
-      render(<OpponentCard {...defaultProps} isAlive={true} />);
+      render(
+        <OpponentCard
+          {...defaultProps}
+          isAlive={true}
+        />
+      );
       const badge = screen.getByText('ALIVE');
       expect(badge.className).toContain('bg-green-500/20');
       expect(badge.className).toContain('text-green-300');
     });
 
     it('applies red badge styling when dead', () => {
-      render(<OpponentCard {...defaultProps} isAlive={false} />);
+      render(
+        <OpponentCard
+          {...defaultProps}
+          isAlive={false}
+        />
+      );
       const badge = screen.getByText('DEAD');
       expect(badge.className).toContain('bg-red-500/20');
       expect(badge.className).toContain('text-red-300');
@@ -71,7 +106,12 @@ describe('OpponentCard', () => {
 
   describe('board rendering', () => {
     it('renders board cells with null board (all transparent)', () => {
-      const { container } = render(<OpponentCard {...defaultProps} board={null} />);
+      const { container } = render(
+        <OpponentCard
+          {...defaultProps}
+          board={null}
+        />
+      );
       const cells = container.querySelectorAll<HTMLElement>('[style*="box-sizing"]');
       expect(cells.length).toBe(16); // 4x4
       cells.forEach((cell) => {
@@ -84,7 +124,14 @@ describe('OpponentCard', () => {
         [0, 0],
         [0, 0],
       ];
-      const { container } = render(<OpponentCard {...defaultProps} board={board} width={2} height={2} />);
+      const { container } = render(
+        <OpponentCard
+          {...defaultProps}
+          board={board}
+          width={2}
+          height={2}
+        />
+      );
       const cells = container.querySelectorAll<HTMLElement>('[style*="box-sizing"]');
       cells.forEach((cell) => {
         expect(cell.style.background).toBe('transparent');
@@ -93,56 +140,120 @@ describe('OpponentCard', () => {
 
     it('renders penalty cells (val=-2) with alive color', () => {
       const board = [[-2]];
-      const { container } = render(<OpponentCard {...defaultProps} board={board} width={1} height={1} isAlive={true} />);
+      const { container } = render(
+        <OpponentCard
+          {...defaultProps}
+          board={board}
+          width={1}
+          height={1}
+          isAlive={true}
+        />
+      );
       const cell = container.querySelector<HTMLElement>('[style*="box-sizing"]');
       expect(cell?.style.background).toBe('rgba(255, 255, 255, 0.06)');
     });
 
     it('renders penalty cells (val=-2) with dead color', () => {
       const board = [[-2]];
-      const { container } = render(<OpponentCard {...defaultProps} board={board} width={1} height={1} isAlive={false} />);
+      const { container } = render(
+        <OpponentCard
+          {...defaultProps}
+          board={board}
+          width={1}
+          height={1}
+          isAlive={false}
+        />
+      );
       const cell = container.querySelector<HTMLElement>('[style*="box-sizing"]');
       expect(cell?.style.background).toBe('rgba(255, 255, 255, 0.03)');
     });
 
     it('renders locked cells (val=-1) with alive color', () => {
       const board = [[-1]];
-      const { container } = render(<OpponentCard {...defaultProps} board={board} width={1} height={1} isAlive={true} />);
+      const { container } = render(
+        <OpponentCard
+          {...defaultProps}
+          board={board}
+          width={1}
+          height={1}
+          isAlive={true}
+        />
+      );
       const cell = container.querySelector<HTMLElement>('[style*="box-sizing"]');
       expect(cell?.style.background).toBe('rgb(17, 17, 17)');
     });
 
     it('renders locked cells (val=-1) with dead color', () => {
       const board = [[-1]];
-      const { container } = render(<OpponentCard {...defaultProps} board={board} width={1} height={1} isAlive={false} />);
+      const { container } = render(
+        <OpponentCard
+          {...defaultProps}
+          board={board}
+          width={1}
+          height={1}
+          isAlive={false}
+        />
+      );
       const cell = container.querySelector<HTMLElement>('[style*="box-sizing"]');
       expect(cell?.style.background).toBe('rgb(68, 68, 68)');
     });
 
     it('renders piece cells (val>0) with idColors when alive', () => {
       const board = [[1]];
-      const { container } = render(<OpponentCard {...defaultProps} board={board} width={1} height={1} isAlive={true} />);
+      const { container } = render(
+        <OpponentCard
+          {...defaultProps}
+          board={board}
+          width={1}
+          height={1}
+          isAlive={true}
+        />
+      );
       const cell = container.querySelector<HTMLElement>('[style*="box-sizing"]');
       expect(cell?.style.background).toBe('rgb(255, 0, 0)'); // idColors[1]
     });
 
     it('renders piece cells (val>0) as #777 when dead', () => {
       const board = [[1]];
-      const { container } = render(<OpponentCard {...defaultProps} board={board} width={1} height={1} isAlive={false} />);
+      const { container } = render(
+        <OpponentCard
+          {...defaultProps}
+          board={board}
+          width={1}
+          height={1}
+          isAlive={false}
+        />
+      );
       const cell = container.querySelector<HTMLElement>('[style*="box-sizing"]');
       expect(cell?.style.background).toBe('rgb(119, 119, 119)');
     });
 
     it('falls back to #999 when idColors does not have the piece index', () => {
       const board = [[99]]; // index 99 doesn't exist in idColors
-      const { container } = render(<OpponentCard {...defaultProps} board={board} width={1} height={1} isAlive={true} />);
+      const { container } = render(
+        <OpponentCard
+          {...defaultProps}
+          board={board}
+          width={1}
+          height={1}
+          isAlive={true}
+        />
+      );
       const cell = container.querySelector<HTMLElement>('[style*="box-sizing"]');
       expect(cell?.style.background).toBe('rgb(153, 153, 153)');
     });
 
     it('applies borderRadius 1 for alive pieces and 0 otherwise', () => {
       const board = [[1, 0]];
-      const { container } = render(<OpponentCard {...defaultProps} board={board} width={2} height={1} isAlive={true} />);
+      const { container } = render(
+        <OpponentCard
+          {...defaultProps}
+          board={board}
+          width={2}
+          height={1}
+          isAlive={true}
+        />
+      );
       const cells = container.querySelectorAll<HTMLElement>('[style*="box-sizing"]');
       expect(cells[0].style.borderRadius).toBe('1px');
       expect(cells[1].style.borderRadius).toBe('0px');
@@ -150,7 +261,15 @@ describe('OpponentCard', () => {
 
     it('applies borderRadius 0 for dead pieces', () => {
       const board = [[1]];
-      const { container } = render(<OpponentCard {...defaultProps} board={board} width={1} height={1} isAlive={false} />);
+      const { container } = render(
+        <OpponentCard
+          {...defaultProps}
+          board={board}
+          width={1}
+          height={1}
+          isAlive={false}
+        />
+      );
       const cell = container.querySelector<HTMLElement>('[style*="box-sizing"]');
       expect(cell?.style.borderRadius).toBe('0px');
     });
@@ -160,7 +279,14 @@ describe('OpponentCard', () => {
         [0, 0, 0],
         [0, 0, 0],
       ];
-      const { container } = render(<OpponentCard {...defaultProps} board={board} width={3} height={2} />);
+      const { container } = render(
+        <OpponentCard
+          {...defaultProps}
+          board={board}
+          width={3}
+          height={2}
+        />
+      );
       const cells = container.querySelectorAll<HTMLElement>('[style*="box-sizing"]');
       expect(cells.length).toBe(6); // 3x2
     });
