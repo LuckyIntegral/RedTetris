@@ -1,5 +1,6 @@
-import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
-import { authService, type User, type RegisterData, type LoginData } from '../services/auth';
+import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import * as Sentry from '@sentry/react';
+import { authService, type LoginData, type RegisterData, type User } from '../services/auth';
 
 export interface AuthState {
   user: User | null;
@@ -34,6 +35,7 @@ export const loginUser = createAsyncThunk('auth/login', async (data: LoginData, 
     const response = await authService.login(data);
     return response.data;
   } catch (error) {
+    Sentry.captureException(error);
     return rejectWithValue((error as Error).message);
   }
 });
@@ -42,6 +44,7 @@ export const logoutUser = createAsyncThunk('auth/logout', async (_, { rejectWith
   try {
     await authService.logout();
   } catch (error) {
+    Sentry.captureException(error);
     return rejectWithValue((error as Error).message);
   }
 });
@@ -51,6 +54,7 @@ export const fetchProfile = createAsyncThunk('auth/profile', async (_, { rejectW
     const user = await authService.getProfile();
     return user;
   } catch (error) {
+    Sentry.captureException(error);
     return rejectWithValue((error as Error).message);
   }
 });

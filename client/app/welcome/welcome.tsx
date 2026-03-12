@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { logoutUser } from '../store/authSlice';
 import { Link } from 'react-router';
+import ErrorButton from '../components/ErrorButton';
 import { gamesService, type Game, type UserStats } from '../services/games';
+import { logoutUser } from '../store/authSlice';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 
 export function Welcome() {
   const dispatch = useAppDispatch();
@@ -72,6 +73,11 @@ export function Welcome() {
                 >
                   Logout
                 </button>
+                {import.meta.env.DEV && (
+                  <div className='text-center mt-3'>
+                    <ErrorButton />
+                  </div>
+                )}
               </div>
             </div>
 
