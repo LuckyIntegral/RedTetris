@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { MemoryRouter } from 'react-router';
@@ -55,10 +55,12 @@ describe('PublicOnlyRoute', () => {
     expect(screen.getByTestId('public-content')).toBeInTheDocument();
   });
 
-  it('redirects to / when authenticated', () => {
+  it('redirects to / when authenticated', async () => {
     renderPublicOnlyRoute({ hydrated: true, isAuthenticated: true });
     // Navigate to / should fire, content should not show
-    expect(screen.queryByTestId('public-content')).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByTestId('public-content')).not.toBeInTheDocument();
+    });
   });
 
   it('renders children when not authenticated', () => {
@@ -72,13 +74,15 @@ describe('PublicOnlyRoute', () => {
     expect(screen.getByTestId('public-content')).toBeInTheDocument();
   });
 
-  it('redirects when hydrated with token (not hydrated initially)', () => {
+  it('redirects when hydrated with token (not hydrated initially)', async () => {
     vi.mocked(authService.getToken).mockReturnValue('existing-token');
     renderPublicOnlyRoute({ hydrated: false });
-    expect(screen.queryByTestId('public-content')).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByTestId('public-content')).not.toBeInTheDocument();
+    });
   });
 
-  it('fetches profile when authenticated but no user', () => {
+  it('fetches profile when authenticated but no user', async () => {
     vi.mocked(authService.getProfile).mockResolvedValue({
       id: 1,
       username: 'test',
@@ -88,6 +92,8 @@ describe('PublicOnlyRoute', () => {
     });
 
     renderPublicOnlyRoute({ hydrated: true, isAuthenticated: true, user: null });
-    expect(authService.getProfile).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(authService.getProfile).toHaveBeenCalled();
+    });
   });
 });
