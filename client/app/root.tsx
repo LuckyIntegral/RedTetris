@@ -1,12 +1,13 @@
-import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration, useNavigation } from 'react-router';
+import * as Sentry from '@sentry/react';
 import { Provider } from 'react-redux';
+import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration, useNavigation } from 'react-router';
 
 import type { Route } from './+types/routes';
 import './app.css';
-import { store } from './store/store';
 import { LoadingOverlay } from './components/LoadingOverlay';
 import { ThemeToggle } from './components/ThemeToggle';
 import { useTheme } from './hooks/useTheme';
+import { store } from './store/store';
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -62,6 +63,11 @@ export default function App() {
       {isNavigating && <LoadingOverlay />}
     </Provider>
   );
+}
+
+const SENTRY_DSN = import.meta.env.VITE_SENTRY_DSN as string;
+if (SENTRY_DSN) {
+  Sentry.init({ dsn: SENTRY_DSN, sendDefaultPii: true });
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
