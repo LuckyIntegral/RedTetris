@@ -5,4 +5,5 @@ export default [
   route('login', 'routes/login.tsx'),
   route('register', 'routes/register.tsx'),
   route('game', 'routes/game.tsx'),
+  route(':room/:playerName', 'routes/join.tsx'),
 ] satisfies RouteConfig;

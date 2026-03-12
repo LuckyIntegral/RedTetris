@@ -16,11 +16,15 @@ const CELL = 28;
 const MAX_WIDTH = Math.max(...Object.values(GAME_SETUP).map((s) => s.width));
 const MAX_HEIGHT = Math.max(...Object.values(GAME_SETUP).map((s) => s.height));
 
+interface GamePageProps {
+  initialRoom?: string;
+}
+
 /**
  * Main game page component — composes all game sub-components and wires up hooks.
  */
-export function GamePage() {
-  const game = useGameSocket();
+export function GamePage({ initialRoom }: GamePageProps) {
+  const game = useGameSocket(initialRoom);
   useKeyboardControls(game.socketRef, game.room, game.playerId);
 
   const setup = GAME_SETUP[game.selectedMode];
@@ -42,6 +46,7 @@ export function GamePage() {
     error: game.error,
     message: game.message,
     hostName: game.hostName,
+    playerName: game.playerName,
     create: game.create,
     join: game.join,
     start: game.start,

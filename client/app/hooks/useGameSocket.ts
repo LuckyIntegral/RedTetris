@@ -18,6 +18,7 @@ export interface UseGameSocketReturn {
   actionLoading: boolean;
   myView: PlayerState | null;
   hostName: string | null;
+  playerName: string | null;
   opponents: OpponentInfo[];
   join: () => void;
   create: () => void;
@@ -37,8 +38,9 @@ export interface OpponentInfo {
   isHost: boolean;
 }
 
-export function useGameSocket(): UseGameSocketReturn {
-  const [room, setRoom] = useState('');
+export function useGameSocket(initialRoom?: string): UseGameSocketReturn {
+  const [room, setRoom] = useState(initialRoom ?? '');
+  const initialRoomRef = useRef(initialRoom);
   const [playerId, setPlayerId] = useState<string | null>(null);
   const [selectedMode, setSelectedMode] = useState<GameMode>('classic');
   const [state, setState] = useState<GameState | null>(null);
@@ -142,6 +144,16 @@ export function useGameSocket(): UseGameSocketReturn {
       else setError(err?.message ?? String(err));
     });
 
+    /* auto-join if initialRoom was provided (from /:room/:playerName URL) */
+    if (initialRoomRef.current) {
+      const joinRoom = initialRoomRef.current;
+      setActionLoading(true);
+      s.once('connect', () => {
+        s.emit('join', { roomId: joinRoom });
+      });
+      s.connect();
+    }
+
     return () => {
       s.off();
       s.disconnect();
@@ -218,6 +230,11 @@ export function useGameSocket(): UseGameSocketReturn {
     return hid ? (state.players?.[hid]?.name ?? hid) : null;
   }, [state, hostId]);
 
+  const playerName = useMemo(() => {
+    if (!state || !playerId) return null;
+    return state.players?.[playerId]?.name ?? null;
+  }, [state, playerId]);
+
   const computeSpectrumFromBoard = (board: number[][]): number[] => {
     const cols = Array.from({ length: WIDTH }, () => 0);
     for (let x = 0; x < WIDTH; x++) {
@@ -271,6 +288,7 @@ export function useGameSocket(): UseGameSocketReturn {
     actionLoading,
     myView,
     hostName,
+    playerName,
     opponents,
     join,
     create,

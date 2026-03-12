@@ -69,6 +69,7 @@ const createGamesService = () => {
     let highScore = 0;
     let totalScore = 0;
     let bestPlace = Infinity;
+    let multiplayerGames = 0;
 
     for (const game of games) {
       const myRecord = game.players.find((p) => p.player.id === userId);
@@ -76,14 +77,20 @@ const createGamesService = () => {
 
       totalScore += myRecord.score;
       if (myRecord.score > highScore) highScore = myRecord.score;
-      if (myRecord.place < bestPlace) bestPlace = myRecord.place;
-      if (myRecord.place === 1) wins++;
+
+      // Only count wins, win rate and best place for multiplayer games
+      const isMultiplayer = game.players.length > 1;
+      if (isMultiplayer) {
+        multiplayerGames++;
+        if (myRecord.place < bestPlace) bestPlace = myRecord.place;
+        if (myRecord.place === 1) wins++;
+      }
     }
 
     return {
       gamesPlayed: games.length,
       wins,
-      winRate: games.length > 0 ? Math.round((wins / games.length) * 100) : 0,
+      winRate: multiplayerGames > 0 ? Math.round((wins / multiplayerGames) * 100) : 0,
       highScore,
       averageScore: games.length > 0 ? Math.round(totalScore / games.length) : 0,
       bestPlace: bestPlace === Infinity ? 0 : bestPlace,

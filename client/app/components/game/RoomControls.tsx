@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { GameModeSelector } from '../GameModeSelector';
 import type { GameMode } from '../../constants';
 import type { GameState } from '../../types/socket';
@@ -13,6 +14,7 @@ interface RoomControlsProps {
   error: string | null;
   message: string | null;
   hostName: string | null;
+  playerName: string | null;
   create: () => void;
   join: () => void;
   start: () => void;
@@ -35,6 +37,7 @@ export function RoomControls({
   error,
   message,
   hostName,
+  playerName,
   create,
   join,
   start,
@@ -44,6 +47,39 @@ export function RoomControls({
 }: RoomControlsProps) {
   const isHost = hostId === playerId || state?.hostId === playerId;
   const canRestart = state?.status === 'finished' && playerId && hostId && playerId === hostId;
+  const [linkCopied, setLinkCopied] = useState(false);
+
+  const copyRoomLink = () => {
+    const name = playerName ?? 'player';
+    const url = `${window.location.origin}/${encodeURIComponent(room)}/${encodeURIComponent(name)}`;
+
+    const onSuccess = () => {
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2000);
+    };
+
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(url).then(onSuccess).catch(() => fallbackCopy(url, onSuccess));
+    } else {
+      fallbackCopy(url, onSuccess);
+    }
+  };
+
+  const fallbackCopy = (text: string, onSuccess: () => void) => {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+      document.execCommand('copy');
+      onSuccess();
+    } catch {
+      /* silent fail */
+    }
+    document.body.removeChild(textarea);
+  };
 
   if (compact) {
     return (
@@ -108,6 +144,14 @@ export function RoomControls({
                 className='px-4 py-2 text-sm bg-surface-hover hover:bg-surface-alt text-on-surface-variant hover:text-on-surface font-semibold rounded-lg transition-colors'
               >
                 Leave
+              </button>
+            )}
+            {playerId && room && (
+              <button
+                onClick={copyRoomLink}
+                className='px-4 py-2 text-sm bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-lg transition-colors'
+              >
+                {linkCopied ? 'Copied!' : 'Copy Link'}
               </button>
             )}
           </div>
@@ -193,6 +237,14 @@ export function RoomControls({
                 className='w-full px-4 py-2 bg-surface-hover hover:bg-surface-alt text-on-surface-variant hover:text-on-surface font-semibold rounded-lg transition-colors'
               >
                 Leave Room
+              </button>
+            )}
+            {playerId && room && (
+              <button
+                onClick={copyRoomLink}
+                className='w-full px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-lg transition-colors'
+              >
+                {linkCopied ? 'Copied!' : 'Copy Link'}
               </button>
             )}
           </div>
