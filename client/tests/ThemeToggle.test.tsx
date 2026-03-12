@@ -10,10 +10,10 @@ describe('ThemeToggle', () => {
         toggle={vi.fn()}
       />
     );
-    // Sun icon has a circle-based path (d includes "M12 3v1")
-    const svg = container.querySelector('svg');
-    expect(svg).toBeInTheDocument();
-    expect(svg?.classList.contains('text-yellow-400')).toBe(true);
+    const icon = container.querySelector('span[aria-hidden="true"]');
+    expect(icon).toBeInTheDocument();
+    expect(icon?.classList.contains('text-yellow-400')).toBe(true);
+    expect(icon?.textContent).toBe('☀');
   });
 
   it('renders moon icon in light mode', () => {
@@ -23,9 +23,10 @@ describe('ThemeToggle', () => {
         toggle={vi.fn()}
       />
     );
-    const svg = container.querySelector('svg');
-    expect(svg).toBeInTheDocument();
-    expect(svg?.classList.contains('text-slate-600')).toBe(true);
+    const icon = container.querySelector('span[aria-hidden="true"]');
+    expect(icon).toBeInTheDocument();
+    expect(icon?.classList.contains('text-slate-600')).toBe(true);
+    expect(icon?.textContent).toBe('☾');
   });
 
   it('has correct aria-label for dark mode (switch to light)', () => {
