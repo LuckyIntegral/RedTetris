@@ -149,7 +149,7 @@ describe('GameModeSelector', () => {
     it('does not highlight non-selected modes', () => {
       render(<GameModeSelector {...defaultProps} />);
       const narrowBtn = screen.getByText('Narrow').closest('button');
-      expect(narrowBtn?.className).toContain('bg-gray-800');
+      expect(narrowBtn?.className).toContain('bg-surface-alt');
       expect(narrowBtn?.className).not.toContain('ring-1');
     });
   });

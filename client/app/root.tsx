@@ -19,7 +19,10 @@ export const links: Route.LinksFunction = () => [
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang='en' suppressHydrationWarning>
+    <html
+      lang='en'
+      suppressHydrationWarning
+    >
       <head>
         <meta charSet='utf-8' />
         <meta
@@ -30,7 +33,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('red-tetris-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})()`
+            __html:
+              "(function(){try{var t=localStorage.getItem('red-tetris-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})()",
           }}
         />
       </head>
@@ -50,7 +54,10 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <ThemeToggle theme={theme} toggle={toggle} />
+      <ThemeToggle
+        theme={theme}
+        toggle={toggle}
+      />
       <Outlet />
       {isNavigating && <LoadingOverlay />}
     </Provider>

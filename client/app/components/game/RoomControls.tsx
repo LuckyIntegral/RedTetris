@@ -59,7 +59,10 @@ export function RoomControls({
     };
 
     if (navigator.clipboard?.writeText) {
-      navigator.clipboard.writeText(url).then(onSuccess).catch(() => fallbackCopy(url, onSuccess));
+      navigator.clipboard
+        .writeText(url)
+        .then(onSuccess)
+        .catch(() => fallbackCopy(url, onSuccess));
     } else {
       fallbackCopy(url, onSuccess);
     }

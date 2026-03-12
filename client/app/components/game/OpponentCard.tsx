@@ -77,7 +77,10 @@ export function OpponentCard({ name, board, isAlive, score, isHost, idColors, wi
         </div>
       </div>
       {/* Right: Board */}
-      <div className='shrink-0 rounded-lg p-1.5 border border-outline flex justify-center' style={{ background: 'var(--mini-board-bg)' }}>
+      <div
+        className='shrink-0 rounded-lg p-1.5 border border-outline flex justify-center'
+        style={{ background: 'var(--mini-board-bg)' }}
+      >
         {renderOpponentBoard()}
       </div>
     </div>

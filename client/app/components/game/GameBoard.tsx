@@ -66,12 +66,7 @@ function renderCell(
     return (
       <div
         key={`${x}-${y}`}
-        style={{
-          width: cellSize,
-          height: cellSize,
-          boxSizing: 'border-box',
-          outline: '1px solid var(--cell-grid)',
-        }}
+        style={{ width: cellSize, height: cellSize, boxSizing: 'border-box', outline: '1px solid var(--cell-grid)' }}
       />
     );
   }

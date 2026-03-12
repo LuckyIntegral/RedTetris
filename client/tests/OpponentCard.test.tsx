@@ -150,7 +150,7 @@ describe('OpponentCard', () => {
         />
       );
       const cell = container.querySelector<HTMLElement>('[style*="box-sizing"]');
-      expect(cell?.style.background).toBe('rgba(255, 255, 255, 0.06)');
+      expect(cell?.style.background).toBe('var(--opponent-ghost-alive)');
     });
 
     it('renders penalty cells (val=-2) with dead color', () => {
@@ -165,7 +165,7 @@ describe('OpponentCard', () => {
         />
       );
       const cell = container.querySelector<HTMLElement>('[style*="box-sizing"]');
-      expect(cell?.style.background).toBe('rgba(255, 255, 255, 0.03)');
+      expect(cell?.style.background).toBe('var(--opponent-ghost-dead)');
     });
 
     it('renders locked cells (val=-1) with alive color', () => {
@@ -180,7 +180,7 @@ describe('OpponentCard', () => {
         />
       );
       const cell = container.querySelector<HTMLElement>('[style*="box-sizing"]');
-      expect(cell?.style.background).toBe('rgb(17, 17, 17)');
+      expect(cell?.style.background).toBe('var(--opponent-penalty-alive)');
     });
 
     it('renders locked cells (val=-1) with dead color', () => {
@@ -195,7 +195,7 @@ describe('OpponentCard', () => {
         />
       );
       const cell = container.querySelector<HTMLElement>('[style*="box-sizing"]');
-      expect(cell?.style.background).toBe('rgb(68, 68, 68)');
+      expect(cell?.style.background).toBe('var(--opponent-penalty-dead)');
     });
 
     it('renders piece cells (val>0) with idColors when alive', () => {
@@ -213,7 +213,7 @@ describe('OpponentCard', () => {
       expect(cell?.style.background).toBe('rgb(255, 0, 0)'); // idColors[1]
     });
 
-    it('renders piece cells (val>0) as #777 when dead', () => {
+    it('renders piece cells (val>0) as dead-piece color when dead', () => {
       const board = [[1]];
       const { container } = render(
         <OpponentCard
@@ -225,7 +225,7 @@ describe('OpponentCard', () => {
         />
       );
       const cell = container.querySelector<HTMLElement>('[style*="box-sizing"]');
-      expect(cell?.style.background).toBe('rgb(119, 119, 119)');
+      expect(cell?.style.background).toBe('var(--opponent-dead-piece)');
     });
 
     it('falls back to #999 when idColors does not have the piece index', () => {
