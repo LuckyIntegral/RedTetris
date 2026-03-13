@@ -1,8 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
-import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import authReducer from '~/store/authSlice';
 
 // --- Mocks ---
@@ -163,14 +163,14 @@ describe('Game Route', () => {
       expectTextPresent('Create');
     });
 
-    it('renders Join button', async () => {
+    it('hides Join button before room code is entered', async () => {
       await renderGame();
-      expectTextPresent('Join');
+      expect(screen.queryAllByText('Join').length).toBe(0);
     });
 
-    it('renders Start Game button', async () => {
+    it('hides Start button before joining a room', async () => {
       await renderGame();
-      expectTextPresent('Start');
+      expect(screen.queryAllByText('Start').length).toBe(0);
     });
 
     it('clicking Create connects socket and emits create', async () => {

@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { RoomControls } from '~/components/game/RoomControls';
 
 // Mock GameModeSelector to keep tests focused on RoomControls logic
@@ -115,22 +115,22 @@ describe('RoomControls', () => {
       expect(join).toHaveBeenCalledOnce();
     });
 
-    it('disables Join Room when room is empty', () => {
+    it('hides Join Room when room is empty', () => {
       render(
         <RoomControls
           {...defaultProps}
           room=''
         />
       );
-      expect(screen.getByText('Join Room')).toBeDisabled();
+      expect(screen.queryByText('Join Room')).not.toBeInTheDocument();
     });
 
-    it('disables Start Game when no playerId', () => {
+    it('hides Start Game when no playerId', () => {
       render(<RoomControls {...defaultProps} />);
-      expect(screen.getByText('Start Game')).toBeDisabled();
+      expect(screen.queryByText('Start Game')).not.toBeInTheDocument();
     });
 
-    it('disables Start Game when player is not host', () => {
+    it('hides Start Game when player is not host', () => {
       render(
         <RoomControls
           {...defaultProps}
@@ -138,7 +138,7 @@ describe('RoomControls', () => {
           hostId='p1'
         />
       );
-      expect(screen.getByText('Start Game')).toBeDisabled();
+      expect(screen.queryByText('Start Game')).not.toBeInTheDocument();
     });
 
     it('enables Start Game when player is the host', () => {
@@ -270,7 +270,7 @@ describe('RoomControls', () => {
       expect(screen.getByPlaceholderText('Room code')).toBeInTheDocument();
     });
 
-    it('renders Create/Join/Start buttons in compact mode', () => {
+    it('renders Create/Join buttons in compact mode', () => {
       render(
         <RoomControls
           {...defaultProps}
@@ -279,10 +279,9 @@ describe('RoomControls', () => {
       );
       expect(screen.getByText('Create')).toBeInTheDocument();
       expect(screen.getByText('Join')).toBeInTheDocument();
-      expect(screen.getByText('Start')).toBeInTheDocument();
     });
 
-    it('disables Create in compact when already in a room', () => {
+    it('hides Create in compact when already in a room', () => {
       render(
         <RoomControls
           {...defaultProps}
@@ -290,10 +289,10 @@ describe('RoomControls', () => {
           compact
         />
       );
-      expect(screen.getByText('Create')).toBeDisabled();
+      expect(screen.queryByText('Create')).not.toBeInTheDocument();
     });
 
-    it('disables Join in compact when no room or already in room', () => {
+    it('hides Join in compact when no room or already in room', () => {
       render(
         <RoomControls
           {...defaultProps}
@@ -301,7 +300,17 @@ describe('RoomControls', () => {
           compact
         />
       );
-      expect(screen.getByText('Join')).toBeDisabled();
+      expect(screen.queryByText('Join')).not.toBeInTheDocument();
+    });
+
+    it('hides Start in compact when no playerId', () => {
+      render(
+        <RoomControls
+          {...defaultProps}
+          compact
+        />
+      );
+      expect(screen.queryByText('Start')).not.toBeInTheDocument();
     });
 
     it('shows Leave button in compact when in a room', () => {
@@ -517,6 +526,19 @@ describe('RoomControls', () => {
         />
       );
       expect(screen.queryByText('(you)')).not.toBeInTheDocument();
+    });
+
+    it('shows loss message with error styling', () => {
+      render(
+        <RoomControls
+          {...defaultProps}
+          message='You lost'
+        />
+      );
+
+      const badge = screen.getByText('You lost').closest('div');
+      expect(badge?.className).toContain('bg-status-error-bg');
+      expect(badge?.className).toContain('border-status-error-border');
     });
 
     it('shows error message', () => {

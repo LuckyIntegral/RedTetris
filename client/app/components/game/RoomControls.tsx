@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { GameModeSelector } from '../GameModeSelector';
 import type { GameMode } from '../../constants';
 import type { GameState } from '../../types/socket';
+import { GameModeSelector } from '../GameModeSelector';
 
 interface RoomControlsProps {
   room: string;
@@ -47,6 +47,9 @@ export function RoomControls({
 }: RoomControlsProps) {
   const isHost = hostId === playerId || state?.hostId === playerId;
   const canRestart = state?.status === 'finished' && playerId && hostId && playerId === hostId;
+  const canCreate = !playerId;
+  const canJoin = !playerId && !!room;
+  const canStart = !!playerId && (hostId ? playerId === hostId : true);
   const [linkCopied, setLinkCopied] = useState(false);
 
   const copyRoomLink = () => {
@@ -112,27 +115,30 @@ export function RoomControls({
           </div>
 
           <div className='flex flex-wrap justify-center gap-2'>
-            <button
-              onClick={create}
-              disabled={!!playerId}
-              className='px-4 py-2 text-sm bg-green-600 hover:bg-green-500 disabled:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-50 text-white font-semibold rounded-lg transition-colors'
-            >
-              Create
-            </button>
-            <button
-              onClick={join}
-              disabled={!!playerId || !room}
-              className='px-4 py-2 text-sm bg-blue-600 hover:bg-blue-500 disabled:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-50 text-white font-semibold rounded-lg transition-colors'
-            >
-              Join
-            </button>
-            <button
-              onClick={start}
-              disabled={!playerId || (hostId ? playerId !== hostId : false)}
-              className='px-4 py-2 text-sm bg-red-600 hover:bg-red-500 disabled:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-50 text-white font-semibold rounded-lg transition-colors'
-            >
-              Start
-            </button>
+            {canCreate && (
+              <button
+                onClick={create}
+                className='px-4 py-2 text-sm bg-green-600 hover:bg-green-500 text-white font-semibold rounded-lg transition-colors'
+              >
+                Create
+              </button>
+            )}
+            {canJoin && (
+              <button
+                onClick={join}
+                className='px-4 py-2 text-sm bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg transition-colors'
+              >
+                Join
+              </button>
+            )}
+            {canStart && (
+              <button
+                onClick={start}
+                className='px-4 py-2 text-sm bg-red-600 hover:bg-red-500 text-white font-semibold rounded-lg transition-colors'
+              >
+                Start
+              </button>
+            )}
             {canRestart && (
               <button
                 onClick={restart}
@@ -202,7 +208,7 @@ export function RoomControls({
           </div>
 
           <div className='space-y-2'>
-            {!playerId && (
+            {canCreate && (
               <button
                 onClick={create}
                 className='w-full px-4 py-2 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-lg transition-colors'
@@ -210,22 +216,22 @@ export function RoomControls({
                 Create Room
               </button>
             )}
-            {!playerId && (
+            {canJoin && (
               <button
                 onClick={join}
-                disabled={!room}
-                className='w-full px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-50 text-white font-semibold rounded-lg transition-colors'
+                className='w-full px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg transition-colors'
               >
                 Join Room
               </button>
             )}
-            <button
-              onClick={start}
-              disabled={!playerId || (hostId ? playerId !== hostId : false)}
-              className='w-full px-4 py-2 bg-red-600 hover:bg-red-500 disabled:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-50 text-white font-semibold rounded-lg transition-colors'
-            >
-              Start Game
-            </button>
+            {canStart && (
+              <button
+                onClick={start}
+                className='w-full px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-semibold rounded-lg transition-colors'
+              >
+                Start Game
+              </button>
+            )}
             {canRestart && (
               <button
                 onClick={restart}
@@ -285,6 +291,9 @@ function StatusMessages({
   error: string | null;
   message: string | null;
 }) {
+  const normalizedMessage = message?.toLowerCase() ?? '';
+  const isLossMessage = normalizedMessage.includes('you lost') || normalizedMessage.includes('game over');
+
   return (
     <div className='space-y-2'>
       {hostId && playerId === hostId && (
@@ -306,8 +315,12 @@ function StatusMessages({
         </div>
       )}
       {message && (
-        <div className='bg-status-success-bg border border-status-success-border rounded-lg p-2 text-center'>
-          <span className='text-status-success-text text-sm'>{message}</span>
+        <div
+          className={`${isLossMessage ? 'bg-status-error-bg border-status-error-border' : 'bg-status-success-bg border-status-success-border'} border rounded-lg p-2 text-center`}
+        >
+          <span className={`${isLossMessage ? 'text-status-error-text' : 'text-status-success-text'} text-sm`}>
+            {message}
+          </span>
         </div>
       )}
     </div>

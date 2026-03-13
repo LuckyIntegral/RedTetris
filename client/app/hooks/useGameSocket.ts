@@ -59,7 +59,7 @@ export function useGameSocket(initialRoom?: string): UseGameSocketReturn {
     if (socketRef.current) return;
     const url = (import.meta.env.VITE_SERVER_URL as string) ?? 'http://localhost:3002';
     const token = authService.getToken();
-    const s = io(url, { autoConnect: false, auth: { token } }) as unknown as Socket;
+    const s = io(url, { autoConnect: false, auth: { token }, transports: ['websocket'] }) as unknown as Socket;
     socketRef.current = s;
 
     s.on('connect', () => {
@@ -140,8 +140,12 @@ export function useGameSocket(initialRoom?: string): UseGameSocketReturn {
 
     s.on('connect_error', (err: Error | string) => {
       setActionLoading(false);
-      if (typeof err === 'string') setError(err);
-      else setError(err?.message ?? String(err));
+      const rawMessage = typeof err === 'string' ? err : (err?.message ?? String(err));
+      if (rawMessage.toLowerCase().includes('xhr poll error')) {
+        setError('Socket connection failed. Please refresh and try again.');
+        return;
+      }
+      setError(rawMessage);
     });
 
     /* auto-join if initialRoom was provided (from /:room/:playerName URL) */
