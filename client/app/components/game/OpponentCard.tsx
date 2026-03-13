@@ -25,9 +25,9 @@ export function OpponentCard({ name, board, isAlive, score, isHost, idColors, wi
         const val = board?.[y]?.[x] ?? 0;
         let bg = 'transparent';
         if (val === 0) bg = 'transparent';
-        else if (val === -2) bg = isAlive ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.03)';
-        else if (val === -1) bg = isAlive ? '#111' : '#444';
-        else bg = isAlive ? (idColors[val] ?? '#999') : '#777';
+        else if (val === -2) bg = isAlive ? 'var(--opponent-ghost-alive)' : 'var(--opponent-ghost-dead)';
+        else if (val === -1) bg = isAlive ? 'var(--opponent-penalty-alive)' : 'var(--opponent-penalty-dead)';
+        else bg = isAlive ? (idColors[val] ?? '#999') : 'var(--opponent-dead-piece)';
 
         const isPiece = val > 0;
         cells.push(
@@ -53,18 +53,18 @@ export function OpponentCard({ name, board, isAlive, score, isHost, idColors, wi
   };
 
   return (
-    <div className='bg-gray-800 rounded-lg p-3 border border-gray-600 flex gap-3 items-center justify-between'>
+    <div className='bg-surface-alt rounded-lg p-3 border border-outline flex gap-3 items-center justify-between'>
       {/* Left: Info */}
       <div className='flex-1 min-w-0 flex flex-col items-start justify-center'>
         <div className='flex items-center gap-1.5 mb-1'>
           <div
             className={`w-2 h-2 rounded-full ${isAlive ? 'bg-green-400 shadow-[0_0_6px_rgba(74,222,128,0.6)]' : 'bg-red-400 shadow-[0_0_6px_rgba(248,113,113,0.6)]'}`}
           />
-          <span className='text-sm font-semibold text-white truncate'>{name}</span>
+          <span className='text-sm font-semibold text-on-surface truncate'>{name}</span>
         </div>
-        {isHost && <span className='text-[10px] text-yellow-400 font-medium mb-1'>Host</span>}
-        <div className='text-xs text-gray-400 mb-2'>
-          Score: <span className='text-white font-semibold'>{score}</span>
+        {isHost && <span className='text-[10px] text-yellow-500 font-medium mb-1'>Host</span>}
+        <div className='text-xs text-on-surface-muted mb-2'>
+          Score: <span className='text-on-surface font-semibold'>{score}</span>
         </div>
         <div
           className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
@@ -77,7 +77,10 @@ export function OpponentCard({ name, board, isAlive, score, isHost, idColors, wi
         </div>
       </div>
       {/* Right: Board */}
-      <div className='shrink-0 bg-black rounded-lg p-1.5 border border-gray-600 flex justify-center'>
+      <div
+        className='shrink-0 rounded-lg p-1.5 border border-outline flex justify-center'
+        style={{ background: 'var(--mini-board-bg)' }}
+      >
         {renderOpponentBoard()}
       </div>
     </div>

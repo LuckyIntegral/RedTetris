@@ -37,10 +37,10 @@ export function PiecePreview({ type, shapes, colors, cellSize }: PiecePreviewPro
               boxSizing: 'border-box',
               borderRadius: 2,
               background: color,
-              borderTop: '1px solid rgba(255,255,255,0.15)',
-              borderLeft: '1px solid rgba(255,255,255,0.1)',
-              borderBottom: '1px solid rgba(0,0,0,0.3)',
-              borderRight: '1px solid rgba(0,0,0,0.2)',
+              borderTop: '1px solid var(--piece-border-light)',
+              borderLeft: '1px solid var(--piece-border-light)',
+              borderBottom: '1px solid var(--piece-border-dark)',
+              borderRight: '1px solid var(--piece-border-dark)',
             }}
           />
         ) : (

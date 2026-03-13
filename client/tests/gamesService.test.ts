@@ -181,5 +181,57 @@ describe('gamesService', () => {
       expect(stats.highScore).toBe(0);
       expect(stats.bestPlace).toBe(0); // Infinity becomes 0
     });
+
+    it('excludes solo games from wins, winRate and bestPlace', () => {
+      const games = [
+        {
+          game_id: 1,
+          finished_at: '2025-01-01',
+          players: [{ player: { id: 1, username: 'me' }, score: 800, place: 1 }],
+        },
+      ];
+
+      const stats = gamesService.computeStats(games, 1);
+      expect(stats.gamesPlayed).toBe(1);
+      expect(stats.wins).toBe(0); // solo game, not counted
+      expect(stats.winRate).toBe(0); // no multiplayer games
+      expect(stats.highScore).toBe(800); // still counted for score
+      expect(stats.averageScore).toBe(800);
+      expect(stats.bestPlace).toBe(0); // solo excluded
+    });
+
+    it('counts multiplayer wins but not solo wins', () => {
+      const games = [
+        {
+          game_id: 1,
+          finished_at: '2025-01-01',
+          players: [{ player: { id: 1, username: 'me' }, score: 500, place: 1 }],
+        },
+        {
+          game_id: 2,
+          finished_at: '2025-01-02',
+          players: [
+            { player: { id: 1, username: 'me' }, score: 300, place: 1 },
+            { player: { id: 2, username: 'other' }, score: 100, place: 2 },
+          ],
+        },
+        {
+          game_id: 3,
+          finished_at: '2025-01-03',
+          players: [
+            { player: { id: 1, username: 'me' }, score: 200, place: 2 },
+            { player: { id: 3, username: 'third' }, score: 400, place: 1 },
+          ],
+        },
+      ];
+
+      const stats = gamesService.computeStats(games, 1);
+      expect(stats.gamesPlayed).toBe(3);
+      expect(stats.wins).toBe(1); // only game 2 (multiplayer win)
+      expect(stats.winRate).toBe(50); // 1 win / 2 multiplayer games
+      expect(stats.highScore).toBe(500); // solo game score still counts
+      expect(stats.averageScore).toBe(333); // Math.round((500+300+200)/3)
+      expect(stats.bestPlace).toBe(1); // from multiplayer game 2
+    });
   });
 });

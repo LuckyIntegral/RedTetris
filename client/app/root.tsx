@@ -5,6 +5,8 @@ import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration, 
 import type { Route } from './+types/routes';
 import './app.css';
 import { LoadingOverlay } from './components/LoadingOverlay';
+import { ThemeToggle } from './components/ThemeToggle';
+import { useTheme } from './hooks/useTheme';
 import { store } from './store/store';
 
 export const links: Route.LinksFunction = () => [
@@ -18,7 +20,10 @@ export const links: Route.LinksFunction = () => [
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang='en'>
+    <html
+      lang='en'
+      suppressHydrationWarning
+    >
       <head>
         <meta charSet='utf-8' />
         <meta
@@ -28,7 +33,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         {children}
         <ScrollRestoration />
         <Scripts />
@@ -40,9 +45,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   const navigation = useNavigation();
   const isNavigating = navigation.state === 'loading';
+  const { theme, toggle, isHydrated } = useTheme();
 
   return (
     <Provider store={store}>
+      {isHydrated && (
+        <ThemeToggle
+          theme={theme}
+          toggle={toggle}
+        />
+      )}
       <Outlet />
       {isNavigating && <LoadingOverlay />}
     </Provider>
@@ -68,12 +80,12 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className='min-h-screen bg-slate-900 flex items-center justify-center p-6'>
+    <main className='min-h-screen bg-page flex items-center justify-center p-6'>
       <div className='text-center max-w-md'>
         <h1 className='text-8xl font-bold text-red-500 mb-4'>{message}</h1>
-        <p className='text-xl text-gray-300 mb-8'>{details}</p>
+        <p className='text-xl text-on-surface-variant mb-8'>{details}</p>
         {stack && (
-          <pre className='w-full p-4 overflow-x-auto bg-gray-800 border border-gray-600 rounded-lg text-left text-sm text-gray-400 mb-8'>
+          <pre className='w-full p-4 overflow-x-auto bg-surface-alt border border-outline rounded-lg text-left text-sm text-on-surface-muted mb-8'>
             <code>{stack}</code>
           </pre>
         )}

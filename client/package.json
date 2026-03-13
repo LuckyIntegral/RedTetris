@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "sh -c 'react-router dev --port ${CLIENT_PORT:-3001} --host 0.0.0.0'",
     "build": "react-router build",
-    "start": "react-router-serve build/server/index.js",
+    "start": "sh -c 'PORT=${CLIENT_PORT:-3001} HOST=0.0.0.0 react-router-serve build/server/index.js'",
     "lint": "eslint . --ext js,jsx,ts,tsx --ignore-pattern .react-router --ignore-pattern build --ignore-pattern node_modules --ignore-pattern coverage --fix",
     "lint:check": "eslint . --ext js,jsx,ts,tsx --ignore-pattern .react-router --ignore-pattern build --ignore-pattern node_modules --ignore-pattern coverage",
     "prettier": "prettier \"**/*.{js,jsx,ts,tsx,json,css,md}\" --ignore-path ../.prettierignore --write",
