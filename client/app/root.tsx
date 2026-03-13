@@ -32,14 +32,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         />
         <Meta />
         <Links />
-        <script
-          dangerouslySetInnerHTML={{
-            __html:
-              "(function(){try{var t=localStorage.getItem('red-tetris-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})()",
-          }}
-        />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         {children}
         <ScrollRestoration />
         <Scripts />
@@ -51,14 +45,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   const navigation = useNavigation();
   const isNavigating = navigation.state === 'loading';
-  const { theme, toggle } = useTheme();
+  const { theme, toggle, isHydrated } = useTheme();
 
   return (
     <Provider store={store}>
-      <ThemeToggle
-        theme={theme}
-        toggle={toggle}
-      />
+      {isHydrated && (
+        <ThemeToggle
+          theme={theme}
+          toggle={toggle}
+        />
+      )}
       <Outlet />
       {isNavigating && <LoadingOverlay />}
     </Provider>

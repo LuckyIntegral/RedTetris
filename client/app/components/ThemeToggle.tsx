@@ -20,7 +20,7 @@ export function ThemeToggle({ theme, toggle }: ThemeToggleProps) {
         </span>
       ) : (
         <span
-          className='w-5 h-5 text-slate-600 flex items-center justify-center text-lg leading-none'
+          className='w-5 h-5 text-slate-600 flex items-center justify-center text-2xl leading-none -mt-px'
           aria-hidden='true'
         >
           ☾
