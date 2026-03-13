@@ -10,7 +10,7 @@ const clientPort = parseInt(process.env.CLIENT_PORT ?? '3001', 10);
 const serverUrl =
   process.env.VITE_SERVER_URL === 'auto'
     ? `http://localhost:${serverPort}`
-    : (process.env.VITE_SERVER_URL ?? `http://localhost:${serverPort}`);
+    : "http://10.18.182.225:3002";
 
 export default defineConfig({
   plugins: [

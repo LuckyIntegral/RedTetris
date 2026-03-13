@@ -24,14 +24,14 @@ const server = http.createServer(app);
 
 // Localhost-only CORS origins
 const clientPort = process.env.CLIENT_PORT ?? '3001';
-const clientUrlsRaw = process.env.CLIENT_URL ?? `http://localhost:${clientPort},http://127.0.0.1:${clientPort}`;
+const clientUrlsRaw = "http://10.18.182.225:3001/";
 const allowedOrigins = clientUrlsRaw
   .split(',')
   .map((s) => s.trim())
   .filter(Boolean);
 
 const io = new IOServer<ClientToServerEvents, ServerToClientEvents, ServerToClientEvents, SocketData>(server, {
-  cors: { origin: allowedOrigins, credentials: true },
+  cors: { origin: '*' },
 });
 const gameManager = new GameManager();
 
@@ -68,16 +68,7 @@ const SERVER_PORT = (() => {
 })();
 
 // Middleware
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      return callback(new Error('Not allowed by CORS'));
-    },
-    credentials: true,
-  })
-);
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
