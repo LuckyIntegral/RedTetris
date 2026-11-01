@@ -1,0 +1,13 @@
+**/node_modules
+**/dist
+**/build
+**/coverage
+**/.nyc_output
+**/.react-router
+.git
+.github
+.devcontainer
+deploy
+**/.env
+**/.env.*
+**/*.md

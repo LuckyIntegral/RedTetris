@@ -1,0 +1,99 @@
+# Production stack, started by deploy.sh on the server (see README.md).
+# Only Caddy publishes ports; the database is on an internal network with no route outside.
+# Third-party images are pinned by digest; Dependabot keeps the digests current.
+name: red-tetris
+
+x-hardened: &hardened
+  restart: unless-stopped
+  read_only: true
+  tmpfs: [/tmp]
+  cap_drop: [ALL]
+  security_opt: ['no-new-privileges:true']
+
+services:
+  caddy:
+    <<: *hardened
+    image: caddy:2-alpine@sha256:e70b164da81ef698b3ad19af799ea6086ce6d9e48ed4079eb9fe26f6fbf14ee5
+    cap_add: [NET_BIND_SERVICE]
+    environment:
+      DOMAIN: ${DOMAIN:?DOMAIN must be set in .env}
+    ports:
+      - '80:80'
+      - '443:443'
+      - '443:443/udp'
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    networks: [edge]
+    depends_on:
+      server:
+        condition: service_healthy
+      client:
+        condition: service_healthy
+
+  client:
+    <<: *hardened
+    image: ghcr.io/luckyintegral/redtetris/client@${CLIENT_DIGEST:?CLIENT_DIGEST is set by deploy.sh}
+    networks: [edge]
+    healthcheck:
+      test: ['CMD', '/nodejs/bin/node', '-e', "fetch('http://127.0.0.1:3001/').then((r) => process.exit(r.ok ? 0 : 1), () => process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  server:
+    <<: *hardened
+    image: ghcr.io/luckyintegral/redtetris/server@${SERVER_DIGEST:?SERVER_DIGEST is set by deploy.sh}
+    environment:
+      SERVER_PORT: '3002'
+      CLIENT_URL: https://${DOMAIN}
+      TRUST_PROXY_HOPS: '1'
+      DB_HOST: db
+      DB_PORT: '3306'
+      DB_USER: ${DB_USER:?DB_USER must be set in .env}
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD must be set in .env}
+      DB_NAME: ${DB_NAME:?DB_NAME must be set in .env}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set in .env}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
+    networks: [edge, backend]
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', '/nodejs/bin/node', '-e', "fetch('http://127.0.0.1:3002/health').then((r) => process.exit(r.ok ? 0 : 1), () => process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  db:
+    image: mysql:8.4@sha256:a0225d1ea6631c8bc2385dc4c2faba17bbf1834ecf369e1659a9a382bd8d5dd7
+    restart: unless-stopped
+    # The entrypoint starts as root and drops to the mysql user, so capabilities stay at Docker's defaults
+    security_opt: ['no-new-privileges:true']
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD must be set in .env}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db-data:/var/lib/mysql
+    networks: [backend]
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', '127.0.0.1']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+networks:
+  edge:
+  backend:
+    internal: true
+
+volumes:
+  caddy-data:
+  caddy-config:
+  db-data:

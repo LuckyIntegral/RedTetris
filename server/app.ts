@@ -67,6 +67,13 @@ const SERVER_PORT = (() => {
   return parsedPort;
 })();
 
+// Behind a reverse proxy in production: trust its X-Forwarded-For so rate limits apply per client
+const trustProxyHops = Number.parseInt(process.env.TRUST_PROXY_HOPS ?? '0', 10);
+if (trustProxyHops > 0) {
+  app.set('trust proxy', trustProxyHops);
+}
+app.disable('x-powered-by');
+
 // Middleware
 app.use(
   cors({

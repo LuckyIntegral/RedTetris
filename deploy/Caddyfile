@@ -1,0 +1,27 @@
+# Terminates TLS (certificates are obtained and renewed automatically) and routes by path.
+# /api-docs and /health are not routed, so they stay reachable only inside the Docker network.
+{$DOMAIN} {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		-Server
+		-X-Powered-By
+	}
+
+	handle /api/* {
+		reverse_proxy server:3002
+	}
+
+	handle /socket.io/* {
+		reverse_proxy server:3002
+	}
+
+	handle {
+		reverse_proxy client:3001
+	}
+}
