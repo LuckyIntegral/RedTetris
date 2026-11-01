@@ -31,18 +31,17 @@
   "license": "ISC",
   "packageManager": "pnpm@10.34.9",
   "devDependencies": {
-    "@eslint/js": "^9.39.5",
+    "@eslint/js": "^10.0.1",
     "@next/eslint-plugin-next": "^15.5.28",
     "@stylistic/eslint-plugin": "^5.10.0",
     "concurrently": "^9.2.5",
-    "eslint": "^9.39.5",
-    "eslint-plugin-react": "^7.37.5",
+    "eslint": "^10.13.0",
     "eslint-plugin-unused-imports": "^4.4.1",
     "globals": "^16.4.0",
     "jiti": "^2.6.1",
     "prettier": "^3.8.1",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.46.1"
+    "typescript-eslint": "^8.72.0"
   },
   "dependencies": {
     "eslint-plugin-next": "^0.0.0"

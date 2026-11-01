@@ -41,7 +41,7 @@ export function useKeyboardControls(socketRef: React.RefObject<Socket | null>, r
         // after DAS_DELAY, start rapid repeat
         const dasTimer = setTimeout(() => {
           const interval = setInterval(() => fireIntent(e.key), REPEAT_INTERVAL);
-          held.set(e.key, interval as unknown as ReturnType<typeof setTimeout>);
+          held.set(e.key, interval);
         }, DAS_DELAY);
         held.set(e.key, dasTimer);
         return;

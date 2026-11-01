@@ -1,7 +1,6 @@
 import globals from 'globals';
 import nextPlugin from '@next/eslint-plugin-next';
 import stylisticPlugin from '@stylistic/eslint-plugin';
-import reactPlugin from 'eslint-plugin-react';
 import unusedImports from 'eslint-plugin-unused-imports';
 import tseslint from 'typescript-eslint';
 
@@ -28,7 +27,6 @@ export default [
   {
     files: ['**/*.{mjs,cjs,ts,mts,cts,tsx}'],
     plugins: {
-      react: reactPlugin,
       '@next/next': nextPlugin,
       'unused-imports': unusedImports,
       '@stylistic': stylisticPlugin,
@@ -39,7 +37,7 @@ export default [
     },
     rules: {
       'jsx-quotes': ['error', 'prefer-single'],
-      'react/jsx-curly-brace-presence': ['error', { propElementValues: 'always' }],
+      '@stylistic/jsx-curly-brace-presence': ['error', { propElementValues: 'always' }],
       quotes: ['error', 'single', { avoidEscape: true }],
     },
   },

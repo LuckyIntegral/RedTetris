@@ -225,7 +225,7 @@ export function useGameSocket(initialRoom?: string): UseGameSocketReturn {
   /* derived data */
   const myView = useMemo<PlayerState | null>(() => {
     if (!state || !playerId) return null;
-    return (state.players?.[playerId] ?? null) as PlayerState | null;
+    return state.players?.[playerId] ?? null;
   }, [state, playerId]);
 
   const hostName = useMemo(() => {
@@ -256,7 +256,7 @@ export function useGameSocket(initialRoom?: string): UseGameSocketReturn {
 
   const opponents = useMemo<OpponentInfo[]>(() => {
     if (!state || !playerId) return [];
-    const entries = Object.entries(state.players ?? ({} as Record<string, PlayerState>));
+    const entries = Object.entries(state.players ?? {});
     return entries
       .filter(([id]) => id !== playerId)
       .map(([id, p]) => {

@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import { BSP_SCORES, GAME_SETUP } from '../constants';
 import { GameEngine } from '../game/GameEngine';
-import { Piece } from '../game/types';
 
 describe('GameEngine additional coverage', () => {
   it('collides does not treat negative y as collision when inside x bounds', () => {
@@ -9,7 +8,7 @@ describe('GameEngine additional coverage', () => {
     const board = Array.from({ length: GAME_SETUP.classic.height }, () =>
       Array.from({ length: GAME_SETUP.classic.width }, () => 0)
     );
-    const piece = { type: 'O', x: 4, y: -2, rotation: 0 } as Piece;
+    const piece = { type: 'O', x: 4, y: -2, rotation: 0 };
     const coll = e.collides(board, piece);
     expect(coll).to.equal(false);
   });
@@ -22,7 +21,7 @@ describe('GameEngine additional coverage', () => {
       const board = Array.from({ length: GAME_SETUP.classic.height }, () =>
         Array.from({ length: GAME_SETUP.classic.width }, () => 0)
       );
-      const piece = { type: 'O', x: 0, y: 0, rotation: 0 } as Piece;
+      const piece = { type: 'O', x: 0, y: 0, rotation: 0 };
       const out = e.renderBoardWithGhost(board, piece);
 
       const hasGhost = out.some((row) => row.includes(-2));
@@ -83,7 +82,7 @@ describe('GameEngine (cleaned focused tests)', () => {
     const board = Array.from({ length: GAME_SETUP.classic.height }, () =>
       Array.from({ length: GAME_SETUP.classic.width }, () => 0)
     );
-    const piece = { type: 'O', x: 4, y: 0, rotation: 0 } as Piece;
+    const piece = { type: 'O', x: 4, y: 0, rotation: 0 };
     const out = e.renderBoardWithPiece(board, piece);
     expect(out[0][4]).to.be.greaterThan(0);
     expect(out[0][5]).to.be.greaterThan(0);
@@ -94,7 +93,7 @@ describe('GameEngine (cleaned focused tests)', () => {
     const board = Array.from({ length: GAME_SETUP.classic.height }, () =>
       Array.from({ length: GAME_SETUP.classic.width }, () => 0)
     );
-    const piece = { type: 'O', x: 4, y: 0, rotation: 0 } as Piece;
+    const piece = { type: 'O', x: 4, y: 0, rotation: 0 };
     const out = e.renderBoardWithGhost(board, piece);
     const hasGhost = out.some((row) => row.includes(-2));
     const hasActive = out[0].some((cell) => cell > 0);
@@ -107,7 +106,7 @@ describe('GameEngine (cleaned focused tests)', () => {
     const board = Array.from({ length: GAME_SETUP.classic.height }, () =>
       Array.from({ length: GAME_SETUP.classic.width }, () => 0)
     );
-    const piece = { type: 'O', x: 4, y: -2, rotation: 0 } as Piece;
+    const piece = { type: 'O', x: 4, y: -2, rotation: 0 };
     const coll = e.collides(board, piece);
     expect(coll).to.equal(false);
   });
@@ -116,7 +115,7 @@ describe('GameEngine (cleaned focused tests)', () => {
     const e = new GameEngine('s4');
     const state = e.createInitialState(['p1']);
     const player = state.playerStates.p1;
-    player.activePiece = { type: 'O', x: 4, y: 0, rotation: 0 } as Piece;
+    player.activePiece = { type: 'O', x: 4, y: 0, rotation: 0 };
 
     const moved = e.applyInput(state, 'p1', { type: 'move', dir: 'left' });
     expect(moved.playerStates.p1.activePiece!.x).to.equal(3);
@@ -140,7 +139,7 @@ describe('GameEngine (cleaned focused tests)', () => {
     const state = e.createInitialState(['p1']);
     const player = state.playerStates.p1;
 
-    player.activePiece = { type: 'O', x: 4, y: 0, rotation: 0 } as Piece;
+    player.activePiece = { type: 'O', x: 4, y: 0, rotation: 0 };
     const held = e.applyInput(state, 'p1', { type: 'hold' });
     expect(held.playerStates.p1.holdPiece).to.equal('O');
     expect(held.playerStates.p1.activePiece).to.equal(null);
@@ -200,7 +199,7 @@ describe('GameEngine focused extras', () => {
     const board = Array.from({ length: GAME_SETUP.classic.height }, () =>
       Array.from({ length: GAME_SETUP.classic.width }, () => 0)
     );
-    const piece = { type: 'O', x: 4, y: -2, rotation: 0 } as Piece;
+    const piece = { type: 'O', x: 4, y: -2, rotation: 0 };
     const coll = e.collides(board, piece);
     expect(coll).to.equal(false);
   });
@@ -213,7 +212,7 @@ describe('GameEngine focused extras', () => {
       const board = Array.from({ length: GAME_SETUP.classic.height }, () =>
         Array.from({ length: GAME_SETUP.classic.width }, () => 0)
       );
-      const piece = { type: 'O', x: 0, y: 0, rotation: 0 } as Piece;
+      const piece = { type: 'O', x: 0, y: 0, rotation: 0 };
       const out = e.renderBoardWithGhost(board, piece);
       const hasGhost = out.some((row) => row.includes(-2));
       expect(hasGhost).to.equal(false);
@@ -273,7 +272,7 @@ describe('GameEngine', () => {
       const e = new GameEngine('wrap-rot');
       const s = e.createInitialState(['p1']);
       const p = s.playerStates.p1;
-      p.activePiece = { type: 'O', x: 4, y: 0, rotation: 3 } as Piece;
+      p.activePiece = { type: 'O', x: 4, y: 0, rotation: 3 };
       const after = e.applyInput(s, 'p1', { type: 'rotate' });
       expect(after.playerStates.p1.activePiece!.rotation).to.equal(0);
     });
@@ -285,7 +284,7 @@ describe('GameEngine', () => {
       );
       // place a block under spawn
       b[1][4] = 1;
-      const c = e.collides(b, { type: 'O', x: 4, y: 0, rotation: 0 } as Piece);
+      const c = e.collides(b, { type: 'O', x: 4, y: 0, rotation: 0 });
       expect(c).to.equal(true);
     });
 
@@ -340,7 +339,7 @@ describe('GameEngine', () => {
     const e = new GameEngine('holdtest');
     const s = e.createInitialState(['p1']);
     const p = s.playerStates.p1;
-    p.activePiece = { type: 'O', x: 4, y: 0, rotation: 0 } as Piece;
+    p.activePiece = { type: 'O', x: 4, y: 0, rotation: 0 };
     p.holdLocked = true;
     const after = e.applyInput(s, 'p1', { type: 'hold' });
     expect(after.playerStates.p1.activePiece).to.not.equal(null);
@@ -350,7 +349,7 @@ describe('GameEngine', () => {
     const e = new GameEngine('hd');
     const s = e.createInitialState(['p1']);
     const p = s.playerStates.p1;
-    p.activePiece = { type: 'O', x: 4, y: -2, rotation: 0 } as Piece;
+    p.activePiece = { type: 'O', x: 4, y: -2, rotation: 0 };
     const beforePlaced = p.piecesPlaced;
     const after = e.applyInput(s, 'p1', { type: 'hard' });
     expect(after.playerStates.p1.activePiece).to.equal(null);

@@ -64,7 +64,7 @@ export class GameEngine {
       speed: STANDARD_FIRST_SPEED,
       playerStates,
       initialPlayerCount: playerIds.length,
-    } as GameState;
+    };
   }
 
   addPlayer(state: GameState, playerId: string): GameState {
