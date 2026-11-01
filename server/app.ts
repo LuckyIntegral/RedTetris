@@ -2,13 +2,13 @@ import dotenv from 'dotenv';
 import path from 'path';
 
 import cors from 'cors';
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import http from 'http';
 import { Server as IOServer, Socket } from 'socket.io';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger';
 import { GameManager } from './core/GameManager';
-import db, { runMigrations, testConnection } from './db';
+import { runMigrations, testConnection } from './db';
 import { resolveSession } from './middleware/auth';
 import { registerSocketHandlers } from './net/socketHandlers';
 import authRoutes from './routes/auth';
@@ -91,16 +91,19 @@ app.use(
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
       if (allowedOrigins.includes(origin)) return callback(null, true);
-      return callback(new Error('Not allowed by CORS'));
+      return callback(Object.assign(new Error('Not allowed by CORS'), { status: 403 }));
     },
     credentials: true,
   })
 );
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Every request body is a few small JSON fields; larger bodies are rejected with 413
+app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
-// Swagger Documentation
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// Swagger Documentation (development only; it maps the whole API for an attacker)
+if (process.env.NODE_ENV !== 'production') {
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+}
 
 /**
  * @swagger
@@ -155,20 +158,21 @@ app.use('/api/auth', authRoutes);
 // Games routes
 app.use('/api/games', gamesRoutes);
 
-// Example database query endpoint
-app.get('/api/test-db', async (req: Request, res: Response) => {
-  try {
-    const [rows] = await db.query('SELECT 1 + 1 AS result');
-    res.json({ success: true, data: rows });
-  } catch (error: unknown) {
-    logDbError('GET /api/test-db', error);
+const errorCodes: Record<number, string> = { 400: 'BAD_REQUEST', 403: 'FORBIDDEN', 413: 'PAYLOAD_TOO_LARGE' };
+
+// Errors from middleware (malformed JSON, blocked CORS origin, oversized body) become JSON
+// responses; Express's default handler would send HTML with a stack trace outside production
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
+  const status = (err as { status?: unknown }).status;
+  if (typeof status === 'number' && status >= 400 && status < 500) {
     res
-      .status(500)
-      .json({
-        success: false,
-        error: { code: 'DB_TEST_QUERY_FAILED', message: 'Database query failed while executing test query.' },
-      });
+      .status(status)
+      .json({ success: false, error: { code: errorCodes[status] ?? 'BAD_REQUEST', message: 'Invalid request' } });
+    return;
   }
+  logger.error('Unhandled request error', err);
+  res.status(500).json({ success: false, error: { code: 'INTERNAL_ERROR', message: 'Internal server error' } });
 });
 
 // Start server

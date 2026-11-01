@@ -94,7 +94,7 @@ http://localhost:3001
 The server also exposes:
 - `GET /` – simple welcome message ("Welcome to Red Tetris API")
 - `GET /health` – health check including database status
-- `GET /api-docs` – Swagger UI with API documentation
+- `GET /api-docs` – Swagger UI with API documentation (not served when `NODE_ENV=production`)
 
 ### 5. Build for production
 
@@ -155,7 +155,7 @@ pnpm --filter=server test
 - Global state management on the client using Redux Toolkit
 - Error and performance monitoring on the client using Sentry (via @sentry/react and @sentry/vite-plugin)
 - Automatic database migrations on server startup (MySQL + SQL files)
-- Swagger-based API documentation available at `/api-docs`
+- Swagger-based API documentation available at `/api-docs` in development
 - Test suites for both client and server, plus coverage reporting
 
 ## Usage Overview

@@ -1,11 +1,22 @@
 import { Response } from 'express';
+import { RowDataPacket } from 'mysql2';
 import db from '../db';
 import { AuthRequest } from '../middleware/auth';
 import { GameDTO, GameRow } from '../models/Game';
-import { paginate } from '../routes/pagination';
+import { PaginationResult } from '../types/pagination';
 import { logDbError } from '../utils/logger';
 
 const DEFAULT_PAGE_SIZE = 10;
+const MAX_PAGE_SIZE = 100;
+const MAX_PAGE = 100_000;
+
+interface CountRow extends RowDataPacket {
+  total: number;
+}
+
+interface GameIdRow extends RowDataPacket {
+  game_id: number;
+}
 
 export const getUserGames = async (req: AuthRequest, res: Response): Promise<void> => {
   const userId = req.user?.userId;
@@ -23,12 +34,37 @@ export const getUserGames = async (req: AuthRequest, res: Response): Promise<voi
 
     if (typeof pageParam === 'string' && pageParam.trim() !== '') {
       const p = Number.parseInt(pageParam);
-      if (!Number.isNaN(p) && p >= 0) page = p;
+      if (!Number.isNaN(p) && p >= 0) page = Math.min(p, MAX_PAGE);
     }
 
     if (typeof sizeParam === 'string' && sizeParam.trim() !== '') {
       const s = Number.parseInt(sizeParam);
-      if (!Number.isNaN(s) && s > 0) size = s;
+      if (!Number.isNaN(s) && s > 0) size = Math.min(s, MAX_PAGE_SIZE);
+    }
+
+    // Paginate in SQL: only the requested page of games is loaded, however long the history gets
+    const [[{ total }]] = await db.query<CountRow[]>(
+      'SELECT COUNT(DISTINCT game_id) AS total FROM game_records WHERE player_id = ?',
+      [userId]
+    );
+    const totalItems = Number(total);
+
+    const [idRows] = await db.query<GameIdRow[]>(
+      'SELECT DISTINCT game_id FROM game_records WHERE player_id = ? ORDER BY game_id DESC LIMIT ? OFFSET ?',
+      [userId, size, page * size]
+    );
+
+    const result: PaginationResult<GameDTO> = {
+      page,
+      size,
+      totalItems,
+      totalPages: Math.ceil(totalItems / size),
+      content: [],
+    };
+
+    if (idRows.length === 0) {
+      res.json({ success: true, data: result });
+      return;
     }
 
     const [rows] = await db.query<GameRow[]>(
@@ -41,9 +77,9 @@ export const getUserGames = async (req: AuthRequest, res: Response): Promise<voi
        FROM games g
        JOIN game_records gr ON gr.game_id = g.id
        JOIN users u ON gr.player_id = u.id
-       WHERE g.id IN (SELECT game_id FROM game_records WHERE player_id = ?)
+       WHERE g.id IN (?)
        ORDER BY g.id DESC, gr.score DESC`,
-      [userId]
+      [idRows.map((r) => r.game_id)]
     );
 
     const gamesMap = new Map<number, GameDTO>();
@@ -57,9 +93,9 @@ export const getUserGames = async (req: AuthRequest, res: Response): Promise<voi
       record.players.push({ player: { id: r.player_id, username: r.player_username }, score: r.score, place: r.place });
     }
 
-    const games = Array.from(gamesMap.values()).sort((a, b) => b.game_id - a.game_id);
+    result.content = Array.from(gamesMap.values()).sort((a, b) => b.game_id - a.game_id);
 
-    res.json({ success: true, data: paginate(games, page, size) });
+    res.json({ success: true, data: result });
   } catch (err: unknown) {
     logDbError('GET /api/games', err);
     res.status(500).json({ success: false, error: { code: 'GAMES_FETCH_FAILED', message: 'Failed to fetch games' } });
