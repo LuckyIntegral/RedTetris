@@ -6,7 +6,7 @@
 # Base images are pinned by digest; Dependabot keeps the digests current.
 
 FROM node:24-bookworm-slim@sha256:c86ecead9e55a5210ac1727de38a4ca840bf03dcaf34dc9749addbf383b1920c AS base
-RUN npm install -g pnpm@10.14.0
+RUN npm install -g pnpm@10.34.9
 WORKDIR /app
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY client/package.json client/

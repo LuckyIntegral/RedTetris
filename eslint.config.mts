@@ -2,7 +2,6 @@ import globals from 'globals';
 import nextPlugin from '@next/eslint-plugin-next';
 import stylisticPlugin from '@stylistic/eslint-plugin';
 import reactPlugin from 'eslint-plugin-react';
-import reactCompilerPlugin from 'eslint-plugin-react-compiler';
 import unusedImports from 'eslint-plugin-unused-imports';
 import tseslint from 'typescript-eslint';
 
@@ -33,7 +32,6 @@ export default [
       '@next/next': nextPlugin,
       'unused-imports': unusedImports,
       '@stylistic': stylisticPlugin,
-      'react-compiler': reactCompilerPlugin,
     },
     languageOptions: {
       globals: globals.browser,
