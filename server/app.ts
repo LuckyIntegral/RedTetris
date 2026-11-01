@@ -32,25 +32,29 @@ const allowedOrigins = clientUrlsRaw
 
 const io = new IOServer<ClientToServerEvents, ServerToClientEvents, ServerToClientEvents, SocketData>(server, {
   cors: { origin: allowedOrigins, credentials: true },
+  // Client messages are tiny JSON objects; the 1 MB default only helps memory-exhaustion attempts
+  maxHttpBufferSize: 16 * 1024,
 });
 const gameManager = new GameManager();
 
+// Only authenticated users may open a socket; game events also re-check socket.data.user
 io.use((socket: Socket<ClientToServerEvents, ServerToClientEvents, ServerToClientEvents, SocketData>, next) => {
   const token = socket.handshake.auth?.token as unknown;
   if (typeof token !== 'string' || token === '') {
     logger.info('socket auth: no token provided');
-    return next();
+    return next(new Error('Authentication required'));
   }
 
   // Same check as HTTP requests, so logged-out (revoked) tokens cannot open game sockets
   resolveSession(token)
     .then((user) => {
-      if (user) {
-        socket.data.user = user;
-        logger.info('socket authenticated as', user.username);
-      } else {
+      if (!user) {
         logger.info('socket auth failed: invalid, expired or revoked token');
+        next(new Error('Session expired, please log in again'));
+        return;
       }
+      socket.data.user = user;
+      logger.info('socket authenticated as', user.username);
       next();
     })
     .catch((err: unknown) => {
