@@ -1,7 +1,9 @@
 **/node_modules
 **/.react-router
 **/build
-/coverage
+**/dist
+**/coverage
+**/.nyc_output
 
 *.json
 *.md
