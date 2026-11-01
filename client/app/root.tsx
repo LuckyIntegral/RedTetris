@@ -63,7 +63,8 @@ export default function App() {
 
 const SENTRY_DSN = import.meta.env.VITE_SENTRY_DSN as string;
 if (SENTRY_DSN) {
-  Sentry.init({ dsn: SENTRY_DSN, sendDefaultPii: true });
+  // No IP addresses or other personal data in error reports
+  Sentry.init({ dsn: SENTRY_DSN, sendDefaultPii: false });
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
