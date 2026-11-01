@@ -23,16 +23,21 @@ if (process.env.NODE_ENV === 'test') {
   dbName = process.env.DB_NAME ?? 'red_tetris';
 }
 
-const pool = mysql.createPool({
+const connectionConfig: mysql.ConnectionOptions = {
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: dbPassword,
   database: dbName,
   port: dbPort,
+};
+
+// Request-path pool: one statement per query, and objects in placeholders always become plain strings
+const pool = mysql.createPool({
+  ...connectionConfig,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
-  multipleStatements: true,
+  stringifyObjects: true,
 });
 
 export const testConnection = async () => {
@@ -49,24 +54,24 @@ export const testConnection = async () => {
 
 export const runMigrations = async (): Promise<void> => {
   const migrationsDir = path.resolve(process.cwd(), 'migrations');
-  let conn: mysql.PoolConnection | undefined;
+
+  const stat = await fs.stat(migrationsDir).catch(() => null);
+  if (!stat?.isDirectory()) {
+    logger.info(`No migrations directory found at ${migrationsDir} — skipping migrations`);
+    return;
+  }
+
+  const files = await fs.readdir(migrationsDir);
+  const sqlFiles = files.filter((f) => f.endsWith('.sql')).sort();
+  if (sqlFiles.length === 0) {
+    logger.info(`No .sql migration files found in ${migrationsDir} — skipping migrations`);
+    return;
+  }
+
+  // Migration files may hold several statements, so only this short-lived connection allows them
+  const conn = await mysql.createConnection({ ...connectionConfig, multipleStatements: true });
 
   try {
-    const stat = await fs.stat(migrationsDir).catch(() => null);
-    if (!stat?.isDirectory()) {
-      logger.info(`No migrations directory found at ${migrationsDir} — skipping migrations`);
-      return;
-    }
-
-    const files = await fs.readdir(migrationsDir);
-    const sqlFiles = files.filter((f) => f.endsWith('.sql')).sort();
-    if (sqlFiles.length === 0) {
-      logger.info(`No .sql migration files found in ${migrationsDir} — skipping migrations`);
-      return;
-    }
-
-    conn = await pool.getConnection();
-
     await conn.query(
       `CREATE TABLE IF NOT EXISTS migrations (
          id INT AUTO_INCREMENT PRIMARY KEY,
@@ -99,8 +104,9 @@ export const runMigrations = async (): Promise<void> => {
     logger.info('All migrations applied successfully');
   } catch (err: unknown) {
     logger.error('Migrations failed:', err);
+    throw err;
   } finally {
-    if (conn) conn.release();
+    await conn.end();
   }
 };
 
