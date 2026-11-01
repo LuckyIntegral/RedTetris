@@ -1,0 +1,187 @@
+name: Release
+
+# Only admins can create tags (repository ruleset), so only admins can trigger a deploy
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  version:
+    name: Validate release
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+
+    steps:
+      - name: Check tag and build settings
+        id: version
+        env:
+          TAG: ${{ github.ref_name }}
+          VITE_SERVER_URL: ${{ vars.VITE_SERVER_URL }}
+        run: |
+          if [[ ! $TAG =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
+            echo "::error::Tag '$TAG' is not a MAJOR.MINOR.PATCH version"
+            exit 1
+          fi
+          if [[ ! $VITE_SERVER_URL =~ ^https:// ]]; then
+            echo "::error::Repository variable VITE_SERVER_URL must be the public https:// URL (see deploy/README.md)"
+            exit 1
+          fi
+          echo "version=$TAG" >> "$GITHUB_OUTPUT"
+
+  ci:
+    name: CI
+    permissions:
+      contents: read
+    uses: ./.github/workflows/ci.yml
+
+  publish:
+    name: Publish images
+    needs: [version, ci]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      server-digest: ${{ steps.server.outputs.digest }}
+      client-digest: ${{ steps.client.outputs.digest }}
+    env:
+      VERSION: ${{ needs.version.outputs.version }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set image repository
+        id: image
+        run: echo "repo=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - name: Log in to GHCR
+        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # No shared build cache: a cache written from another branch could poison release images
+      - name: Build and push server image
+        id: server
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          target: server
+          pull: true
+          push: true
+          tags: ${{ steps.image.outputs.repo }}/server:${{ env.VERSION }}
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.version=${{ env.VERSION }}
+
+      - name: Build and push client image
+        id: client
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          target: client
+          pull: true
+          push: true
+          tags: ${{ steps.image.outputs.repo }}/client:${{ env.VERSION }}
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.version=${{ env.VERSION }}
+          build-args: |
+            VITE_SERVER_URL=${{ vars.VITE_SERVER_URL }}
+            VITE_SENTRY_DSN=${{ vars.VITE_SENTRY_DSN }}
+          secrets: |
+            sentry_auth_token=${{ secrets.SENTRY_AUTH_TOKEN }}
+
+      - name: Verify images are private
+        run: |
+          for image in server client; do
+            repo="${GITHUB_REPOSITORY,,}/$image"
+            token=$(curl -sS "https://ghcr.io/token?scope=repository:$repo:pull" | jq -r '.token // empty')
+            status=$(curl -sS -o /dev/null -w '%{http_code}' \
+              -H "Authorization: Bearer ${token:-anonymous}" \
+              -H 'Accept: application/vnd.oci.image.index.v1+json, application/vnd.oci.image.manifest.v1+json' \
+              "https://ghcr.io/v2/$repo/manifests/$VERSION")
+            if [ "$status" = 200 ]; then
+              echo "::error::ghcr.io/$repo is publicly pullable. Set the package visibility to private in its package settings."
+              exit 1
+            fi
+            echo "ghcr.io/$repo: anonymous pull denied (HTTP $status)"
+          done
+
+  deploy:
+    name: Deploy to production
+    needs: [version, publish]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: production
+      url: ${{ vars.VITE_SERVER_URL }}
+    permissions:
+      packages: read
+
+    steps:
+      - name: Configure SSH
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ vars.DEPLOY_PORT || '22' }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          umask 077
+          missing=0
+          for name in DEPLOY_HOST DEPLOY_USER DEPLOY_SSH_KEY DEPLOY_KNOWN_HOSTS; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Secret $name is not set in the production environment (see deploy/README.md)"
+              missing=1
+            fi
+          done
+          [ "$missing" -eq 0 ]
+          mkdir -p ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          cat > ~/.ssh/config <<EOF
+          Host production
+            HostName $DEPLOY_HOST
+            Port $DEPLOY_PORT
+            User $DEPLOY_USER
+            IdentityFile ~/.ssh/deploy_key
+            IdentitiesOnly yes
+            StrictHostKeyChecking yes
+            BatchMode yes
+          EOF
+
+      # The server's authorized_keys entry forces deploy.sh, which validates these arguments.
+      # The job's GITHUB_TOKEN (packages: read, expires with the job) goes over stdin for the image pull.
+      - name: Deploy release
+        env:
+          VERSION: ${{ needs.version.outputs.version }}
+          SERVER_DIGEST: ${{ needs.publish.outputs.server-digest }}
+          CLIENT_DIGEST: ${{ needs.publish.outputs.client-digest }}
+          REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # shellcheck disable=SC2029 # the values are meant to expand here; they are deploy.sh's arguments
+          printf '%s\n' "$REGISTRY_TOKEN" | ssh production "$VERSION $SERVER_DIGEST $CLIENT_DIGEST $GITHUB_ACTOR"
+
+      - name: Remove SSH credentials
+        if: always()
+        run: rm -rf ~/.ssh
