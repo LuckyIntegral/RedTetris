@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { getProfile, login, logout, register } from '../controllers/authController';
 import { authenticate } from '../middleware/auth';
-import { authLimiter } from '../middleware/rateLimit';
+import { apiLimiter, loginIpLimiter, loginLimiter, registerLimiter } from '../middleware/rateLimit';
 
 const router = Router();
 
@@ -49,7 +49,7 @@ const router = Router();
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.post('/register', authLimiter, register);
+router.post('/register', registerLimiter, register);
 
 /**
  * @swagger
@@ -95,7 +95,7 @@ router.post('/register', authLimiter, register);
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.post('/login', authLimiter, login);
+router.post('/login', loginIpLimiter, loginLimiter, login);
 
 /**
  * @swagger
@@ -131,7 +131,7 @@ router.post('/login', authLimiter, login);
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.get('/profile', authenticate, getProfile);
+router.get('/profile', authenticate, apiLimiter, getProfile);
 
 /**
  * @swagger
@@ -160,6 +160,6 @@ router.get('/profile', authenticate, getProfile);
  *                       type: string
  *                       example: Logged out successfully. Please remove the token from client storage.
  */
-router.post('/logout', authenticate, logout);
+router.post('/logout', authenticate, apiLimiter, logout);
 
 export default router;

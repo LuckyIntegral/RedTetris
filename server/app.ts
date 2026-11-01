@@ -9,12 +9,12 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger';
 import { GameManager } from './core/GameManager';
 import db, { runMigrations, testConnection } from './db';
+import { resolveSession } from './middleware/auth';
 import { registerSocketHandlers } from './net/socketHandlers';
 import authRoutes from './routes/auth';
 import gamesRoutes from './routes/games';
 import { ClientToServerEvents, ServerToClientEvents, SocketData } from './types/socketEvents';
 
-import { verifyToken } from './utils/jwt';
 import { logDbError, logger } from './utils/logger';
 
 dotenv.config({ path: path.resolve(process.cwd(), '..', '.env') });
@@ -36,20 +36,27 @@ const io = new IOServer<ClientToServerEvents, ServerToClientEvents, ServerToClie
 const gameManager = new GameManager();
 
 io.use((socket: Socket<ClientToServerEvents, ServerToClientEvents, ServerToClientEvents, SocketData>, next) => {
-  try {
-    const token = socket.handshake.auth?.token as string | undefined;
-    if (!token) {
-      logger.info('socket auth: no token provided');
-      return next();
-    }
-
-    socket.data.user = verifyToken(token);
-    logger.info('socket authenticated as', socket.data.user.username);
-    return next();
-  } catch (err) {
-    logger.info('socket auth failed', err);
+  const token = socket.handshake.auth?.token as unknown;
+  if (typeof token !== 'string' || token === '') {
+    logger.info('socket auth: no token provided');
     return next();
   }
+
+  // Same check as HTTP requests, so logged-out (revoked) tokens cannot open game sockets
+  resolveSession(token)
+    .then((user) => {
+      if (user) {
+        socket.data.user = user;
+        logger.info('socket authenticated as', user.username);
+      } else {
+        logger.info('socket auth failed: invalid, expired or revoked token');
+      }
+      next();
+    })
+    .catch((err: unknown) => {
+      logDbError('socket auth', err);
+      next(new Error('Authentication unavailable'));
+    });
 });
 
 registerSocketHandlers(io, gameManager);

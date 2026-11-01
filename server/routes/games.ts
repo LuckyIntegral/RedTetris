@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { getUserGames } from '../controllers/gamesController';
 import { authenticate } from '../middleware/auth';
+import { apiLimiter } from '../middleware/rateLimit';
 
 const router = Router();
 
@@ -90,6 +91,6 @@ const router = Router();
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.get('/', authenticate, getUserGames);
+router.get('/', authenticate, apiLimiter, getUserGames);
 
 export default router;

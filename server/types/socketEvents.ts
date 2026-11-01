@@ -1,6 +1,6 @@
 import { GameMode } from '../constants';
 import { GameState, Intent, PlayerState } from '../game/types';
-import { JwtPayload } from '../utils/jwt';
+import type { SessionUser } from '../middleware/auth';
 
 export interface ClientToServerEvents {
   create: (payload: { mode: GameMode }) => Promise<void>;
@@ -35,5 +35,5 @@ export interface ServerToClientEvents {
 export interface SocketData {
   playerId?: string;
   room?: string;
-  user?: JwtPayload;
+  user?: SessionUser;
 }

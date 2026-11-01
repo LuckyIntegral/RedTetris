@@ -5,6 +5,7 @@ export interface User {
   username: string;
   email: string;
   password_hash: string;
+  token_version: number;
   created_at: Date;
   updated_at: Date;
 }
@@ -37,6 +38,6 @@ export interface AuthResponse {
 
 export const sanitizeUser = (user: User): UserResponse => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { password_hash, ...userWithoutPassword } = user;
-  return userWithoutPassword;
+  const { password_hash, token_version, ...userWithoutSecrets } = user;
+  return userWithoutSecrets;
 };

@@ -96,6 +96,7 @@ export function RegisterForm() {
                   name='email'
                   type='email'
                   required
+                  maxLength={60}
                   className='w-full bg-surface-alt border border-outline rounded-lg px-4 py-3 text-on-surface placeholder-on-surface-faint focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 transition-colors'
                   placeholder='Enter your email address'
                   disabled={isLoading}
@@ -113,9 +114,10 @@ export function RegisterForm() {
                   name='password'
                   type='password'
                   required
-                  minLength={6}
+                  minLength={8}
+                  maxLength={72}
                   className='w-full bg-surface-alt border border-outline rounded-lg px-4 py-3 text-on-surface placeholder-on-surface-faint focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 transition-colors'
-                  placeholder='Create a strong password (6+ chars)'
+                  placeholder='Create a strong password (8-72 chars)'
                   disabled={isLoading}
                 />
               </div>
@@ -131,7 +133,8 @@ export function RegisterForm() {
                   name='confirmPassword'
                   type='password'
                   required
-                  minLength={6}
+                  minLength={8}
+                  maxLength={72}
                   className='w-full bg-surface-alt border border-outline rounded-lg px-4 py-3 text-on-surface placeholder-on-surface-faint focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 transition-colors'
                   placeholder='Confirm your password'
                   disabled={isLoading}
