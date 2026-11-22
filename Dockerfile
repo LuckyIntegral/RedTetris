@@ -5,7 +5,7 @@
 # Runtime stages are distroless (no shell, no package manager) and run as a non-root user.
 # Base images are pinned by digest; Dependabot keeps the digests current.
 
-FROM node:24-bookworm-slim@sha256:c86ecead9e55a5210ac1727de38a4ca840bf03dcaf34dc9749addbf383b1920c AS base
+FROM node:26-bookworm-slim@sha256:5df79989ed685e09f0a98019db4cebfb22fb9df1a53c0161664a011f7ff6b0f1 AS base
 RUN npm install -g pnpm@10.34.9
 WORKDIR /app
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
